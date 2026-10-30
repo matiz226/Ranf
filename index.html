@@ -514,7 +514,7 @@
       color: var(--pink);
     }
 
-    /* ВСТРОЕННЫЕ МОДАЛЬНЫЕ ОКНА (ВМЕСТО БРАУЗЕРНЫХ PROMPT) */
+    /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -646,7 +646,7 @@
         </div>
 
         <div class="square-widgets-grid">
-          <!-- Карточка партнёра (нажатие открывает редактор) -->
+          <!-- Карточка партнёра -->
           <div class="sq-widget" onclick="openSettingsModal()">
             <div class="sq-top">
               <span class="big-emoji" id="wPartnerEmoji">🥰</span>
@@ -773,7 +773,7 @@
     </button>
   </nav>
 
-  <!-- МОДАЛЬНОЕ ОКНО: ГЛАВНЫЕ НАСТРОЙКИ ПАРЫ И ПАРТНЁРА -->
+  <!-- МОДАЛЬНОЕ ОКНО: НАСТРОЙКИ -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
       <h3 class="modal-title">⚙️ Настройки пары и виджета</h3>
@@ -839,7 +839,7 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО: ДОБАВИТЬ / ИЗМЕНИТЬ ОТСЧЁТ -->
+  <!-- МОДАЛЬНОЕ ОКНО: ОТСЧЁТ -->
   <div class="modal-overlay" id="countdownModal">
     <div class="modal-box">
       <h3 class="modal-title" id="cdModalHeader">⏳ Событие</h3>
@@ -865,7 +865,7 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО: УНИВЕРСАЛЬНОЕ (МЕЧТЫ / ЗАМЕТКИ / ВОПРОС) -->
+  <!-- МОДАЛЬНОЕ ОКНО: УНИВЕРСАЛЬНОЕ -->
   <div class="modal-overlay" id="itemModal">
     <div class="modal-box">
       <h3 class="modal-title" id="itemModalTitle">Добавить</h3>
@@ -936,7 +936,11 @@
     let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
 
     function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const json = JSON.stringify(state);
+      localStorage.setItem(STORAGE_KEY, json);
+      if (window.AndroidWidget && window.AndroidWidget.updateWidget) {
+        window.AndroidWidget.updateWidget(json);
+      }
       renderAll();
     }
 
@@ -982,7 +986,6 @@
       document.getElementById(id).classList.remove('open');
     }
 
-    // --- ГЛАВНЫЕ НАСТРОЙКИ ПАРЫ ---
     function openSettingsModal() {
       document.getElementById('inpMyName').value = state.myName;
       document.getElementById('inpPartnerName').value = state.partnerName;
@@ -1006,7 +1009,6 @@
       saveState();
     }
 
-    // --- НАСТРОЕНИЕ ---
     function setMyMood(em, txt) {
       state.myMoodEmoji = em;
       state.myMoodText = txt;
@@ -1026,7 +1028,6 @@
       setMyMood(em, txt);
     }
 
-    // --- ОБРАТНЫЕ ОТСЧЁТЫ ---
     function pinCountdown(id) {
       state.countdowns.forEach(c => c.pinned = (c.id === id));
       saveState();
@@ -1066,7 +1067,6 @@
       saveState();
     }
 
-    // --- УНИВЕРСАЛЬНОЕ ОКНО (ВОПРОС ДНЯ / МЕЧТЫ / ЗАМЕТКИ) ---
     function openChallengeModal() {
       document.getElementById('itemModalTitle').textContent = '✏️ Изменить вопрос дня';
       document.getElementById('itemModalMode').value = 'challenge';
@@ -1154,7 +1154,6 @@
       saveState();
     }
 
-    // --- РЕНДЕРИНГ ВСЕГО ИНТЕРФЕЙСА ---
     function renderAll() {
       document.getElementById('coupleTitle').textContent = `${state.myName} & ${state.partnerName}`;
       document.getElementById('streakText').textContent = `${state.streakDays} дн.`;
@@ -1181,7 +1180,6 @@
       document.getElementById('smDistTag').textContent = `${state.distanceKm} км`;
       document.getElementById('smCdTitle').textContent = `${cd.emoji} ${cd.days} дн. ${cd.title}`;
 
-      // Экран блокировки
       document.getElementById('lockInline').textContent = `❤️ ${cd.days} дн. • 🔋 ${state.partnerBattery}% • 📍 ${state.distanceKm} км`;
       document.getElementById('lockCircEmoji').textContent = state.partnerMoodEmoji;
       document.getElementById('lockCircBat').textContent = `${state.partnerBattery}%`;
@@ -1190,14 +1188,12 @@
       document.getElementById('lockRectMeta').textContent = `🔋${state.partnerBattery}% • 📍 ${state.distanceKm} км`;
       document.getElementById('lockRectCd').textContent = `До встречи: ${cd.days} дн.`;
 
-      // Чипсы настроения
       const isCustom = !moodPresets.some(p => p[0] === state.myMoodEmoji && p[1] === state.myMoodText);
       document.getElementById('moodBox').innerHTML = moodPresets.map(([em, txt]) => {
         const act = (state.myMoodEmoji === em && state.myMoodText === txt) ? 'active' : '';
         return `<button class="chip ${act}" onclick="setMyMood('${em}','${txt}')">${em} ${txt}</button>`;
       }).join('') + `<button class="chip ${isCustom ? 'active' : ''}" onclick="openCustomMoodModal()">✏️ ${isCustom ? state.myMoodEmoji + ' ' + state.myMoodText : 'Свой статус...'}</button>`;
 
-      // Список отсчётов
       document.getElementById('countdownsList').innerHTML = state.countdowns.map(item => `
         <div class="list-card ${item.pinned ? 'pinned' : ''}">
           <div class="list-left" onclick="pinCountdown('${item.id}')">
@@ -1217,7 +1213,6 @@
         </div>
       `).join('');
 
-      // Челлендж
       document.getElementById('challengePromptText').textContent = state.todayChallenge.prompt;
       document.getElementById('challengeOptionsBox').innerHTML = state.todayChallenge.options.map(opt => {
         const sel = state.todayChallenge.myAnswer === opt ? 'active' : '';
@@ -1227,7 +1222,6 @@
         ? `<div><b>${state.myName}:</b> ${state.todayChallenge.myAnswer}</div><div style="margin-top:6px; color:var(--pink)"><b>${state.partnerName}:</b> ${state.todayChallenge.partnerAnswer}</div>`
         : `<div style="color:var(--muted)">Выберите вариант выше, чтобы открыть ответ партнёра (${state.partnerName})</div>`;
 
-      // Мечты
       document.getElementById('boardsRow').innerHTML = state.boards.map(b => `
         <button class="chip ${state.activeBoardId === b.id ? 'active' : ''}" onclick="state.activeBoardId='${b.id}'; saveState()">${b.emoji} ${b.title}</button>
       `).join('');
@@ -1250,7 +1244,6 @@
           </div>
         `).join('');
 
-      // Заметки
       document.getElementById('regularNotesList').innerHTML = state.notes.map(n => `
         <div class="list-card">
           <div class="list-left" onclick="openNoteModal('${n.id}')">
@@ -1267,7 +1260,6 @@
       `).join('');
     }
 
-    // --- РИСОВАНИЕ ДУДЛОВ ---
     const partnerCanvas = document.getElementById('partnerCanvas');
     const partnerCtx = partnerCanvas.getContext('2d');
     const myCanvas = document.getElementById('myCanvas');
@@ -1391,6 +1383,9 @@
 
     renderAll();
     initDoodleStudio();
+    if (window.AndroidWidget) {
+      window.AndroidWidget.updateWidget(JSON.stringify(state));
+    }
   </script>
 </body>
-</html>
+                                                                                    </html>
