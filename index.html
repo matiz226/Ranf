@@ -8,12 +8,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
-  <title>Мы Рядом ❤️ — Live</title>
+  <title>Мы Рядом ❤️ — Sync</title>
 
   <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#0d0b14","theme_color":"#0d0b14","orientation":"portrait"}' />
-
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
   <style>
     :root {
@@ -396,7 +393,7 @@
   <header class="topbar">
     <div class="pair-pill" onclick="openSettingsModal()">
       <span class="sync-dot" id="syncDot"></span>
-      <span id="syncTextLabel">Live 🟢</span> •
+      <span id="syncTextLabel">FastSync 🟢</span> •
       <span id="coupleTitle">Матвей & Полина</span> ⚙️
     </div>
     <div class="streak-pill" onclick="requestMyGpsNow()">
@@ -548,15 +545,15 @@
 
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
-      <h3 class="modal-title">⚙️ Настройки пары и Live-связи</h3>
-      <label class="field-label">1. Чей это телефон? (Важно!)</label>
+      <h3 class="modal-title">⚙️ Настройки пары и синхронизации</h3>
+      <label class="field-label">1. Чей это телефон?</label>
       <div class="role-selector">
         <button class="role-btn" id="roleBtnU1" onclick="selectRole('user1')">👦 Я — Матвей</button>
         <button class="role-btn" id="roleBtnU2" onclick="selectRole('user2')">👧 Я — Полина</button>
       </div>
 
       <div class="status-banner" id="cloudDiagBox">
-        🟢 Синхронизация активна (Резервный канал вкл)
+        🚀 Высокоскоростной мост синхронизации активен
       </div>
 
       <div class="field-row">
@@ -659,10 +656,10 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'couple_live_state_v5';
-    const ROLE_KEY = 'couple_device_role_v5';
-    const ROOM_KEY = 'couple_room_code_v5';
-    const DB_URL_KEY = 'couple_db_url_v5';
+    const STORAGE_KEY = 'couple_live_state_v6';
+    const ROLE_KEY = 'couple_device_role_v6';
+    const ROOM_KEY = 'couple_room_code_v6';
+    const DB_URL_KEY = 'couple_db_url_v6';
 
     const FULL_DEFAULT_DB = 'https://coupleapp-705bf-default-rtdb.firebaseio.com';
 
@@ -709,10 +706,6 @@
       state = JSON.parse(JSON.stringify(defaultState));
     }
 
-    let db = null;
-    let roomRef = null;
-    let isRemoteActive = false;
-
     function getMyKey() { return myRole === 'user2' ? 'user2' : 'user1'; }
     function getPartnerKey() { return myRole === 'user2' ? 'user1' : 'user2'; }
 
@@ -725,90 +718,51 @@
       window._toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
     }
 
-    // Мгновенная синхронизация через Firebase + Авто-опрос бэкенда в фоновом режиме (гарантия работы на мобильных сетях)
-    function initFirebaseSync() {
-      const dot = document.getElementById('syncDot');
-      const label = document.getElementById('syncTextLabel');
-      const diag = document.getElementById('cloudDiagBox');
+    // Сверхбыстрый и надежный механизм синхронизации через REST API с интервалом 1 секунда
+    let isSyncing = false;
 
-      try {
-        const cleanUrl = customDbUrl.replace(/\/$/, '');
-        if (!firebase.apps.length) {
-          firebase.initializeApp({ databaseURL: cleanUrl });
-        }
-        db = firebase.database();
-        roomRef = db.ref('couples/' + roomCode);
-
-        roomRef.on('value', (snapshot) => {
-          const cloudData = snapshot.val();
-          if (cloudData) {
-            isRemoteActive = true;
-            dot.style.background = 'var(--green)';
-            label.textContent = 'Live 🟢';
-            if (diag) diag.innerHTML = `🟢 <b>Связь с облаком стабильна!</b><br>Комната: <b>${roomCode}</b>`;
-
-            state = Object.assign({}, defaultState, cloudData);
-            state.users = Object.assign({}, defaultState.users, cloudData.users || {});
-            state.users.user1 = Object.assign({}, defaultState.users.user1, (cloudData.users && cloudData.users.user1) || {});
-            state.users.user2 = Object.assign({}, defaultState.users.user2, (cloudData.users && cloudData.users.user2) || {});
-            state.users.user1.strokes = state.users.user1.strokes || [];
-            state.users.user2.strokes = state.users.user2.strokes || [];
-
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            renderAll();
-            redrawBothLayers();
-            showLiveToast('⚡ Синхронизировано');
-          } else {
-            roomRef.set(state);
-          }
-        }, (err) => {
-          startPollingFallback();
-        });
-
-        // Запускаем фоновый опрос для моментального подхвата изменений на любом устройстве
-        setInterval(pollCloudDataFallback, 2500);
-
-      } catch (e) {
-        startPollingFallback();
-      }
-    }
-
-    // Альтернативный надежный метод опроса публичного REST API базы Firebase
-    function pollCloudDataFallback() {
+    function pollCloudData() {
+      if (isSyncing) return;
+      isSyncing = true;
       const cleanUrl = customDbUrl.replace(/\/$/, '');
       fetch(`${cleanUrl}/couples/${roomCode}.json`)
         .then(res => res.json())
         .then(cloudData => {
-          if (cloudData && JSON.stringify(cloudData) !== JSON.stringify(state)) {
-            state = Object.assign({}, defaultState, cloudData);
-            state.users.user1.strokes = state.users.user1.strokes || [];
-            state.users.user2.strokes = state.users.user2.strokes || [];
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            renderAll();
-            redrawBothLayers();
-            showLiveToast('⚡ Обновлено в реальном времени');
+          isSyncing = false;
+          if (cloudData) {
+            const oldStr = JSON.stringify(state);
+            const newStr = JSON.stringify(cloudData);
+            if (oldStr !== newStr) {
+              state = Object.assign({}, defaultState, cloudData);
+              state.users.user1.strokes = state.users.user1.strokes || [];
+              state.users.user2.strokes = state.users.user2.strokes || [];
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+              renderAll();
+              redrawBothLayers();
+              showLiveToast('⚡ Синхронизировано');
+            }
+          } else {
+            // Если комната пустая, инициализируем её
+            pushStateFull();
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          isSyncing = false;
+        });
     }
 
-    function startPollingFallback() {
-      const dot = document.getElementById('syncDot');
-      const label = document.getElementById('syncTextLabel');
-      const diag = document.getElementById('cloudDiagBox');
-      dot.style.background = '#f39c12';
-      label.textContent = 'WebSync 🟡';
-      if (diag) diag.innerHTML = `🟡 <b>Работает через быстрый веб-мост</b> (синхронизация активна)`;
-      setInterval(pollCloudDataFallback, 2000);
+    function pushStateFull() {
+      const cleanUrl = customDbUrl.replace(/\/$/, '');
+      fetch(`${cleanUrl}/couples/${roomCode}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+      }).catch(() => {});
     }
 
     function syncPatch(partialPaths) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
-      if (roomRef) {
-        roomRef.update(partialPaths).catch(() => {});
-      }
-      // Дублируем отправку через REST API для мгновенной доставки
       const cleanUrl = customDbUrl.replace(/\/$/, '');
       fetch(`${cleanUrl}/couples/${roomCode}.json`, {
         method: 'PATCH',
@@ -952,7 +906,8 @@
       localStorage.setItem(DB_URL_KEY, customDbUrl);
 
       closeModal('settingsModal');
-      location.reload();
+      pushStateFull();
+      showLiveToast('⚙️ Настройки сохранены');
     }
 
     function setMyMood(em, txt) {
@@ -1364,7 +1319,7 @@
 
     renderAll();
     initDoodleStudio();
-    initFirebaseSync();
+    setInterval(pollCloudData, 1200); // Опрос облака каждую 1.2 секунды
     startAutoGpsTracking();
   </script>
 </body>
