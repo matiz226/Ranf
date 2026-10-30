@@ -369,11 +369,11 @@
   <header class="topbar">
     <div class="pair-pill" onclick="openSettingsModal()">
       <span class="sync-dot"></span>
-      <span id="syncTextLabel">Связь вкл</span> •
+      <span id="syncTextLabel">Синхронизация</span> •
       <span id="coupleTitle">Матвей & Полина</span> ⚙️
     </div>
-    <div class="streak-pill" onclick="requestMyGpsNow()">
-      📍 <span id="topGpsStatus">GPS</span> • 🔥 <span id="streakText">24 дн.</span>
+    <div class="streak-pill" onclick="forceSyncNow()" title="Нажмите для принудительного обновления">
+      🔄 <span id="topGpsStatus">Обновить</span> • 🔥 <span id="streakText">24 дн.</span>
     </div>
   </header>
 
@@ -529,7 +529,7 @@
       </div>
 
       <div class="status-banner" id="cloudDiagBox">
-        🚀 Синхронизация работает бесшумно и стабильно
+        🚀 Кроссплатформенный мост (Android ⇄ iOS) активен
       </div>
 
       <div class="field-row">
@@ -632,10 +632,10 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'couple_live_state_v7';
-    const ROLE_KEY = 'couple_device_role_v7';
-    const ROOM_KEY = 'couple_room_code_v7';
-    const DB_URL_KEY = 'couple_db_url_v7';
+    const STORAGE_KEY = 'couple_live_state_v8';
+    const ROLE_KEY = 'couple_device_role_v8';
+    const ROOM_KEY = 'couple_room_code_v8';
+    const DB_URL_KEY = 'couple_db_url_v8';
 
     const FULL_DEFAULT_DB = 'https://coupleapp-705bf-default-rtdb.firebaseio.com';
 
@@ -687,11 +687,14 @@
 
     let isSyncing = false;
 
+    // Главная функция синхронизации без кэша (добавлен префикс времени, чтобы iOS Safari не кешировал GET-запросы)
     function pollCloudData() {
       if (isSyncing) return;
       isSyncing = true;
       const cleanUrl = customDbUrl.replace(/\/$/, '');
-      fetch(`${cleanUrl}/couples/${roomCode}.json`)
+      const cacheBuster = `?nocache=` + Date.now();
+      
+      fetch(`${cleanUrl}/couples/${roomCode}.json${cacheBuster}`)
         .then(res => res.json())
         .then(cloudData => {
           isSyncing = false;
@@ -712,6 +715,29 @@
         })
         .catch(() => {
           isSyncing = false;
+        });
+    }
+
+    function forceSyncNow() {
+      const btn = document.getElementById('topGpsStatus');
+      btn.textContent = 'Загрузка...';
+      const cleanUrl = customDbUrl.replace(/\/$/, '');
+      fetch(`${cleanUrl}/couples/${roomCode}.json?nocache=` + Date.now())
+        .then(res => res.json())
+        .then(cloudData => {
+          if (cloudData) {
+            state = Object.assign({}, defaultState, cloudData);
+            state.users.user1.strokes = state.users.user1.strokes || [];
+            state.users.user2.strokes = state.users.user2.strokes || [];
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            renderAll();
+            redrawBothLayers();
+          }
+          btn.textContent = 'Обновить';
+        })
+        .catch(() => {
+          btn.textContent = 'Ошибка';
+          setTimeout(() => btn.textContent = 'Обновить', 2000);
         });
     }
 
@@ -775,7 +801,6 @@
         const newLat = Number(pos.coords.latitude.toFixed(5));
         const newLng = Number(pos.coords.longitude.toFixed(5));
         const nowStr = new Date().toTimeString().slice(0, 5);
-        document.getElementById('topGpsStatus').textContent = 'GPS 🟢';
         if (me.lat !== newLat || me.lng !== newLng) {
           me.lat = newLat; me.lng = newLng; me.updatedAt = nowStr;
           const patch = {};
@@ -790,7 +815,6 @@
     }
 
     function requestMyGpsNow() {
-      document.getElementById('topGpsStatus').textContent = 'Поиск...';
       startAutoGpsTracking();
     }
 
@@ -1234,7 +1258,7 @@
       if (!isDrawing) return;
       isDrawing = false;
       if (activePoints.length > 1) {
-        myKey = getMyKey();
+        const myKey = getMyKey();
         const me = state.users[myKey];
         if (!me.strokes) me.strokes = [];
         me.strokes.push({ color: currentColor, points: activePoints });
@@ -1281,8 +1305,8 @@
 
     renderAll();
     initDoodleStudio();
-    setInterval(pollCloudData, 1500); // Плавный опрос облака каждые 1.5 секунды без всплывающих окон
+    setInterval(pollCloudData, 2000); // Плавный опрос облака без лишних раздражающих плашек
     startAutoGpsTracking();
   </script>
 </body>
-                                                                                            </html>
+</html>
