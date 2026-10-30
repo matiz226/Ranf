@@ -8,11 +8,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
-  <title>Мы Рядом ❤️ — Живой виджет для пар</title>
+  <title>Мы Рядом ❤️ — Live-синхронизация</title>
 
   <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#0d0b14","theme_color":"#0d0b14","orientation":"portrait"}' />
 
-  <!-- Подключение Firebase SDK -->
+  <!-- Firebase Realtime SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
@@ -50,21 +50,22 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 16px 10px;
+      padding: 12px 16px 10px;
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(13, 11, 20, 0.88);
+      background: rgba(13, 11, 20, 0.9);
       backdrop-filter: blur(14px);
+      gap: 8px;
     }
 
     .pair-pill, .streak-pill {
       background: var(--card);
       border: 1px solid var(--border);
-      padding: 8px 14px;
+      padding: 8px 12px;
       border-radius: 999px;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -77,15 +78,43 @@
     }
 
     .sync-dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background: #f39c12;
+      background: #e74c3c;
       display: inline-block;
+      transition: all 0.3s ease;
+    }
+    .sync-dot.connecting {
+      background: #f39c12;
+      box-shadow: 0 0 8px #f39c12;
     }
     .sync-dot.online {
       background: var(--green);
-      box-shadow: 0 0 8px var(--green);
+      box-shadow: 0 0 10px var(--green);
+    }
+
+    /* Всплывающее уведомление о живом обновлении от партнёра */
+    .live-toast {
+      position: fixed;
+      top: 62px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: rgba(255, 59, 127, 0.95);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 800;
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 20px rgba(255, 59, 127, 0.4);
+    }
+    .live-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .container {
@@ -623,9 +652,10 @@
       background: #110e1a;
       border: 1px solid var(--border);
       color: var(--muted);
-      padding: 10px;
-      border-radius: 12px;
+      padding: 12px 10px;
+      border-radius: 14px;
       font-weight: 800;
+      font-size: 14px;
       cursor: pointer;
     }
 
@@ -635,7 +665,7 @@
       color: #fff;
     }
 
-    .gps-banner {
+    .status-banner {
       background: rgba(46, 204, 113, 0.1);
       border: 1px solid rgba(46, 204, 113, 0.3);
       color: #a3f7bf;
@@ -643,23 +673,24 @@
       border-radius: 14px;
       font-size: 12px;
       margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body>
 
+  <!-- Всплывающий индикатор синхронизации -->
+  <div class="live-toast" id="liveToast">⚡ Обновлено в реальном времени</div>
+
   <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
   <header class="topbar">
     <div class="pair-pill" onclick="openSettingsModal()">
-      <span class="sync-dot" id="syncDot" title="Статус синхронизации"></span>
-      ❤️ <span id="coupleTitle">Матвей & Полина</span> ⚙️
+      <span class="sync-dot connecting" id="syncDot"></span>
+      <span id="syncTextLabel">Подключение...</span> •
+      <span id="coupleTitle">Матвей & Полина</span> ⚙️
     </div>
     <div class="streak-pill" onclick="requestMyGpsNow()">
-      📍 <span id="topGpsStatus">GPS авто</span> • 🔥 <span id="streakText">24 дн.</span>
+      📍 <span id="topGpsStatus">GPS</span> • 🔥 <span id="streakText">24 дн.</span>
     </div>
   </header>
 
@@ -689,14 +720,14 @@
         </div>
 
         <div class="square-widgets-grid">
-          <div class="sq-widget" onclick="requestMyGpsNow()">
+          <div class="sq-widget" onclick="openSettingsModal()">
             <div class="sq-top">
               <span class="big-emoji" id="wPartnerEmoji">🥰</span>
               <span class="bat-badge" id="wPartnerBattery">⚡ 84%</span>
             </div>
             <div class="sq-title" id="wPartnerName">Полина</div>
             <div class="sq-sub" id="wPartnerMoodText">Жду вечернего созвона</div>
-            <div class="sq-foot" id="wDistance">📍 Вычисляем...</div>
+            <div class="sq-foot" id="wDistance">📍 Нажмите для GPS</div>
           </div>
 
           <div class="sq-widget" onclick="scrollToCountdowns()">
@@ -733,7 +764,8 @@
 
       <!-- Настроение и заряд -->
       <div class="section-head">
-        <div class="section-title">Ваш статус (<span id="myRoleBadge">Матвей</span> • 🔋 <span id="myRealBatteryLabel">100%</span>):</div>
+        <div class="section-title">Ваш статус (<span id="myRoleBadge" style="color:var(--pink)">Матвей</span> • 🔋 <span id="myRealBatteryLabel">100%</span>):</div>
+        <button class="btn-small" onclick="openSettingsModal()">Сменить роль 👥</button>
       </div>
       <div class="chips-scroll" id="moodBox"></div>
 
@@ -748,7 +780,7 @@
     <!-- ВКЛАДКА 1: ДУДЛЫ -->
     <section class="tab-page" id="tab1">
       <div class="section-head">
-        <div class="section-title">Общий холст в реальном времени 🎨</div>
+        <div class="section-title">Живой холст (рисуйте вместе) 🎨</div>
         <div style="display:flex; gap:6px">
           <button class="btn-small" onclick="undoStroke()">↩️ Назад</button>
           <button class="btn-small" onclick="clearMyDoodle()">🗑️ Очистить</button>
@@ -817,43 +849,42 @@
   <!-- МОДАЛЬНОЕ ОКНО: НАСТРОЙКИ И СИНХРОНИЗАЦИЯ -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
-      <h3 class="modal-title">⚙️ Настройки и GPS-синхронизация</h3>
+      <h3 class="modal-title">⚙️ Настройки пары и Live-связи</h3>
 
-      <label class="field-label">Кто использует этот телефон?</label>
+      <label class="field-label">1. Чей это телефон? (Важно для синхронизации!)</label>
       <div class="role-selector">
         <button class="role-btn" id="roleBtnU1" onclick="selectRole('user1')">👦 Я — Матвей</button>
         <button class="role-btn" id="roleBtnU2" onclick="selectRole('user2')">👧 Я — Полина</button>
       </div>
 
-      <div class="gps-banner">
-        <span id="gpsDiagnosticText">📍 GPS-координаты обновляются автоматически</span>
-        <button class="btn-small" onclick="requestMyGpsNow()">Обновить GPS</button>
+      <div class="status-banner" id="cloudDiagBox">
+        🔄 Статус облака: проверка соединения...
       </div>
 
       <div class="field-row">
         <div class="field-group">
-          <label class="field-label">Имя 1 (user1)</label>
+          <label class="field-label">Имя партнёра 1</label>
           <input class="field-input" id="inpU1Name" type="text" />
         </div>
         <div class="field-group">
-          <label class="field-label">Имя 2 (user2)</label>
+          <label class="field-label">Имя партнёра 2</label>
           <input class="field-input" id="inpU2Name" type="text" />
         </div>
       </div>
 
       <div class="field-row">
         <div class="field-group">
-          <label class="field-label">Дней подряд (🔥)</label>
+          <label class="field-label">Дней вместе (🔥)</label>
           <input class="field-input" id="inpStreak" type="number" min="1" />
         </div>
         <div class="field-group">
-          <label class="field-label">Код комнаты (общий)</label>
-          <input class="field-input" id="inpRoomCode" type="text" value="matvey_polina" />
+          <label class="field-label">Код пары (одинаковый)</label>
+          <input class="field-input" id="inpRoomCode" type="text" />
         </div>
       </div>
 
       <div class="field-group">
-        <label class="field-label">URL базы Firebase Realtime Database</label>
+        <label class="field-label">Ссылка на базу Firebase (Realtime Database)</label>
         <input class="field-input" id="inpDbUrl" type="text" />
       </div>
 
@@ -933,26 +964,17 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'couple_super_app_live_v3';
-    const ROLE_KEY = 'couple_device_role_v3';
-    const ROOM_KEY = 'couple_room_code_v3';
-    const DB_URL_KEY = 'couple_custom_db_url_v3';
+    const STORAGE_KEY = 'couple_live_state_v4';
+    const ROLE_KEY = 'couple_device_role_v4';
+    const ROOM_KEY = 'couple_room_code_v4';
+    const DB_URL_KEY = 'couple_db_url_v4';
+
+    // По умолчанию подключаемся к созданной базе coupleapp-705bf, где открыты правила .read/.write = true
+    const DEFAULT_DB_URL = 'https://coupleapp-705bf-default-rtdb.firebaseio.com';
 
     let myRole = localStorage.getItem(ROLE_KEY) || 'user1'; // 'user1' (Матвей) или 'user2' (Полина)
     let roomCode = localStorage.getItem(ROOM_KEY) || 'matvey_polina';
-    let customDbUrl = localStorage.getItem(DB_URL_KEY) || 'https://coupleapp-705bf-default-rtdb.firebaseio.com';
-
-    // Конфигурация Firebase пользователя
-    const firebaseConfig = {
-      apiKey: "AIzaSyCOXLm6pLpSsl7QJYJn5XwHLhR5VvshMbQ",
-      authDomain: "coughapp-1d6c4.firebaseapp.com",
-      databaseURL: customDbUrl,
-      projectId: "coughapp-1d6c4",
-      storageBucket: "coughapp-1d6c4.firebasestorage.app",
-      messagingSenderId: "366444759402",
-      appId: "1:366444759402:web:4b20257e3f8427d0fc3d13",
-      measurementId: "G-9SC1DXQ19B"
-    };
+    let customDbUrl = localStorage.getItem(DB_URL_KEY) || DEFAULT_DB_URL;
 
     const defaultState = {
       streakDays: 24,
@@ -1012,64 +1034,115 @@
       ]
     };
 
-    let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
-    if (!state.users) state = defaultState;
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || JSON.parse(JSON.stringify(defaultState));
+    if (!state.users || !state.users.user1 || !state.users.user2) {
+      state = JSON.parse(JSON.stringify(defaultState));
+    }
 
     let db = null;
     let roomRef = null;
-    let isRemoteUpdating = false;
+    let firstLoadDone = false;
 
     function getMyKey() { return myRole === 'user2' ? 'user2' : 'user1'; }
     function getPartnerKey() { return myRole === 'user2' ? 'user1' : 'user2'; }
 
-    // Инициализация Firebase Realtime Database
+    function showLiveToast(msg = '⚡ Синхронизировано') {
+      const t = document.getElementById('liveToast');
+      if (!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    // Инициализация живой синхронизации Firebase Realtime Database
     function initFirebaseSync() {
+      const dot = document.getElementById('syncDot');
+      const label = document.getElementById('syncTextLabel');
+      const diag = document.getElementById('cloudDiagBox');
+
       try {
+        const cleanUrl = customDbUrl.replace(/\/$/, '');
         if (!firebase.apps.length) {
-          firebase.initializeApp(firebaseConfig);
+          firebase.initializeApp({ databaseURL: cleanUrl });
         }
         db = firebase.database();
+
+        // Отслеживание реального соединения с сервером Firebase
+        db.ref('.info/connected').on('value', (snap) => {
+          if (snap.val() === true) {
+            dot.className = 'sync-dot online';
+            label.textContent = 'Live';
+            if (diag) diag.innerHTML = `🟢 <b>Подключено к облаку в реальном времени!</b><br>База: ${cleanUrl}<br>Комната: <b>${roomCode}</b>`;
+          } else {
+            dot.className = 'sync-dot connecting';
+            label.textContent = 'Сеть...';
+          }
+        });
+
+        if (roomRef) roomRef.off();
         roomRef = db.ref('couples/' + roomCode);
 
-        // Слушаем изменения в облаке в реальном времени
+        // Подписка на любые изменения в комнате пары
         roomRef.on('value', (snapshot) => {
           const cloudData = snapshot.val();
-          document.getElementById('syncDot').classList.add('online');
           if (cloudData) {
-            isRemoteUpdating = true;
+            // Аккуратно объединяем облачные данные с локальной структурой
             state = Object.assign({}, defaultState, cloudData);
-            if (!state.users) state.users = defaultState.users;
-            if (!state.users.user1.strokes) state.users.user1.strokes = [];
-            if (!state.users.user2.strokes) state.users.user2.strokes = [];
+            state.users = Object.assign({}, defaultState.users, cloudData.users || {});
+            state.users.user1 = Object.assign({}, defaultState.users.user1, (cloudData.users && cloudData.users.user1) || {});
+            state.users.user2 = Object.assign({}, defaultState.users.user2, (cloudData.users && cloudData.users.user2) || {});
+            state.users.user1.strokes = state.users.user1.strokes || [];
+            state.users.user2.strokes = state.users.user2.strokes || [];
+            state.todayChallenge = Object.assign({}, defaultState.todayChallenge, cloudData.todayChallenge || {});
+
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             renderAll();
             redrawBothLayers();
-            isRemoteUpdating = false;
+
+            if (firstLoadDone) {
+              showLiveToast('⚡ Обновлено в реальном времени');
+            }
+            firstLoadDone = true;
           } else {
-            // Если база пустая — заливаем стартовое состояние
-            pushStateToCloud();
+            // Если комната в базе ещё пустая — создаём её
+            roomRef.set(state);
+            firstLoadDone = true;
           }
         }, (err) => {
-          console.warn('Ошибка доступа к Firebase:', err);
-          document.getElementById('syncDot').classList.remove('online');
+          dot.className = 'sync-dot';
+          label.textContent = 'Ошибка БД';
+          if (diag) diag.innerHTML = `🔴 <b>Ошибка доступа к базе:</b> ${err.message}. Проверьте, что в Rules установлено .read: true и .write: true`;
         });
       } catch (e) {
-        console.warn('Ошибка инициализации Firebase:', e);
+        dot.className = 'sync-dot';
+        label.textContent = 'Офлайн';
+        if (diag) diag.innerHTML = `🔴 <b>Ошибка:</b> ${e.message}`;
       }
     }
 
-    function pushStateToCloud() {
+    // Точечная отправка изменений в облако (без перезаписи чужих данных!)
+    function syncPatch(partialPaths) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
-      if (roomRef && !isRemoteUpdating) {
-        roomRef.set(state).catch(err => console.warn('Не удалось записать в Firebase:', err));
+      if (roomRef) {
+        roomRef.update(partialPaths).catch(err => console.warn('Ошибка записи в облако:', err));
       }
+    }
+
+    // Точечное обновление только данных моего пользователя
+    function syncMyUserField(field, value) {
+      const myKey = getMyKey();
+      state.users[myKey][field] = value;
+      const patch = {};
+      patch[`users/${myKey}/${field}`] = value;
+      syncPatch(patch);
     }
 
     // Расчёт реального географического расстояния (Формула гаверсинусов)
     function calcDistanceKm(lat1, lon1, lat2, lon2) {
       if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return null;
-      const R = 6371; // Радиус Земли в км
+      const R = 6371;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLon = (lon2 - lon1) * Math.PI / 180;
       const a =
@@ -1092,7 +1165,7 @@
       return `${state.manualDistanceKm || 640} км`;
     }
 
-    // Автоматическое отслеживание GPS-координат (работает на iOS и Android)
+    // Автоматический GPS-трекер
     let gpsWatchId = null;
 
     function startAutoGpsTracking() {
@@ -1102,26 +1175,28 @@
       }
 
       const onPosSuccess = (pos) => {
-        const me = state.users[getMyKey()];
+        const myKey = getMyKey();
+        const me = state.users[myKey];
         const newLat = Number(pos.coords.latitude.toFixed(5));
         const newLng = Number(pos.coords.longitude.toFixed(5));
-        const changed = (me.lat !== newLat || me.lng !== newLng);
-
-        me.lat = newLat;
-        me.lng = newLng;
-        me.updatedAt = new Date().toTimeString().slice(0, 5);
+        const nowStr = new Date().toTimeString().slice(0, 5);
 
         document.getElementById('topGpsStatus').textContent = 'GPS 🟢';
-        const diag = document.getElementById('gpsDiagnosticText');
-        if (diag) diag.textContent = `📍 Ваши координаты: ${newLat}, ${newLng} (обновлено в ${me.updatedAt})`;
 
-        if (changed) pushStateToCloud();
+        if (me.lat !== newLat || me.lng !== newLng) {
+          me.lat = newLat;
+          me.lng = newLng;
+          me.updatedAt = nowStr;
+          const patch = {};
+          patch[`users/${myKey}/lat`] = newLat;
+          patch[`users/${myKey}/lng`] = newLng;
+          patch[`users/${myKey}/updatedAt`] = nowStr;
+          syncPatch(patch);
+        }
       };
 
-      const onPosError = (err) => {
+      const onPosError = () => {
         document.getElementById('topGpsStatus').textContent = 'GPS ⚠️';
-        const diag = document.getElementById('gpsDiagnosticText');
-        if (diag) diag.textContent = '⚠️ Разрешите доступ к геопозиции в браузере';
       };
 
       navigator.geolocation.getCurrentPosition(onPosSuccess, onPosError, {
@@ -1132,7 +1207,7 @@
       if (gpsWatchId !== null) navigator.geolocation.clearWatch(gpsWatchId);
       gpsWatchId = navigator.geolocation.watchPosition(onPosSuccess, onPosError, {
         enableHighAccuracy: true,
-        maximumAge: 30000,
+        maximumAge: 20000,
         timeout: 15000
       });
     }
@@ -1142,28 +1217,21 @@
       startAutoGpsTracking();
     }
 
-    // Автоматическая синхронизация заряда батареи
+    // Авто-синхронизация заряда батареи
     if ('getBattery' in navigator) {
       navigator.getBattery().then(bat => {
         const updateBat = () => {
           const lvl = Math.round(bat.level * 100);
           document.getElementById('myRealBatteryLabel').textContent = lvl + '%';
-          if (state.users[getMyKey()].battery !== lvl) {
-            state.users[getMyKey()].battery = lvl;
-            pushStateToCloud();
+          const myKey = getMyKey();
+          if (state.users[myKey].battery !== lvl) {
+            syncMyUserField('battery', lvl);
           }
         };
         updateBat();
         bat.addEventListener('levelchange', updateBat);
       });
     }
-
-    // Обновление часов на превью экрана блокировки
-    setInterval(() => {
-      const now = new Date();
-      const el = document.getElementById('lockClockText');
-      if (el) el.textContent = now.toTimeString().slice(0, 5);
-    }, 10000);
 
     const moodPresets = [
       ['🔥', 'В работе'],
@@ -1204,6 +1272,7 @@
       requestMyGpsNow();
       renderAll();
       redrawBothLayers();
+      showLiveToast(myRole === 'user1' ? '👦 Выбрана роль: Матвей' : '👧 Выбрана роль: Полина');
     }
 
     function openSettingsModal() {
@@ -1218,14 +1287,17 @@
     }
 
     function saveSettingsModal() {
-      state.users.user1.name = document.getElementById('inpU1Name').value.trim() || 'Матвей';
-      state.users.user2.name = document.getElementById('inpU2Name').value.trim() || 'Полина';
-      state.streakDays = parseInt(document.getElementById('inpStreak').value) || 1;
-
+      const u1Name = document.getElementById('inpU1Name').value.trim() || 'Матвей';
+      const u2Name = document.getElementById('inpU2Name').value.trim() || 'Полина';
+      const streak = parseInt(document.getElementById('inpStreak').value) || 1;
       const newRoom = document.getElementById('inpRoomCode').value.trim() || 'matvey_polina';
-      const newUrl = document.getElementById('inpDbUrl').value.trim();
+      const newUrl = document.getElementById('inpDbUrl').value.trim() || DEFAULT_DB_URL;
 
-      const urlChanged = newUrl && newUrl !== customDbUrl;
+      state.users.user1.name = u1Name;
+      state.users.user2.name = u2Name;
+      state.streakDays = streak;
+
+      const urlChanged = newUrl !== customDbUrl;
       const roomChanged = newRoom !== roomCode;
 
       if (roomChanged) {
@@ -1240,20 +1312,25 @@
       }
 
       closeModal('settingsModal');
-      if (roomChanged && db) {
-        if (roomRef) roomRef.off();
-        roomRef = db.ref('couples/' + roomCode);
+      if (roomChanged) {
         initFirebaseSync();
       } else {
-        pushStateToCloud();
+        syncPatch({
+          'users/user1/name': u1Name,
+          'users/user2/name': u2Name,
+          'streakDays': streak
+        });
       }
     }
 
     function setMyMood(em, txt) {
-      const me = state.users[getMyKey()];
-      me.moodEmoji = em;
-      me.moodText = txt;
-      pushStateToCloud();
+      const myKey = getMyKey();
+      state.users[myKey].moodEmoji = em;
+      state.users[myKey].moodText = txt;
+      const patch = {};
+      patch[`users/${myKey}/moodEmoji`] = em;
+      patch[`users/${myKey}/moodText`] = txt;
+      syncPatch(patch);
     }
 
     function openCustomMoodModal() {
@@ -1272,7 +1349,7 @@
 
     function pinCountdown(id) {
       state.countdowns.forEach(c => c.pinned = (c.id === id));
-      pushStateToCloud();
+      syncPatch({ countdowns: state.countdowns });
     }
 
     function openCountdownModal(id = '') {
@@ -1299,7 +1376,7 @@
         state.countdowns.push({ id: 'c' + Date.now(), emoji, title, days, pinned: state.countdowns.length === 0 });
       }
       closeModal('countdownModal');
-      pushStateToCloud();
+      syncPatch({ countdowns: state.countdowns });
     }
 
     function deleteCountdown(id) {
@@ -1307,7 +1384,7 @@
       if (state.countdowns.length > 0 && !state.countdowns.some(c => c.pinned)) {
         state.countdowns[0].pinned = true;
       }
-      pushStateToCloud();
+      syncPatch({ countdowns: state.countdowns });
     }
 
     function openChallengeModal() {
@@ -1358,6 +1435,8 @@
         }
         state.todayChallenge.user1Answer = null;
         state.todayChallenge.user2Answer = null;
+        closeModal('itemModal');
+        syncPatch({ todayChallenge: state.todayChallenge });
       } else if (mode === 'wish') {
         if (!state.wishes) state.wishes = [];
         if (id) {
@@ -1366,6 +1445,8 @@
         } else {
           state.wishes.unshift({ id: 'w' + Date.now(), boardId: state.activeBoardId, title: v1, sub: v2, done: false });
         }
+        closeModal('itemModal');
+        syncPatch({ wishes: state.wishes });
       } else if (mode === 'note') {
         if (!state.notes) state.notes = [];
         if (id) {
@@ -1374,41 +1455,40 @@
         } else {
           state.notes.unshift({ id: 'n' + Date.now(), title: v1, text: v2 });
         }
+        closeModal('itemModal');
+        syncPatch({ notes: state.notes });
       }
-      closeModal('itemModal');
-      pushStateToCloud();
     }
 
     function selectChallengeAnswer(opt) {
-      if (myRole === 'user2') {
-        state.todayChallenge.user2Answer = opt;
-      } else {
-        state.todayChallenge.user1Answer = opt;
-      }
-      pushStateToCloud();
+      const field = myRole === 'user2' ? 'user2Answer' : 'user1Answer';
+      state.todayChallenge[field] = opt;
+      const patch = {};
+      patch[`todayChallenge/${field}`] = opt;
+      syncPatch(patch);
     }
 
     function toggleWish(id) {
       const w = (state.wishes || []).find(x => x.id === id);
       if (w) w.done = !w.done;
-      pushStateToCloud();
+      syncPatch({ wishes: state.wishes });
     }
 
     function deleteWish(id) {
       state.wishes = (state.wishes || []).filter(x => x.id !== id);
-      pushStateToCloud();
+      syncPatch({ wishes: state.wishes });
     }
 
     function deleteNote(id) {
       state.notes = (state.notes || []).filter(x => x.id !== id);
-      pushStateToCloud();
+      syncPatch({ notes: state.notes });
     }
 
     function toggleWidgetReaction() {
       const list = ['❤️', '🥰', '🔥', '💋', '✨'];
       const next = list[(list.indexOf(state.doodleReaction) + 1) % list.length];
       state.doodleReaction = next;
-      pushStateToCloud();
+      syncPatch({ doodleReaction: next });
     }
 
     function renderAll() {
@@ -1433,7 +1513,7 @@
       document.getElementById('wPartnerMoodText').textContent = partner.moodText;
       document.getElementById('wDistance').textContent = bothHasGps
         ? `📍 Между вами ${distStr} (GPS)`
-        : `📍 ~${distStr} (нажмите для GPS)`;
+        : `📍 ~${distStr} (нажмите для настроек)`;
 
       const myAns = myRole === 'user2' ? state.todayChallenge.user2Answer : state.todayChallenge.user1Answer;
       const partnerAns = myRole === 'user2' ? state.todayChallenge.user1Answer : state.todayChallenge.user2Answer;
@@ -1487,11 +1567,11 @@
       }).join('');
 
       document.getElementById('challengeAnswersBox').innerHTML = myAns
-        ? `<div><b>${me.name}:</b> ${myAns}</div><div style="margin-top:6px; color:var(--pink)"><b>${partner.name}:</b> ${partnerAns || 'Ещё думает над ответом... ⏳'}</div>`
+        ? `<div><b>${me.name}:</b> ${myAns}</div><div style="margin-top:6px; color:var(--pink)"><b>${partner.name}:</b> ${partnerAns || 'Ещё выбирает ответ... ⏳'}</div>`
         : `<div style="color:var(--muted)">Выберите вариант выше, чтобы открыть ответ партнёра (${partner.name})</div>`;
 
       document.getElementById('boardsRow').innerHTML = (state.boards || []).map(b => `
-        <button class="chip ${state.activeBoardId === b.id ? 'active' : ''}" onclick="state.activeBoardId='${b.id}'; pushStateToCloud()">${b.emoji} ${b.title}</button>
+        <button class="chip ${state.activeBoardId === b.id ? 'active' : ''}" onclick="state.activeBoardId='${b.id}'; renderAll()">${b.emoji} ${b.title}</button>
       `).join('');
 
       document.getElementById('wishesList').innerHTML = (state.wishes || [])
@@ -1528,7 +1608,7 @@
       `).join('');
     }
 
-    // ДУДЛ-СТУДИЯ С СИНХРОНИЗАЦИЕЙ ХОЛСТОВ ПАРТНЁРОВ
+    // ЖИВАЯ ДУДЛ-СТУДИЯ
     const partnerCanvas = document.getElementById('partnerCanvas');
     const partnerCtx = partnerCanvas.getContext('2d');
     const myCanvas = document.getElementById('myCanvas');
@@ -1545,7 +1625,7 @@
 
       const emojis = ['❤️', '🥰', '😂', '🔥', '💋', '✨'];
       document.getElementById('doodleReactionsRow').innerHTML = emojis.map(e => `
-        <button class="chip ${state.doodleReaction === e ? 'active' : ''}" onclick="state.doodleReaction='${e}'; pushStateToCloud()">${e}</button>
+        <button class="chip ${state.doodleReaction === e ? 'active' : ''}" onclick="state.doodleReaction='${e}'; syncPatch({ doodleReaction: '${e}' })">${e}</button>
       `).join('');
 
       redrawBothLayers();
@@ -1558,7 +1638,7 @@
 
     function drawPartnerBaseHeart() {
       partnerCtx.save();
-      partnerCtx.strokeStyle = 'rgba(255, 59, 127, 0.28)';
+      partnerCtx.strokeStyle = 'rgba(255, 59, 127, 0.25)';
       partnerCtx.lineWidth = 10;
       partnerCtx.lineCap = 'round';
       partnerCtx.lineJoin = 'round';
@@ -1575,10 +1655,11 @@
       const partner = state.users[getPartnerKey()];
 
       partnerCtx.clearRect(0, 0, 360, 320);
-      if (!partner.strokes || partner.strokes.length === 0) {
+      const pStrokes = partner.strokes || [];
+      if (pStrokes.length === 0 && (!me.strokes || me.strokes.length === 0)) {
         drawPartnerBaseHeart();
       } else {
-        partner.strokes.forEach(s => drawStroke(partnerCtx, s.color, s.points));
+        pStrokes.forEach(s => drawStroke(partnerCtx, s.color, s.points));
       }
 
       myCtx.clearRect(0, 0, 360, 320);
@@ -1624,30 +1705,41 @@
       if (!isDrawing) return;
       isDrawing = false;
       if (activePoints.length > 1) {
-        const me = state.users[getMyKey()];
+        const myKey = getMyKey();
+        const me = state.users[myKey];
         if (!me.strokes) me.strokes = [];
         me.strokes.push({ color: currentColor, points: activePoints });
-        state.doodleTime = new Date().toTimeString().slice(0, 5);
-        pushStateToCloud();
+        const nowStr = new Date().toTimeString().slice(0, 5);
+        state.doodleTime = nowStr;
+
+        const patch = {};
+        patch[`users/${myKey}/strokes`] = me.strokes;
+        patch['doodleTime'] = nowStr;
+        syncPatch(patch);
         exportCompositeToWidgets();
       }
       activePoints = [];
     });
 
     function undoStroke() {
-      const me = state.users[getMyKey()];
+      const myKey = getMyKey();
+      const me = state.users[myKey];
       if (me.strokes && me.strokes.length > 0) {
         me.strokes.pop();
         redrawBothLayers();
-        pushStateToCloud();
+        const patch = {};
+        patch[`users/${myKey}/strokes`] = me.strokes;
+        syncPatch(patch);
       }
     }
 
     function clearMyDoodle() {
-      const me = state.users[getMyKey()];
-      me.strokes = [];
+      const myKey = getMyKey();
+      state.users[myKey].strokes = [];
       redrawBothLayers();
-      pushStateToCloud();
+      const patch = {};
+      patch[`users/${myKey}/strokes`] = [];
+      syncPatch(patch);
     }
 
     function exportCompositeToWidgets() {
@@ -1658,11 +1750,10 @@
       wCtx.drawImage(myCanvas, 0, 0, wCanvas.width, wCanvas.height);
     }
 
-    // Запуск приложения
     renderAll();
     initDoodleStudio();
     initFirebaseSync();
     startAutoGpsTracking();
   </script>
 </body>
-</html>
+  </html>
