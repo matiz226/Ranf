@@ -8,10 +8,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
-  <title>Мы Рядом ❤️ — Виджет и приложение для пар</title>
+  <title>Мы Рядом ❤️ — Живой виджет для пар</title>
 
-  <!-- Встроенный манифест для запуска без адресной строки (PWA / APK) -->
   <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#0d0b14","theme_color":"#0d0b14","orientation":"portrait"}' />
+
+  <!-- Подключение Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
   <style>
     :root {
@@ -43,7 +46,6 @@
       overflow-x: hidden;
     }
 
-    /* ВЕРХНЯЯ ШАПКА */
     .topbar {
       display: flex;
       align-items: center;
@@ -74,6 +76,18 @@
       transform: scale(0.96);
     }
 
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f39c12;
+      display: inline-block;
+    }
+    .sync-dot.online {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
     .container {
       padding: 0 16px;
       max-width: 520px;
@@ -94,7 +108,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА ВИДЖЕТА */
     .mode-switch {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -122,7 +135,6 @@
       color: #fff;
     }
 
-    /* БОЛЬШОЙ ВИДЖЕТ ГЛАВНОГО ЭКРАНА */
     .hero-widget {
       background: linear-gradient(145deg, #1b162a, #13101d);
       border: 1px solid rgba(255, 59, 127, 0.22);
@@ -201,7 +213,6 @@
       cursor: pointer;
     }
 
-    /* ДВА КВАДРАТНЫХ ВИДЖЕТА */
     .square-widgets-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -276,7 +287,6 @@
       margin: 6px 0 4px;
     }
 
-    /* ЭКРАН БЛОКИРОВКИ ПРЕВЬЮ */
     .lock-preview {
       display: none;
       background: linear-gradient(180deg, #1b1528, #110e1a);
@@ -334,7 +344,6 @@
       font-size: 12px;
     }
 
-    /* СЕКЦИИ И ЧИПСЫ */
     .section-head {
       display: flex;
       align-items: center;
@@ -343,7 +352,7 @@
     }
 
     .section-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
     }
 
@@ -388,7 +397,6 @@
       color: #fff;
     }
 
-    /* КАРТОЧКИ ОТСЧЁТОВ И СПИСКОВ */
     .list-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -434,7 +442,6 @@
       cursor: pointer;
     }
 
-    /* ДУДЛЫ */
     .canvas-wrap {
       background: #14111f;
       border: 2px solid rgba(255, 59, 127, 0.35);
@@ -477,7 +484,6 @@
       transform: scale(1.12);
     }
 
-    /* НИЖНЯЯ НАВИГАЦИЯ */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -514,7 +520,6 @@
       color: var(--pink);
     }
 
-    /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -536,7 +541,7 @@
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 24px;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       padding: 20px;
       max-height: 88vh;
       overflow-y: auto;
@@ -567,7 +572,7 @@
       color: #fff;
       padding: 11px 13px;
       border-radius: 12px;
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
     }
 
@@ -606,6 +611,43 @@
       background: rgba(255, 255, 255, 0.08);
       color: #fff;
     }
+
+    .role-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .role-btn {
+      background: #110e1a;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 10px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .role-btn.active {
+      border-color: var(--pink);
+      background: var(--pink-soft);
+      color: #fff;
+    }
+
+    .gps-banner {
+      background: rgba(46, 204, 113, 0.1);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      color: #a3f7bf;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
   </style>
 </head>
 <body>
@@ -613,10 +655,11 @@
   <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
   <header class="topbar">
     <div class="pair-pill" onclick="openSettingsModal()">
+      <span class="sync-dot" id="syncDot" title="Статус синхронизации"></span>
       ❤️ <span id="coupleTitle">Матвей & Полина</span> ⚙️
     </div>
-    <div class="streak-pill" onclick="openSettingsModal()">
-      🔥 <span id="streakText">24 дн.</span>
+    <div class="streak-pill" onclick="requestMyGpsNow()">
+      📍 <span id="topGpsStatus">GPS авто</span> • 🔥 <span id="streakText">24 дн.</span>
     </div>
   </header>
 
@@ -638,26 +681,24 @@
           </div>
           <div class="hero-right-col">
             <div class="mini-stat-pill" id="smCdTitle" onclick="scrollToCountdowns()">✈️ 14 дн. Встреча в аэропорту</div>
-            <div class="mini-stat-pill" onclick="openSettingsModal()">
-              <span id="smMoodEmoji">🥰</span> 🔋<span id="smBatteryTag">84%</span> 📍<span id="smDistTag">640 км</span>
+            <div class="mini-stat-pill" onclick="requestMyGpsNow()">
+              <span id="smMoodEmoji">🥰</span> 🔋<span id="smBatteryTag">84%</span> 📍<span id="smDistTag">...</span>
             </div>
             <div class="mini-stat-pill" id="wChallengeStatus" onclick="switchTab(2)">🔐 Вопрос дня ждёт</div>
           </div>
         </div>
 
         <div class="square-widgets-grid">
-          <!-- Карточка партнёра -->
-          <div class="sq-widget" onclick="openSettingsModal()">
+          <div class="sq-widget" onclick="requestMyGpsNow()">
             <div class="sq-top">
               <span class="big-emoji" id="wPartnerEmoji">🥰</span>
               <span class="bat-badge" id="wPartnerBattery">⚡ 84%</span>
             </div>
             <div class="sq-title" id="wPartnerName">Полина</div>
             <div class="sq-sub" id="wPartnerMoodText">Жду вечернего созвона</div>
-            <div class="sq-foot" id="wDistance">📍 Между вами 640 км ✏️</div>
+            <div class="sq-foot" id="wDistance">📍 Вычисляем...</div>
           </div>
 
-          <!-- Карточка обратного отсчёта -->
           <div class="sq-widget" onclick="scrollToCountdowns()">
             <div class="sq-top">
               <span class="big-emoji" id="wCountdownEmoji">✈️</span>
@@ -672,7 +713,7 @@
       <!-- Превью экрана блокировки -->
       <div class="lock-preview" id="lockWidgetsBox" onclick="openSettingsModal()">
         <div class="lock-inline" id="lockInline">❤️ 14 дн. • 🔋 84% • 📍 640 км</div>
-        <div class="lock-clock">09:41</div>
+        <div class="lock-clock" id="lockClockText">09:41</div>
         <div class="lock-row">
           <div class="lock-circle">
             <span id="lockCircEmoji" style="font-size:18px">🥰</span>
@@ -692,7 +733,7 @@
 
       <!-- Настроение и заряд -->
       <div class="section-head">
-        <div class="section-title">Ваше настроение и заряд (🔋 <span id="myRealBatteryLabel">100%</span> ⚡):</div>
+        <div class="section-title">Ваш статус (<span id="myRoleBadge">Матвей</span> • 🔋 <span id="myRealBatteryLabel">100%</span>):</div>
       </div>
       <div class="chips-scroll" id="moodBox"></div>
 
@@ -707,7 +748,7 @@
     <!-- ВКЛАДКА 1: ДУДЛЫ -->
     <section class="tab-page" id="tab1">
       <div class="section-head">
-        <div class="section-title">Визуальный диалог 🎨</div>
+        <div class="section-title">Общий холст в реальном времени 🎨</div>
         <div style="display:flex; gap:6px">
           <button class="btn-small" onclick="undoStroke()">↩️ Назад</button>
           <button class="btn-small" onclick="clearMyDoodle()">🗑️ Очистить</button>
@@ -754,7 +795,7 @@
     </section>
   </main>
 
-  <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ -->
+  <!-- НИЖНЯЯ НАВИГАЦИЯ -->
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab(0)">
       <span class="nav-icon">📱</span><span>Виджеты</span>
@@ -773,46 +814,51 @@
     </button>
   </nav>
 
-  <!-- МОДАЛЬНОЕ ОКНО: НАСТРОЙКИ -->
+  <!-- МОДАЛЬНОЕ ОКНО: НАСТРОЙКИ И СИНХРОНИЗАЦИЯ -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
-      <h3 class="modal-title">⚙️ Настройки пары и виджета</h3>
+      <h3 class="modal-title">⚙️ Настройки и GPS-синхронизация</h3>
+
+      <label class="field-label">Кто использует этот телефон?</label>
+      <div class="role-selector">
+        <button class="role-btn" id="roleBtnU1" onclick="selectRole('user1')">👦 Я — Матвей</button>
+        <button class="role-btn" id="roleBtnU2" onclick="selectRole('user2')">👧 Я — Полина</button>
+      </div>
+
+      <div class="gps-banner">
+        <span id="gpsDiagnosticText">📍 GPS-координаты обновляются автоматически</span>
+        <button class="btn-small" onclick="requestMyGpsNow()">Обновить GPS</button>
+      </div>
+
       <div class="field-row">
         <div class="field-group">
-          <label class="field-label">Ваше имя</label>
-          <input class="field-input" id="inpMyName" type="text" />
+          <label class="field-label">Имя 1 (user1)</label>
+          <input class="field-input" id="inpU1Name" type="text" />
         </div>
         <div class="field-group">
-          <label class="field-label">Имя партнёра</label>
-          <input class="field-input" id="inpPartnerName" type="text" />
+          <label class="field-label">Имя 2 (user2)</label>
+          <input class="field-input" id="inpU2Name" type="text" />
         </div>
       </div>
+
       <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">Эмодзи партнёра</label>
-          <input class="field-input" id="inpPartnerEmoji" type="text" />
-        </div>
-        <div class="field-group">
-          <label class="field-label">Заряд партнёра (%)</label>
-          <input class="field-input" id="inpPartnerBattery" type="number" min="1" max="100" />
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Статус партнёра (текст на виджете)</label>
-        <input class="field-input" id="inpPartnerMood" type="text" />
-      </div>
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">Расстояние (км)</label>
-          <input class="field-input" id="inpDistance" type="number" min="0" />
-        </div>
         <div class="field-group">
           <label class="field-label">Дней подряд (🔥)</label>
           <input class="field-input" id="inpStreak" type="number" min="1" />
         </div>
+        <div class="field-group">
+          <label class="field-label">Код комнаты (общий)</label>
+          <input class="field-input" id="inpRoomCode" type="text" value="matvey_polina" />
+        </div>
       </div>
+
+      <div class="field-group">
+        <label class="field-label">URL базы Firebase Realtime Database</label>
+        <input class="field-input" id="inpDbUrl" type="text" />
+      </div>
+
       <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeModal('settingsModal')">Отмена</button>
+        <button class="btn-secondary" onclick="closeModal('settingsModal')">Закрыть</button>
         <button class="btn-primary" onclick="saveSettingsModal()">Сохранить</button>
       </div>
     </div>
@@ -887,21 +933,54 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'couple_super_app_state_v2';
+    const STORAGE_KEY = 'couple_super_app_live_v3';
+    const ROLE_KEY = 'couple_device_role_v3';
+    const ROOM_KEY = 'couple_room_code_v3';
+    const DB_URL_KEY = 'couple_custom_db_url_v3';
+
+    let myRole = localStorage.getItem(ROLE_KEY) || 'user1'; // 'user1' (Матвей) или 'user2' (Полина)
+    let roomCode = localStorage.getItem(ROOM_KEY) || 'matvey_polina';
+    let customDbUrl = localStorage.getItem(DB_URL_KEY) || 'https://coupleapp-705bf-default-rtdb.firebaseio.com';
+
+    // Конфигурация Firebase пользователя
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOXLm6pLpSsl7QJYJn5XwHLhR5VvshMbQ",
+      authDomain: "coughapp-1d6c4.firebaseapp.com",
+      databaseURL: customDbUrl,
+      projectId: "coughapp-1d6c4",
+      storageBucket: "coughapp-1d6c4.firebasestorage.app",
+      messagingSenderId: "366444759402",
+      appId: "1:366444759402:web:4b20257e3f8427d0fc3d13",
+      measurementId: "G-9SC1DXQ19B"
+    };
 
     const defaultState = {
-      myName: 'Матвей',
-      partnerName: 'Полина',
       streakDays: 24,
-      myMoodEmoji: '🔥',
-      myMoodText: 'В работе',
-      partnerMoodEmoji: '🥰',
-      partnerMoodText: 'Жду вечернего созвона',
-      partnerBattery: 84,
-      distanceKm: 640,
+      manualDistanceKm: 640,
       doodleTime: '18:45',
       doodleReaction: '❤️',
-      doodleStrokes: [],
+      users: {
+        user1: {
+          name: 'Матвей',
+          moodEmoji: '🔥',
+          moodText: 'В работе',
+          battery: 92,
+          lat: null,
+          lng: null,
+          updatedAt: null,
+          strokes: []
+        },
+        user2: {
+          name: 'Полина',
+          moodEmoji: '🥰',
+          moodText: 'Жду вечернего созвона',
+          battery: 84,
+          lat: null,
+          lng: null,
+          updatedAt: null,
+          strokes: []
+        }
+      },
       countdowns: [
         { id: 'c1', emoji: '✈️', title: 'Встреча в аэропорту', days: 14, pinned: true },
         { id: 'c2', emoji: '🏔️', title: 'Зимняя поездка вдвоём', days: 64, pinned: false },
@@ -914,8 +993,8 @@
           'Ночная прогулка по городу и горячий чай 🍵',
           'Пойти в красивое место на свидание ✨'
         ],
-        myAnswer: null,
-        partnerAnswer: 'Ночная прогулка по городу и горячий чай 🍵'
+        user1Answer: null,
+        user2Answer: null
       },
       boards: [
         { id: 'b_trips', emoji: '✈️', title: 'Поездки' },
@@ -934,26 +1013,157 @@
     };
 
     let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
+    if (!state.users) state = defaultState;
 
-    function saveState() {
-      const json = JSON.stringify(state);
-      localStorage.setItem(STORAGE_KEY, json);
-      if (window.AndroidWidget && window.AndroidWidget.updateWidget) {
-        window.AndroidWidget.updateWidget(json);
+    let db = null;
+    let roomRef = null;
+    let isRemoteUpdating = false;
+
+    function getMyKey() { return myRole === 'user2' ? 'user2' : 'user1'; }
+    function getPartnerKey() { return myRole === 'user2' ? 'user1' : 'user2'; }
+
+    // Инициализация Firebase Realtime Database
+    function initFirebaseSync() {
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.database();
+        roomRef = db.ref('couples/' + roomCode);
+
+        // Слушаем изменения в облаке в реальном времени
+        roomRef.on('value', (snapshot) => {
+          const cloudData = snapshot.val();
+          document.getElementById('syncDot').classList.add('online');
+          if (cloudData) {
+            isRemoteUpdating = true;
+            state = Object.assign({}, defaultState, cloudData);
+            if (!state.users) state.users = defaultState.users;
+            if (!state.users.user1.strokes) state.users.user1.strokes = [];
+            if (!state.users.user2.strokes) state.users.user2.strokes = [];
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            renderAll();
+            redrawBothLayers();
+            isRemoteUpdating = false;
+          } else {
+            // Если база пустая — заливаем стартовое состояние
+            pushStateToCloud();
+          }
+        }, (err) => {
+          console.warn('Ошибка доступа к Firebase:', err);
+          document.getElementById('syncDot').classList.remove('online');
+        });
+      } catch (e) {
+        console.warn('Ошибка инициализации Firebase:', e);
       }
-      renderAll();
     }
 
-    // Чтение реального заряда телефона
+    function pushStateToCloud() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderAll();
+      if (roomRef && !isRemoteUpdating) {
+        roomRef.set(state).catch(err => console.warn('Не удалось записать в Firebase:', err));
+      }
+    }
+
+    // Расчёт реального географического расстояния (Формула гаверсинусов)
+    function calcDistanceKm(lat1, lon1, lat2, lon2) {
+      if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return null;
+      const R = 6371; // Радиус Земли в км
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function formatDistanceText() {
+      const u1 = state.users.user1;
+      const u2 = state.users.user2;
+      const dist = calcDistanceKm(u1.lat, u1.lng, u2.lat, u2.lng);
+      if (dist !== null) {
+        if (dist < 1) return `${Math.round(dist * 1000)} м`;
+        if (dist < 10) return `${dist.toFixed(1)} км`;
+        return `${Math.round(dist)} км`;
+      }
+      return `${state.manualDistanceKm || 640} км`;
+    }
+
+    // Автоматическое отслеживание GPS-координат (работает на iOS и Android)
+    let gpsWatchId = null;
+
+    function startAutoGpsTracking() {
+      if (!('geolocation' in navigator)) {
+        document.getElementById('topGpsStatus').textContent = 'Нет GPS';
+        return;
+      }
+
+      const onPosSuccess = (pos) => {
+        const me = state.users[getMyKey()];
+        const newLat = Number(pos.coords.latitude.toFixed(5));
+        const newLng = Number(pos.coords.longitude.toFixed(5));
+        const changed = (me.lat !== newLat || me.lng !== newLng);
+
+        me.lat = newLat;
+        me.lng = newLng;
+        me.updatedAt = new Date().toTimeString().slice(0, 5);
+
+        document.getElementById('topGpsStatus').textContent = 'GPS 🟢';
+        const diag = document.getElementById('gpsDiagnosticText');
+        if (diag) diag.textContent = `📍 Ваши координаты: ${newLat}, ${newLng} (обновлено в ${me.updatedAt})`;
+
+        if (changed) pushStateToCloud();
+      };
+
+      const onPosError = (err) => {
+        document.getElementById('topGpsStatus').textContent = 'GPS ⚠️';
+        const diag = document.getElementById('gpsDiagnosticText');
+        if (diag) diag.textContent = '⚠️ Разрешите доступ к геопозиции в браузере';
+      };
+
+      navigator.geolocation.getCurrentPosition(onPosSuccess, onPosError, {
+        enableHighAccuracy: true,
+        timeout: 10000
+      });
+
+      if (gpsWatchId !== null) navigator.geolocation.clearWatch(gpsWatchId);
+      gpsWatchId = navigator.geolocation.watchPosition(onPosSuccess, onPosError, {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 15000
+      });
+    }
+
+    function requestMyGpsNow() {
+      document.getElementById('topGpsStatus').textContent = 'Поиск...';
+      startAutoGpsTracking();
+    }
+
+    // Автоматическая синхронизация заряда батареи
     if ('getBattery' in navigator) {
       navigator.getBattery().then(bat => {
         const updateBat = () => {
-          document.getElementById('myRealBatteryLabel').textContent = Math.round(bat.level * 100) + '%';
+          const lvl = Math.round(bat.level * 100);
+          document.getElementById('myRealBatteryLabel').textContent = lvl + '%';
+          if (state.users[getMyKey()].battery !== lvl) {
+            state.users[getMyKey()].battery = lvl;
+            pushStateToCloud();
+          }
         };
         updateBat();
         bat.addEventListener('levelchange', updateBat);
       });
     }
+
+    // Обновление часов на превью экрана блокировки
+    setInterval(() => {
+      const now = new Date();
+      const el = document.getElementById('lockClockText');
+      if (el) el.textContent = now.toTimeString().slice(0, 5);
+    }, 10000);
 
     const moodPresets = [
       ['🔥', 'В работе'],
@@ -986,38 +1196,70 @@
       document.getElementById(id).classList.remove('open');
     }
 
+    function selectRole(role) {
+      myRole = role;
+      localStorage.setItem(ROLE_KEY, myRole);
+      document.getElementById('roleBtnU1').classList.toggle('active', myRole === 'user1');
+      document.getElementById('roleBtnU2').classList.toggle('active', myRole === 'user2');
+      requestMyGpsNow();
+      renderAll();
+      redrawBothLayers();
+    }
+
     function openSettingsModal() {
-      document.getElementById('inpMyName').value = state.myName;
-      document.getElementById('inpPartnerName').value = state.partnerName;
-      document.getElementById('inpPartnerEmoji').value = state.partnerMoodEmoji;
-      document.getElementById('inpPartnerBattery').value = state.partnerBattery;
-      document.getElementById('inpPartnerMood').value = state.partnerMoodText;
-      document.getElementById('inpDistance').value = state.distanceKm;
+      document.getElementById('roleBtnU1').classList.toggle('active', myRole === 'user1');
+      document.getElementById('roleBtnU2').classList.toggle('active', myRole === 'user2');
+      document.getElementById('inpU1Name').value = state.users.user1.name;
+      document.getElementById('inpU2Name').value = state.users.user2.name;
       document.getElementById('inpStreak').value = state.streakDays;
+      document.getElementById('inpRoomCode').value = roomCode;
+      document.getElementById('inpDbUrl').value = customDbUrl;
       document.getElementById('settingsModal').classList.add('open');
     }
 
     function saveSettingsModal() {
-      state.myName = document.getElementById('inpMyName').value.trim() || 'Я';
-      state.partnerName = document.getElementById('inpPartnerName').value.trim() || 'Партнёр';
-      state.partnerMoodEmoji = document.getElementById('inpPartnerEmoji').value.trim() || '🥰';
-      state.partnerBattery = parseInt(document.getElementById('inpPartnerBattery').value) || 84;
-      state.partnerMoodText = document.getElementById('inpPartnerMood').value.trim() || 'На связи';
-      state.distanceKm = parseInt(document.getElementById('inpDistance').value) || 0;
+      state.users.user1.name = document.getElementById('inpU1Name').value.trim() || 'Матвей';
+      state.users.user2.name = document.getElementById('inpU2Name').value.trim() || 'Полина';
       state.streakDays = parseInt(document.getElementById('inpStreak').value) || 1;
+
+      const newRoom = document.getElementById('inpRoomCode').value.trim() || 'matvey_polina';
+      const newUrl = document.getElementById('inpDbUrl').value.trim();
+
+      const urlChanged = newUrl && newUrl !== customDbUrl;
+      const roomChanged = newRoom !== roomCode;
+
+      if (roomChanged) {
+        roomCode = newRoom;
+        localStorage.setItem(ROOM_KEY, roomCode);
+      }
+      if (urlChanged) {
+        customDbUrl = newUrl;
+        localStorage.setItem(DB_URL_KEY, customDbUrl);
+        location.reload();
+        return;
+      }
+
       closeModal('settingsModal');
-      saveState();
+      if (roomChanged && db) {
+        if (roomRef) roomRef.off();
+        roomRef = db.ref('couples/' + roomCode);
+        initFirebaseSync();
+      } else {
+        pushStateToCloud();
+      }
     }
 
     function setMyMood(em, txt) {
-      state.myMoodEmoji = em;
-      state.myMoodText = txt;
-      saveState();
+      const me = state.users[getMyKey()];
+      me.moodEmoji = em;
+      me.moodText = txt;
+      pushStateToCloud();
     }
 
     function openCustomMoodModal() {
-      document.getElementById('inpMyCustomEmoji').value = state.myMoodEmoji;
-      document.getElementById('inpMyCustomText').value = state.myMoodText;
+      const me = state.users[getMyKey()];
+      document.getElementById('inpMyCustomEmoji').value = me.moodEmoji;
+      document.getElementById('inpMyCustomText').value = me.moodText;
       document.getElementById('customMoodModal').classList.add('open');
     }
 
@@ -1030,11 +1272,11 @@
 
     function pinCountdown(id) {
       state.countdowns.forEach(c => c.pinned = (c.id === id));
-      saveState();
+      pushStateToCloud();
     }
 
     function openCountdownModal(id = '') {
-      const existing = state.countdowns.find(c => c.id === id);
+      const existing = (state.countdowns || []).find(c => c.id === id);
       document.getElementById('inpCdId').value = existing ? existing.id : '';
       document.getElementById('inpCdEmoji').value = existing ? existing.emoji : '✈️';
       document.getElementById('inpCdDays').value = existing ? existing.days : 14;
@@ -1044,6 +1286,7 @@
     }
 
     function saveCountdownModal() {
+      if (!state.countdowns) state.countdowns = [];
       const id = document.getElementById('inpCdId').value;
       const emoji = document.getElementById('inpCdEmoji').value.trim() || '✨';
       const days = parseInt(document.getElementById('inpCdDays').value) || 1;
@@ -1056,15 +1299,15 @@
         state.countdowns.push({ id: 'c' + Date.now(), emoji, title, days, pinned: state.countdowns.length === 0 });
       }
       closeModal('countdownModal');
-      saveState();
+      pushStateToCloud();
     }
 
     function deleteCountdown(id) {
-      state.countdowns = state.countdowns.filter(c => c.id !== id);
+      state.countdowns = (state.countdowns || []).filter(c => c.id !== id);
       if (state.countdowns.length > 0 && !state.countdowns.some(c => c.pinned)) {
         state.countdowns[0].pinned = true;
       }
-      saveState();
+      pushStateToCloud();
     }
 
     function openChallengeModal() {
@@ -1072,13 +1315,13 @@
       document.getElementById('itemModalMode').value = 'challenge';
       document.getElementById('itemModalLabel1').textContent = 'Текст вопроса';
       document.getElementById('itemModalInput1').value = state.todayChallenge.prompt;
-      document.getElementById('itemModalLabel2').textContent = 'Ответ партнёра';
-      document.getElementById('itemModalInput2').value = state.todayChallenge.partnerAnswer;
+      document.getElementById('itemModalLabel2').textContent = 'Варианты через точку с запятой (;)';
+      document.getElementById('itemModalInput2').value = (state.todayChallenge.options || []).join('; ');
       document.getElementById('itemModal').classList.add('open');
     }
 
     function openWishModal(id = '') {
-      const w = state.wishes.find(x => x.id === id);
+      const w = (state.wishes || []).find(x => x.id === id);
       document.getElementById('itemModalTitle').textContent = w ? '✏️ Изменить желание' : '✨ Новое желание';
       document.getElementById('itemModalMode').value = 'wish';
       document.getElementById('itemModalId').value = w ? w.id : '';
@@ -1090,7 +1333,7 @@
     }
 
     function openNoteModal(id = '') {
-      const n = state.notes.find(x => x.id === id);
+      const n = (state.notes || []).find(x => x.id === id);
       document.getElementById('itemModalTitle').textContent = n ? '✏️ Изменить заметку' : '📝 Новая заметка';
       document.getElementById('itemModalMode').value = 'note';
       document.getElementById('itemModalId').value = n ? n.id : '';
@@ -1110,9 +1353,13 @@
 
       if (mode === 'challenge') {
         state.todayChallenge.prompt = v1;
-        state.todayChallenge.partnerAnswer = v2 || 'Согласна с тобой ❤️';
-        state.todayChallenge.myAnswer = null;
+        if (v2) {
+          state.todayChallenge.options = v2.split(';').map(s => s.trim()).filter(Boolean);
+        }
+        state.todayChallenge.user1Answer = null;
+        state.todayChallenge.user2Answer = null;
       } else if (mode === 'wish') {
+        if (!state.wishes) state.wishes = [];
         if (id) {
           const w = state.wishes.find(x => x.id === id);
           if (w) { w.title = v1; w.sub = v2; }
@@ -1120,6 +1367,7 @@
           state.wishes.unshift({ id: 'w' + Date.now(), boardId: state.activeBoardId, title: v1, sub: v2, done: false });
         }
       } else if (mode === 'note') {
+        if (!state.notes) state.notes = [];
         if (id) {
           const n = state.notes.find(x => x.id === id);
           if (n) { n.title = v1; n.text = v2; }
@@ -1128,73 +1376,92 @@
         }
       }
       closeModal('itemModal');
-      saveState();
+      pushStateToCloud();
+    }
+
+    function selectChallengeAnswer(opt) {
+      if (myRole === 'user2') {
+        state.todayChallenge.user2Answer = opt;
+      } else {
+        state.todayChallenge.user1Answer = opt;
+      }
+      pushStateToCloud();
     }
 
     function toggleWish(id) {
-      const w = state.wishes.find(x => x.id === id);
+      const w = (state.wishes || []).find(x => x.id === id);
       if (w) w.done = !w.done;
-      saveState();
+      pushStateToCloud();
     }
 
     function deleteWish(id) {
-      state.wishes = state.wishes.filter(x => x.id !== id);
-      saveState();
+      state.wishes = (state.wishes || []).filter(x => x.id !== id);
+      pushStateToCloud();
     }
 
     function deleteNote(id) {
-      state.notes = state.notes.filter(x => x.id !== id);
-      saveState();
+      state.notes = (state.notes || []).filter(x => x.id !== id);
+      pushStateToCloud();
     }
 
     function toggleWidgetReaction() {
       const list = ['❤️', '🥰', '🔥', '💋', '✨'];
       const next = list[(list.indexOf(state.doodleReaction) + 1) % list.length];
       state.doodleReaction = next;
-      saveState();
+      pushStateToCloud();
     }
 
     function renderAll() {
-      document.getElementById('coupleTitle').textContent = `${state.myName} & ${state.partnerName}`;
-      document.getElementById('streakText').textContent = `${state.streakDays} дн.`;
+      const me = state.users[getMyKey()];
+      const partner = state.users[getPartnerKey()];
+      const distStr = formatDistanceText();
+      const bothHasGps = (me.lat != null && partner.lat != null);
 
-      const cd = state.countdowns.find(c => c.pinned) || state.countdowns[0] || { emoji: '⏳', title: 'Добавьте событие', days: 0 };
+      document.getElementById('coupleTitle').textContent = `${state.users.user1.name} & ${state.users.user2.name}`;
+      document.getElementById('streakText').textContent = `${state.streakDays} дн.`;
+      document.getElementById('myRoleBadge').textContent = me.name;
+
+      const countdowns = state.countdowns || [];
+      const cd = countdowns.find(c => c.pinned) || countdowns[0] || { emoji: '⏳', title: 'Добавьте событие', days: 0 };
       document.getElementById('wCountdownEmoji').textContent = cd.emoji;
       document.getElementById('wCountdownDays').textContent = `${cd.days} дней`;
       document.getElementById('wCountdownTitle').textContent = cd.title;
 
-      document.getElementById('wPartnerEmoji').textContent = state.partnerMoodEmoji;
-      document.getElementById('wPartnerBattery').textContent = `⚡ ${state.partnerBattery}%`;
-      document.getElementById('wPartnerName').textContent = state.partnerName;
-      document.getElementById('wPartnerMoodText').textContent = state.partnerMoodText;
-      document.getElementById('wDistance').textContent = `📍 Между вами ${state.distanceKm} км ✏️`;
+      document.getElementById('wPartnerEmoji').textContent = partner.moodEmoji;
+      document.getElementById('wPartnerBattery').textContent = `⚡ ${partner.battery}%`;
+      document.getElementById('wPartnerName').textContent = partner.name;
+      document.getElementById('wPartnerMoodText').textContent = partner.moodText;
+      document.getElementById('wDistance').textContent = bothHasGps
+        ? `📍 Между вами ${distStr} (GPS)`
+        : `📍 ~${distStr} (нажмите для GPS)`;
 
-      const revealed = Boolean(state.todayChallenge.myAnswer);
-      document.getElementById('wChallengeStatus').textContent = revealed ? '🔓 Ответы открыты!' : '🔐 Вопрос дня ждёт';
+      const myAns = myRole === 'user2' ? state.todayChallenge.user2Answer : state.todayChallenge.user1Answer;
+      const partnerAns = myRole === 'user2' ? state.todayChallenge.user1Answer : state.todayChallenge.user2Answer;
+      document.getElementById('wChallengeStatus').textContent = myAns ? '🔓 Ответы открыты!' : '🔐 Вопрос дня ждёт';
 
-      document.getElementById('widgetDoodleTime').textContent = state.doodleTime;
-      document.getElementById('widgetReactionBtn').textContent = state.doodleReaction;
+      document.getElementById('widgetDoodleTime').textContent = state.doodleTime || '18:45';
+      document.getElementById('widgetReactionBtn').textContent = state.doodleReaction || '❤️';
 
-      document.getElementById('smMoodEmoji').textContent = state.partnerMoodEmoji;
-      document.getElementById('smBatteryTag').textContent = `${state.partnerBattery}%`;
-      document.getElementById('smDistTag').textContent = `${state.distanceKm} км`;
+      document.getElementById('smMoodEmoji').textContent = partner.moodEmoji;
+      document.getElementById('smBatteryTag').textContent = `${partner.battery}%`;
+      document.getElementById('smDistTag').textContent = distStr;
       document.getElementById('smCdTitle').textContent = `${cd.emoji} ${cd.days} дн. ${cd.title}`;
 
-      document.getElementById('lockInline').textContent = `❤️ ${cd.days} дн. • 🔋 ${state.partnerBattery}% • 📍 ${state.distanceKm} км`;
-      document.getElementById('lockCircEmoji').textContent = state.partnerMoodEmoji;
-      document.getElementById('lockCircBat').textContent = `${state.partnerBattery}%`;
+      document.getElementById('lockInline').textContent = `❤️ ${cd.days} дн. • 🔋 ${partner.battery}% • 📍 ${distStr}`;
+      document.getElementById('lockCircEmoji').textContent = partner.moodEmoji;
+      document.getElementById('lockCircBat').textContent = `${partner.battery}%`;
       document.getElementById('lockCircDays').textContent = `${cd.days} дн.`;
-      document.getElementById('lockRectName').textContent = `${state.partnerMoodEmoji} ${state.partnerName}`;
-      document.getElementById('lockRectMeta').textContent = `🔋${state.partnerBattery}% • 📍 ${state.distanceKm} км`;
+      document.getElementById('lockRectName').textContent = `${partner.moodEmoji} ${partner.name}`;
+      document.getElementById('lockRectMeta').textContent = `🔋${partner.battery}% • 📍 ${distStr}`;
       document.getElementById('lockRectCd').textContent = `До встречи: ${cd.days} дн.`;
 
-      const isCustom = !moodPresets.some(p => p[0] === state.myMoodEmoji && p[1] === state.myMoodText);
+      const isCustom = !moodPresets.some(p => p[0] === me.moodEmoji && p[1] === me.moodText);
       document.getElementById('moodBox').innerHTML = moodPresets.map(([em, txt]) => {
-        const act = (state.myMoodEmoji === em && state.myMoodText === txt) ? 'active' : '';
+        const act = (me.moodEmoji === em && me.moodText === txt) ? 'active' : '';
         return `<button class="chip ${act}" onclick="setMyMood('${em}','${txt}')">${em} ${txt}</button>`;
-      }).join('') + `<button class="chip ${isCustom ? 'active' : ''}" onclick="openCustomMoodModal()">✏️ ${isCustom ? state.myMoodEmoji + ' ' + state.myMoodText : 'Свой статус...'}</button>`;
+      }).join('') + `<button class="chip ${isCustom ? 'active' : ''}" onclick="openCustomMoodModal()">✏️ ${isCustom ? me.moodEmoji + ' ' + me.moodText : 'Свой статус...'}</button>`;
 
-      document.getElementById('countdownsList').innerHTML = state.countdowns.map(item => `
+      document.getElementById('countdownsList').innerHTML = countdowns.map(item => `
         <div class="list-card ${item.pinned ? 'pinned' : ''}">
           <div class="list-left" onclick="pinCountdown('${item.id}')">
             <span style="font-size:26px">${item.emoji}</span>
@@ -1214,19 +1481,20 @@
       `).join('');
 
       document.getElementById('challengePromptText').textContent = state.todayChallenge.prompt;
-      document.getElementById('challengeOptionsBox').innerHTML = state.todayChallenge.options.map(opt => {
-        const sel = state.todayChallenge.myAnswer === opt ? 'active' : '';
-        return `<button class="chip ${sel}" style="text-align:left; white-space:normal" onclick="state.todayChallenge.myAnswer='${opt}'; saveState()">${opt}</button>`;
+      document.getElementById('challengeOptionsBox').innerHTML = (state.todayChallenge.options || []).map(opt => {
+        const sel = myAns === opt ? 'active' : '';
+        return `<button class="chip ${sel}" style="text-align:left; white-space:normal" onclick="selectChallengeAnswer('${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
       }).join('');
-      document.getElementById('challengeAnswersBox').innerHTML = state.todayChallenge.myAnswer
-        ? `<div><b>${state.myName}:</b> ${state.todayChallenge.myAnswer}</div><div style="margin-top:6px; color:var(--pink)"><b>${state.partnerName}:</b> ${state.todayChallenge.partnerAnswer}</div>`
-        : `<div style="color:var(--muted)">Выберите вариант выше, чтобы открыть ответ партнёра (${state.partnerName})</div>`;
 
-      document.getElementById('boardsRow').innerHTML = state.boards.map(b => `
-        <button class="chip ${state.activeBoardId === b.id ? 'active' : ''}" onclick="state.activeBoardId='${b.id}'; saveState()">${b.emoji} ${b.title}</button>
+      document.getElementById('challengeAnswersBox').innerHTML = myAns
+        ? `<div><b>${me.name}:</b> ${myAns}</div><div style="margin-top:6px; color:var(--pink)"><b>${partner.name}:</b> ${partnerAns || 'Ещё думает над ответом... ⏳'}</div>`
+        : `<div style="color:var(--muted)">Выберите вариант выше, чтобы открыть ответ партнёра (${partner.name})</div>`;
+
+      document.getElementById('boardsRow').innerHTML = (state.boards || []).map(b => `
+        <button class="chip ${state.activeBoardId === b.id ? 'active' : ''}" onclick="state.activeBoardId='${b.id}'; pushStateToCloud()">${b.emoji} ${b.title}</button>
       `).join('');
 
-      document.getElementById('wishesList').innerHTML = state.wishes
+      document.getElementById('wishesList').innerHTML = (state.wishes || [])
         .filter(w => w.boardId === state.activeBoardId)
         .map(w => `
           <div class="list-card">
@@ -1244,7 +1512,7 @@
           </div>
         `).join('');
 
-      document.getElementById('regularNotesList').innerHTML = state.notes.map(n => `
+      document.getElementById('regularNotesList').innerHTML = (state.notes || []).map(n => `
         <div class="list-card">
           <div class="list-left" onclick="openNoteModal('${n.id}')">
             <div>
@@ -1260,13 +1528,13 @@
       `).join('');
     }
 
+    // ДУДЛ-СТУДИЯ С СИНХРОНИЗАЦИЕЙ ХОЛСТОВ ПАРТНЁРОВ
     const partnerCanvas = document.getElementById('partnerCanvas');
     const partnerCtx = partnerCanvas.getContext('2d');
     const myCanvas = document.getElementById('myCanvas');
     const myCtx = myCanvas.getContext('2d');
     const paletteColors = ['#FF3B7F', '#FF9F43', '#FECA57', '#1DD1A1', '#54A0FF', '#A55EEA', '#FFFFFF'];
     let currentColor = '#FF3B7F';
-    let myStrokes = state.doodleStrokes || [];
     let activePoints = [];
     let isDrawing = false;
 
@@ -1277,12 +1545,10 @@
 
       const emojis = ['❤️', '🥰', '😂', '🔥', '💋', '✨'];
       document.getElementById('doodleReactionsRow').innerHTML = emojis.map(e => `
-        <button class="chip ${state.doodleReaction === e ? 'active' : ''}" onclick="state.doodleReaction='${e}'; saveState()">${e}</button>
+        <button class="chip ${state.doodleReaction === e ? 'active' : ''}" onclick="state.doodleReaction='${e}'; pushStateToCloud()">${e}</button>
       `).join('');
 
-      drawPartnerBaseHeart();
-      redrawMyLayer();
-      exportCompositeToWidgets();
+      redrawBothLayers();
     }
 
     function selectColor(c) {
@@ -1291,10 +1557,9 @@
     }
 
     function drawPartnerBaseHeart() {
-      partnerCtx.clearRect(0, 0, 360, 320);
       partnerCtx.save();
-      partnerCtx.strokeStyle = 'rgba(255, 59, 127, 0.55)';
-      partnerCtx.lineWidth = 12;
+      partnerCtx.strokeStyle = 'rgba(255, 59, 127, 0.28)';
+      partnerCtx.lineWidth = 10;
       partnerCtx.lineCap = 'round';
       partnerCtx.lineJoin = 'round';
       partnerCtx.beginPath();
@@ -1305,14 +1570,26 @@
       partnerCtx.restore();
     }
 
-    function redrawMyLayer() {
+    function redrawBothLayers() {
+      const me = state.users[getMyKey()];
+      const partner = state.users[getPartnerKey()];
+
+      partnerCtx.clearRect(0, 0, 360, 320);
+      if (!partner.strokes || partner.strokes.length === 0) {
+        drawPartnerBaseHeart();
+      } else {
+        partner.strokes.forEach(s => drawStroke(partnerCtx, s.color, s.points));
+      }
+
       myCtx.clearRect(0, 0, 360, 320);
-      myStrokes.forEach(s => drawStroke(myCtx, s.color, s.points));
+      (me.strokes || []).forEach(s => drawStroke(myCtx, s.color, s.points));
       if (activePoints.length > 1) drawStroke(myCtx, currentColor, activePoints);
+
+      exportCompositeToWidgets();
     }
 
     function drawStroke(ctx, color, pts) {
-      if (pts.length < 2) return;
+      if (!pts || pts.length < 2) return;
       ctx.save();
       ctx.strokeStyle = color;
       ctx.lineWidth = 8;
@@ -1329,8 +1606,8 @@
       const r = myCanvas.getBoundingClientRect();
       const t = e.touches ? e.touches[0] : e;
       return {
-        x: (t.clientX - r.left) * (myCanvas.width / r.width),
-        y: (t.clientY - r.top) * (myCanvas.height / r.height)
+        x: Math.round((t.clientX - r.left) * (myCanvas.width / r.width)),
+        y: Math.round((t.clientY - r.top) * (myCanvas.height / r.height))
       };
     }
 
@@ -1341,36 +1618,36 @@
     myCanvas.addEventListener('pointermove', e => {
       if (!isDrawing) return;
       activePoints.push(getPos(e));
-      redrawMyLayer();
+      redrawBothLayers();
     });
     window.addEventListener('pointerup', () => {
       if (!isDrawing) return;
       isDrawing = false;
       if (activePoints.length > 1) {
-        myStrokes.push({ color: currentColor, points: activePoints });
-        state.doodleStrokes = myStrokes;
-        const now = new Date();
-        state.doodleTime = now.toTimeString().slice(0, 5);
-        saveState();
+        const me = state.users[getMyKey()];
+        if (!me.strokes) me.strokes = [];
+        me.strokes.push({ color: currentColor, points: activePoints });
+        state.doodleTime = new Date().toTimeString().slice(0, 5);
+        pushStateToCloud();
         exportCompositeToWidgets();
       }
       activePoints = [];
     });
 
     function undoStroke() {
-      myStrokes.pop();
-      state.doodleStrokes = myStrokes;
-      redrawMyLayer();
-      exportCompositeToWidgets();
-      saveState();
+      const me = state.users[getMyKey()];
+      if (me.strokes && me.strokes.length > 0) {
+        me.strokes.pop();
+        redrawBothLayers();
+        pushStateToCloud();
+      }
     }
 
     function clearMyDoodle() {
-      myStrokes = [];
-      state.doodleStrokes = [];
-      redrawMyLayer();
-      exportCompositeToWidgets();
-      saveState();
+      const me = state.users[getMyKey()];
+      me.strokes = [];
+      redrawBothLayers();
+      pushStateToCloud();
     }
 
     function exportCompositeToWidgets() {
@@ -1381,11 +1658,11 @@
       wCtx.drawImage(myCanvas, 0, 0, wCanvas.width, wCanvas.height);
     }
 
+    // Запуск приложения
     renderAll();
     initDoodleStudio();
-    if (window.AndroidWidget) {
-      window.AndroidWidget.updateWidget(JSON.stringify(state));
-    }
+    initFirebaseSync();
+    startAutoGpsTracking();
   </script>
 </body>
-                                                                                    </html>
+</html>
