@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
-  <title>Мы Рядом ❤️ — Sync</title>
+  <title>Мы Рядом ❤️</title>
 
   <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#0d0b14","theme_color":"#0d0b14","orientation":"portrait"}' />
 
@@ -75,28 +75,6 @@
       background: var(--green);
       box-shadow: 0 0 10px var(--green);
       display: inline-block;
-    }
-
-    .live-toast {
-      position: fixed;
-      top: 62px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      background: rgba(255, 59, 127, 0.95);
-      color: #fff;
-      padding: 6px 14px;
-      border-radius: 99px;
-      font-size: 12px;
-      font-weight: 800;
-      z-index: 150;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.25s ease;
-      box-shadow: 0 6px 20px rgba(255, 59, 127, 0.4);
-    }
-    .live-toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
     }
 
     .container {
@@ -388,12 +366,10 @@
 </head>
 <body>
 
-  <div class="live-toast" id="liveToast">⚡ Обновлено в реальном времени</div>
-
   <header class="topbar">
     <div class="pair-pill" onclick="openSettingsModal()">
-      <span class="sync-dot" id="syncDot"></span>
-      <span id="syncTextLabel">FastSync 🟢</span> •
+      <span class="sync-dot"></span>
+      <span id="syncTextLabel">Связь вкл</span> •
       <span id="coupleTitle">Матвей & Полина</span> ⚙️
     </div>
     <div class="streak-pill" onclick="requestMyGpsNow()">
@@ -431,7 +407,7 @@
               <span class="bat-badge" id="wPartnerBattery">⚡ 84%</span>
             </div>
             <div class="sq-title" id="wPartnerName">Полина</div>
-            <div class="sq-sub" id="wPartnerMoodText">Жду вечернего созвона</div>
+            <div class="sq-sub" id="wPartnerMoodText">Жду созвона</div>
             <div class="sq-foot" id="wDistance">📍 Нажмите для GPS</div>
           </div>
 
@@ -545,7 +521,7 @@
 
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
-      <h3 class="modal-title">⚙️ Настройки пары и синхронизации</h3>
+      <h3 class="modal-title">⚙️ Настройки пары</h3>
       <label class="field-label">1. Чей это телефон?</label>
       <div class="role-selector">
         <button class="role-btn" id="roleBtnU1" onclick="selectRole('user1')">👦 Я — Матвей</button>
@@ -553,7 +529,7 @@
       </div>
 
       <div class="status-banner" id="cloudDiagBox">
-        🚀 Высокоскоростной мост синхронизации активен
+        🚀 Синхронизация работает бесшумно и стабильно
       </div>
 
       <div class="field-row">
@@ -656,10 +632,10 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'couple_live_state_v6';
-    const ROLE_KEY = 'couple_device_role_v6';
-    const ROOM_KEY = 'couple_room_code_v6';
-    const DB_URL_KEY = 'couple_db_url_v6';
+    const STORAGE_KEY = 'couple_live_state_v7';
+    const ROLE_KEY = 'couple_device_role_v7';
+    const ROOM_KEY = 'couple_room_code_v7';
+    const DB_URL_KEY = 'couple_db_url_v7';
 
     const FULL_DEFAULT_DB = 'https://coupleapp-705bf-default-rtdb.firebaseio.com';
 
@@ -709,16 +685,6 @@
     function getMyKey() { return myRole === 'user2' ? 'user2' : 'user1'; }
     function getPartnerKey() { return myRole === 'user2' ? 'user1' : 'user2'; }
 
-    function showLiveToast(msg = '⚡ Обновлено') {
-      const t = document.getElementById('liveToast');
-      if (!t) return;
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(window._toastTimer);
-      window._toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
-    }
-
-    // Сверхбыстрый и надежный механизм синхронизации через REST API с интервалом 1 секунда
     let isSyncing = false;
 
     function pollCloudData() {
@@ -739,10 +705,8 @@
               localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
               renderAll();
               redrawBothLayers();
-              showLiveToast('⚡ Синхронизировано');
             }
           } else {
-            // Если комната пустая, инициализируем её
             pushStateFull();
           }
         })
@@ -875,7 +839,6 @@
       requestMyGpsNow();
       renderAll();
       redrawBothLayers();
-      showLiveToast(myRole === 'user1' ? '👦 Матвей' : '👧 Полина');
     }
 
     function openSettingsModal() {
@@ -907,7 +870,6 @@
 
       closeModal('settingsModal');
       pushStateFull();
-      showLiveToast('⚙️ Настройки сохранены');
     }
 
     function setMyMood(em, txt) {
@@ -1272,7 +1234,7 @@
       if (!isDrawing) return;
       isDrawing = false;
       if (activePoints.length > 1) {
-        const myKey = getMyKey();
+        myKey = getMyKey();
         const me = state.users[myKey];
         if (!me.strokes) me.strokes = [];
         me.strokes.push({ color: currentColor, points: activePoints });
@@ -1319,8 +1281,8 @@
 
     renderAll();
     initDoodleStudio();
-    setInterval(pollCloudData, 1200); // Опрос облака каждую 1.2 секунды
+    setInterval(pollCloudData, 1500); // Плавный опрос облака каждые 1.5 секунды без всплывающих окон
     startAutoGpsTracking();
   </script>
 </body>
-          </html>
+                                                                                            </html>
