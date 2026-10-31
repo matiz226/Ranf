@@ -3,31 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0d0b14" />
+  <meta name="theme-color" content="#faf7f5" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
   <title>Мы Рядом ❤️</title>
 
-  <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#0d0b14","theme_color":"#0d0b14","orientation":"portrait"}' />
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#faf7f5","theme_color":"#ee3e6a","orientation":"portrait"}' />
 
   <style>
     :root {
+      --bg: #faf7f5;
+      --card: #ffffff;
+      --card-2: #f3eef0;
+      --border: rgba(26, 22, 30, 0.07);
+      --shadow: 0 8px 26px rgba(28, 20, 35, 0.06);
+      --pink: #ee3e6a;
+      --pink-soft: #fde8ee;
+      --green: #2ecc71;
+      --green-soft: rgba(46, 204, 113, 0.14);
+      --blue: #3b82f6;
+      --blue-soft: rgba(59, 130, 246, 0.12);
+      --amber: #f59e0b;
+      --amber-soft: rgba(245, 158, 11, 0.14);
+      --text: #19171c;
+      --muted: #867f8e;
+      --colon: #dfd9dd;
+      --nav-bg: rgba(255, 255, 255, 0.94);
+    }
+
+    body.dark-mode {
       --bg: #0d0b14;
       --card: #171422;
-      --card-2: #1f1b2e;
+      --card-2: #211d30;
       --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
       --pink: #ff3b7f;
       --pink-soft: rgba(255, 59, 127, 0.16);
-      --green: #2ecc71;
-      --green-soft: rgba(46, 204, 113, 0.16);
-      --blue: #54a0ff;
-      --blue-soft: rgba(84, 160, 255, 0.16);
-      --amber: #feca57;
-      --amber-soft: rgba(254, 202, 87, 0.16);
       --text: #ffffff;
       --muted: #9b95b0;
+      --colon: #3a344c;
+      --nav-bg: rgba(18, 15, 28, 0.94);
     }
 
     * {
@@ -41,60 +58,580 @@
       padding: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding-bottom: 92px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding-bottom: 98px;
       overflow-x: hidden;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px 10px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(13, 11, 20, 0.92);
-      backdrop-filter: blur(14px);
-      gap: 8px;
-    }
-
-    .pair-pill, .streak-pill {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .sync-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #f39c12;
-      display: inline-block;
-      transition: all 0.25s ease;
-    }
-    .sync-dot.online {
-      background: var(--green);
-      box-shadow: 0 0 10px var(--green);
-    }
-    .sync-dot.error {
-      background: #e74c3c;
-      box-shadow: 0 0 10px #e74c3c;
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
     .container {
-      padding: 0 16px;
-      max-width: 520px;
+      padding: 0 18px;
+      max-width: 500px;
       margin: 0 auto;
     }
 
+    /* ВЕРХНЯЯ ПАНЕЛЬ КАК НА РЕФЕРЕНСЕ */
+    .ref-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 10px;
+      max-width: 500px;
+      margin: 0 auto;
+      gap: 12px;
+    }
+
+    .ref-user-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #fff;
+      font-weight: 800;
+      overflow: visible;
+    }
+
+    .avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .avatar-online-dot {
+      position: absolute;
+      bottom: 1px;
+      right: 1px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 2.5px solid var(--bg);
+      transition: background 0.25s ease;
+    }
+    .avatar-online-dot.error {
+      background: #e74c3c;
+    }
+
+    .greeting-box {
+      min-width: 0;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .greeting-title {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    .greeting-sub {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .circle-icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .circle-icon-btn:active {
+      transform: scale(0.94);
+    }
+
+    /* БЫСТРЫЙ ПЕРЕКЛЮЧАТЕЛЬ РОЛИ */
+    .role-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 999px;
+      padding: 5px 6px 5px 14px;
+      margin: 4px 0 18px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .role-strip-btns {
+      display: flex;
+      gap: 4px;
+    }
+
+    .r-pill-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .r-pill-btn.active {
+      background: var(--pink);
+      color: #fff;
+    }
+
+    /* ПЛАШКИ НАД ТАЙМЕРОМ ("ИДЁТ ОТСЧЁТ" и "+ Добавить") */
+    .cd-pills-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 10px;
+    }
+
+    .pill-status-white {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .pill-add-pink {
+      background: var(--pink-soft);
+      color: var(--pink);
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .pill-add-pink:active {
+      transform: scale(0.95);
+    }
+
+    /* БОЛЬШОЙ ЖИВОЙ ТАЙМЕР 17 : 23 : 54 : 24 */
+    .big-timer-wrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 8px;
+      margin: 6px 0 22px;
+      cursor: pointer;
+    }
+
+    .timer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 64px;
+    }
+
+    .timer-num {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-num.accent {
+      color: var(--pink);
+    }
+
+    .timer-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    .timer-colon {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--colon);
+      line-height: 1.15;
+      padding: 0 1px;
+    }
+
+    /* ГЛАВНАЯ ФОТО-КАРТОЧКА (КАРУСЕЛЬ ФОТО ПАРЫ) */
+    .photo-hero-card {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 14px 34px rgba(25, 18, 32, 0.14);
+      background: #231f2e;
+      margin-bottom: 12px;
+    }
+
+    .photo-hero-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+
+    .photo-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.02) 45%, rgba(0,0,0,0.72) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 18px;
+    }
+
+    .photo-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .star-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(8px);
+      color: #ff2e63;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    .upload-photo-pill {
+      background: rgba(255, 255, 255, 0.26);
+      backdrop-filter: blur(10px);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .photo-bottom-info {
+      color: #ffffff;
+    }
+
+    .photo-caption-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    }
+
+    .photo-location-sub {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .photo-nav-Zone {
+      position: absolute;
+      top: 56px;
+      bottom: 56px;
+      width: 35%;
+      z-index: 5;
+      cursor: pointer;
+    }
+    .photo-nav-Zone.left { left: 0; }
+    .photo-nav-Zone.right { right: 0; }
+
+    /* ТОЧКИ ПАГИНАЦИИ ПОД ФОТО */
+    .carousel-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-bottom: 18px;
+    }
+
+    .c-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--colon);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .c-dot.active {
+      width: 9px;
+      height: 9px;
+      background: var(--pink);
+    }
+
+    /* ПЛАШКА "ЗАДАНИЕ ДНЯ" КАК НА СКРИНШОТЕ */
+    .daily-task-banner {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+      padding: 15px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .daily-task-banner:active {
+      transform: scale(0.98);
+    }
+
+    .dt-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .dt-sparkle {
+      font-size: 24px;
+      color: var(--pink);
+      flex-shrink: 0;
+    }
+
+    .dt-texts {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .dt-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .dt-title {
+      font-size: 16px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dt-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    /* РАЗДЕЛ "ОТМЕТКА" И "ИСТОРИЯ" */
+    .checkin-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 6px 0 14px;
+    }
+
+    .checkin-title {
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+
+    .checkin-links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .pink-link-btn {
+      background: none;
+      border: none;
+      color: var(--pink);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .checkin-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 26px;
+      padding: 18px;
+      margin-bottom: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .checkin-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .checkin-avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: var(--pink-soft);
+      color: var(--pink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .checkin-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .checkin-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .checkin-headline {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .checkin-quote {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .checkin-meta-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .meta-mini-tag {
+      background: var(--card-2);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 99px;
+    }
+
+    .checkin-photo-box {
+      margin-top: 14px;
+      border-radius: 20px;
+      overflow: hidden;
+      max-height: 260px;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+    .checkin-photo-box img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* КАСТОМНЫЙ ХОЛСТ МИНИ-ПРЕВЬЮ */
+    .mini-doodle-bar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 24px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 18px 0;
+      cursor: pointer;
+    }
+
+    .mini-doodle-canvas-box {
+      width: 96px;
+      height: 72px;
+      background: #14111f;
+      border-radius: 14px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .mini-doodle-canvas-box canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* ОБЩИЕ СТИЛИ ВКЛАДОК */
     .tab-page {
       display: none;
       animation: fadeIn 0.2s ease;
@@ -108,251 +645,19 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .quick-role-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 6px 6px 6px 12px;
-      margin-bottom: 12px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .quick-role-btns {
-      display: flex;
-      gap: 6px;
-    }
-
-    .q-role-btn {
-      border: 1px solid transparent;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--muted);
-      padding: 7px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .q-role-btn.active {
-      background: var(--pink);
-      color: #fff;
-    }
-
-    .mode-switch {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      background: var(--card);
-      padding: 5px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 14px;
-    }
-
-    .mode-btn {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 14px;
-      padding: 10px;
-      border-radius: 12px;
-      cursor: pointer;
-    }
-    .mode-btn.active {
-      background: var(--pink);
-      color: #fff;
-    }
-
-    .hero-widget {
-      background: linear-gradient(145deg, #1b162a, #13101d);
-      border: 1px solid rgba(255, 59, 127, 0.22);
-      border-radius: 26px;
-      padding: 14px;
-      display: grid;
-      grid-template-columns: 1.05fr 1fr;
-      gap: 12px;
-      margin-bottom: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-    }
-
-    .doodle-preview-box {
-      background: #120f1d;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      position: relative;
-      height: 156px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .doodle-preview-box canvas {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .doodle-time-tag {
-      position: absolute;
-      top: 8px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 3px 8px;
-      border-radius: 99px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .doodle-react-btn {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: rgba(255, 59, 127, 0.2);
-      border: 1px solid rgba(255, 59, 127, 0.4);
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .hero-right-col {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .mini-stat-pill {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 11px;
-      font-size: 12px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      cursor: pointer;
-    }
-
-    .square-widgets-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .sq-widget {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 15px;
-      position: relative;
-      cursor: pointer;
-      transition: border-color 0.2s ease;
-    }
-
-    .sq-widget.is-me {
-      border-color: rgba(255, 59, 127, 0.4);
-    }
-
-    .sq-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .big-emoji { font-size: 30px; }
-
-    .bat-badge {
-      background: var(--green-soft);
-      color: var(--green);
-      font-weight: 800;
-      font-size: 12px;
-      padding: 4px 9px;
-      border-radius: 99px;
-    }
-
-    .sq-title {
-      font-size: 17px;
-      font-weight: 800;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .you-tag {
-      font-size: 10px;
-      background: var(--pink-soft);
-      color: var(--pink);
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-weight: 800;
-    }
-
-    .sq-sub {
-      font-size: 13px;
-      color: #e2def0;
-      margin-bottom: 10px;
-      min-height: 18px;
-      font-weight: 600;
-    }
-
-    .sq-foot {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-    }
-
-    .lock-preview {
-      display: none;
-      background: linear-gradient(180deg, #1b1528, #110e1a);
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      padding: 20px 16px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .lock-inline { font-size: 13px; color: #d6d1e8; font-weight: 600; margin-bottom: 4px; }
-    .lock-clock { font-size: 56px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 18px; }
-    .lock-row { display: flex; align-items: center; justify-content: center; gap: 12px; }
-    .lock-circle {
-      width: 66px; height: 66px; border-radius: 50%;
-      background: rgba(255, 255, 255, 0.07);
-      border: 2px solid rgba(255, 59, 127, 0.5);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
-    }
-    .lock-rect {
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid var(--border);
-      border-radius: 18px; padding: 10px 14px; text-align: left; flex: 1; max-width: 190px; font-size: 12px;
-    }
-
     .section-head {
-      display: flex; align-items: center; justify-content: space-between; margin: 16px 0 10px;
+      display: flex; align-items: center; justify-content: space-between; margin: 18px 0 10px;
     }
-    .section-title { font-size: 15px; font-weight: 800; }
+    .section-title { font-size: 16px; font-weight: 800; }
 
     .btn-small {
-      background: var(--card-2); color: #fff; border: 1px solid var(--border);
-      padding: 7px 12px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer;
+      background: var(--card-2); color: var(--text); border: 1px solid var(--border);
+      padding: 8px 13px; border-radius: 12px; font-size: 12px; font-weight: 800; cursor: pointer;
     }
     .btn-small.pink {
       background: var(--pink-soft);
-      border-color: rgba(255, 59, 127, 0.4);
-      color: #ff85ad;
+      color: var(--pink);
+      border-color: transparent;
     }
 
     .chips-scroll {
@@ -362,33 +667,43 @@
 
     .chip {
       background: var(--card); color: var(--text); border: 1px solid var(--border);
-      padding: 9px 13px; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
-      transition: all 0.15s ease;
+      box-shadow: var(--shadow);
+      padding: 9px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
     }
     .chip.active { background: var(--pink); border-color: var(--pink); color: #fff; }
 
+    .mode-switch {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      background: var(--card-2); padding: 5px; border-radius: 16px; margin-bottom: 14px;
+    }
+    .mode-btn {
+      border: none; background: transparent; color: var(--muted);
+      font-weight: 800; font-size: 13px; padding: 10px; border-radius: 12px; cursor: pointer;
+    }
+    .mode-btn.active { background: var(--pink); color: #fff; }
+
     .list-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
-      padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px;
+      background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow);
+      border-radius: 20px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px;
     }
     .list-card.pinned {
-      border-color: rgba(255, 59, 127, 0.5);
-      background: linear-gradient(90deg, rgba(255, 59, 127, 0.12), var(--card));
+      border-color: var(--pink);
     }
     .list-left { display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer; }
     .item-actions { display: flex; align-items: center; gap: 6px; }
 
     .icon-btn {
-      background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border); color: #fff;
+      background: var(--card-2); border: 1px solid var(--border); color: var(--text);
       width: 32px; height: 32px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;
     }
 
-    /* СТИЛИ НОВОГО ЦЕНТРА ЧЕЛЛЕНДЖЕЙ И АРХИВА */
+    /* КАРТОЧКИ ЧЕЛЛЕНДЖЕЙ */
     .hourly-banner {
-      background: linear-gradient(135deg, rgba(255, 59, 127, 0.14), rgba(84, 160, 255, 0.1));
-      border: 1px solid rgba(255, 59, 127, 0.3);
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
       border-radius: 18px;
-      padding: 11px 14px;
+      padding: 12px 14px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -400,138 +715,54 @@
     .challenge-card {
       background: var(--card);
       border: 1px solid var(--border);
+      box-shadow: var(--shadow);
       border-radius: 22px;
       padding: 16px;
       margin-bottom: 12px;
-      transition: all 0.2s ease;
-    }
-    .challenge-card.type-task {
-      border-color: rgba(254, 202, 87, 0.28);
-      background: linear-gradient(160deg, rgba(254, 202, 87, 0.05), var(--card));
     }
     .challenge-card.both-done {
-      border-color: rgba(46, 204, 113, 0.45);
-      background: linear-gradient(160deg, rgba(46, 204, 113, 0.07), var(--card));
+      border-color: var(--green);
     }
 
     .ch-meta-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
     }
+    .ch-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .badge-pill { font-size: 11px; font-weight: 800; padding: 4px 9px; border-radius: 99px; }
+    .badge-question { background: var(--blue-soft); color: var(--blue); }
+    .badge-task { background: var(--amber-soft); color: var(--amber); }
+    .badge-cat { background: var(--card-2); color: var(--text); }
+    .badge-time { font-size: 11px; color: var(--muted); font-weight: 600; }
 
-    .ch-badges {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .badge-pill {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 9px;
-      border-radius: 99px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .badge-question {
-      background: var(--blue-soft);
-      color: var(--blue);
-    }
-    .badge-task {
-      background: var(--amber-soft);
-      color: var(--amber);
-    }
-    .badge-cat {
-      background: rgba(255, 255, 255, 0.07);
-      color: #e2def0;
-    }
-    .badge-time {
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    .ch-prompt {
-      font-size: 16px;
-      font-weight: 800;
-      line-height: 1.38;
-      margin-bottom: 12px;
-    }
-
-    .ch-options {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
+    .ch-prompt { font-size: 16px; font-weight: 800; line-height: 1.38; margin-bottom: 12px; }
+    .ch-options { display: flex; flex-direction: column; gap: 8px; }
     .ch-opt-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 11px 14px;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      line-height: 1.35;
+      background: var(--card-2); border: 1px solid transparent; color: var(--text);
+      padding: 11px 14px; border-radius: 14px; font-size: 13px; font-weight: 700; text-align: left; cursor: pointer;
     }
-    .ch-opt-btn.selected {
-      background: var(--pink);
-      border-color: var(--pink);
-      color: #fff;
-    }
-
-    .ch-custom-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-      gap: 8px;
-    }
-
+    .ch-opt-btn.selected { background: var(--pink); color: #fff; }
+    .ch-custom-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 8px; }
     .ch-answers-box {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 14px;
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid var(--border);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .empty-box {
-      background: var(--card);
-      border: 1px dashed var(--border);
-      border-radius: 22px;
-      padding: 28px 16px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
+      margin-top: 12px; padding: 12px; border-radius: 14px;
+      background: var(--card-2); font-size: 13px; line-height: 1.45;
     }
 
     .canvas-wrap {
-      background: #14111f; border: 2px solid rgba(255, 59, 127, 0.35); border-radius: 26px;
+      background: #14111f; border: 2px solid rgba(238, 62, 106, 0.35); border-radius: 26px;
       height: 320px; position: relative; overflow: hidden; margin: 12px 0; touch-action: none;
     }
     .canvas-wrap canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
     .palette-row {
-      display: flex; justify-content: center; gap: 12px; background: var(--card); padding: 12px; border-radius: 99px; border: 1px solid var(--border);
+      display: flex; justify-content: center; gap: 12px; background: var(--card); padding: 12px; border-radius: 99px; border: 1px solid var(--border); box-shadow: var(--shadow);
     }
     .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
-    .color-dot.active { border-color: #fff; transform: scale(1.12); }
+    .color-dot.active { border-color: var(--pink); transform: scale(1.12); }
 
+    /* НИЖНЯЯ НАВИГАЦИЯ */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(18, 15, 28, 0.94); backdrop-filter: blur(16px);
+      background: var(--nav-bg); backdrop-filter: blur(16px);
       border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr);
       padding: 8px 6px calc(8px + env(safe-area-inset-bottom)); z-index: 100;
     }
@@ -541,141 +772,192 @@
     .nav-item .nav-icon { font-size: 20px; }
     .nav-item.active { color: var(--pink); }
 
+    /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(6px);
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62); backdrop-filter: blur(6px);
       display: none; align-items: center; justify-content: center; padding: 16px; z-index: 200;
     }
     .modal-overlay.open { display: flex; }
 
     .modal-box {
-      background: #191526; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 24px; width: 100%; max-width: 420px; padding: 20px; max-height: 88vh; overflow-y: auto;
+      background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 26px; width: 100%; max-width: 420px; padding: 22px; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
-    .modal-title { font-size: 18px; font-weight: 800; margin: 0 0 14px; }
+    .modal-title { font-size: 19px; font-weight: 800; margin: 0 0 14px; }
     .field-group { margin-bottom: 12px; }
     .field-label { display: block; font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
     .field-input {
-      width: 100%; background: #110e1a; border: 1px solid var(--border); color: #fff; padding: 11px 13px; border-radius: 12px; font-size: 14px; outline: none;
+      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 12px 14px; border-radius: 14px; font-size: 14px; outline: none; font-family: inherit;
     }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
     .btn-primary, .btn-secondary {
-      flex: 1; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 14px; border: none; cursor: pointer;
+      flex: 1; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 14px; border: none; cursor: pointer;
     }
     .btn-primary { background: var(--pink); color: #fff; }
-    .btn-secondary { background: rgba(255, 255, 255, 0.08); color: #fff; }
+    .btn-secondary { background: var(--card-2); color: var(--text); }
 
-    .role-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    .role-btn {
-      background: #110e1a; border: 1px solid var(--border); color: var(--muted); padding: 12px 10px; border-radius: 14px; font-weight: 800; font-size: 14px; cursor: pointer;
+    .photo-preview-upload {
+      width: 100%;
+      height: 170px;
+      border-radius: 18px;
+      background: var(--card-2);
+      border: 2px dashed var(--border);
+      display: flex;
+       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      margin-bottom: 12px;
+      position: relative;
     }
-    .role-btn.active { border-color: var(--pink); background: var(--pink-soft); color: #fff; }
-    .status-banner {
-      background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); color: #a3f7bf; padding: 10px 12px; border-radius: 14px; font-size: 12px; margin-bottom: 12px; line-height: 1.4;
+    .photo-preview-upload img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   </style>
 </head>
 <body>
 
-  <header class="topbar">
-    <div class="pair-pill" onclick="openSettingsModal()">
-      <span class="sync-dot online" id="syncDot"></span>
-      <span id="syncTextLabel">Онлайн</span> •
-      <span id="coupleTitle">Матвей & Полина</span> ⚙️
+  <!-- Скрытый input для быстрой смены аватарки -->
+  <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarSelected(event)" />
+
+  <!-- ШАПКА В СТИЛЕ РЕФЕРЕНСА -->
+  <header class="ref-header">
+    <div class="ref-user-left">
+      <div class="avatar-wrap" onclick="triggerAvatarUpload()" title="Нажмите, чтобы загрузить своё фото профиля">
+        <span id="headerAvatarFallback">👦</span>
+        <img id="headerAvatarImg" style="display:none" alt="Avatar" />
+        <span class="avatar-online-dot" id="syncDot"></span>
+      </div>
+      <div class="greeting-box" onclick="openSettingsModal()">
+        <div class="greeting-title" id="greetingTitle">Доброе утро, Матвей</div>
+        <div class="greeting-sub" id="greetingSub">Всего 14 дней до Встреча в аэропорту!</div>
+      </div>
     </div>
-    <div class="streak-pill" onclick="forceSyncNow()" title="Принудительная синхронизация">
-      🔄 <span id="topGpsStatus">Обновить</span> • 🔥 <span id="streakText">24 дн.</span>
+
+    <div class="header-actions">
+      <button class="circle-icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Светлая / Тёмная тема">☀️</button>
+      <button class="circle-icon-btn" onclick="openSettingsModal()" title="Настройки и синхронизация">⚙️</button>
     </div>
   </header>
 
   <main class="container">
-    <!-- ВКЛАДКА 0: ВИДЖЕТЫ -->
+    <!-- ВКЛАДКА 0: ГЛАВНЫЙ ЭКРАН (НОВЫЙ ДИЗАЙН) -->
     <section class="tab-page active" id="tab0">
-      <div class="quick-role-bar">
-        <span>Кто сейчас за телефоном:</span>
-        <div class="quick-role-btns">
-          <button class="q-role-btn" id="qRoleU1" onclick="selectRole('user1')">👦 Матвей</button>
-          <button class="q-role-btn" id="qRoleU2" onclick="selectRole('user2')">👧 Полина</button>
+
+      <!-- Полоска быстрого переключения роли и принудительного обновления -->
+      <div class="role-strip">
+        <span onclick="forceSyncNow()" style="cursor:pointer">🔄 <span id="topGpsStatus">Онлайн</span> • 📍 <b id="smDistTag">640 км</b></span>
+        <div class="role-strip-btns">
+          <button class="r-pill-btn" id="qRoleU1" onclick="selectRole('user1')">👦 Матвей</button>
+          <button class="r-pill-btn" id="qRoleU2" onclick="selectRole('user2')">👧 Полина</button>
         </div>
       </div>
 
-      <div class="mode-switch">
-        <button class="mode-btn active" id="btnModeHome" onclick="setWidgetPreviewMode('home')">📱 Главный экран</button>
-        <button class="mode-btn" id="btnModeLock" onclick="setWidgetPreviewMode('lock')">🔒 Экран блокировки</button>
+      <!-- Плашки: ИДЁТ ОТСЧЁТ и + Добавить -->
+      <div class="cd-pills-row">
+        <div class="pill-status-white" onclick="cyclePinnedCountdown()" title="Нажмите, чтобы переключить событие">
+          <span style="color:var(--pink)">❤️</span>
+          <span id="activeCdBadgeText">ИДЁТ ОТСЧЁТ</span>
+        </div>
+        <button class="pill-add-pink" onclick="openAddMenuModal()">+ Добавить</button>
       </div>
 
-      <div id="homeWidgetsBox">
-        <div class="hero-widget">
-          <div class="doodle-preview-box" onclick="switchTab(1)">
-            <canvas id="widgetDoodleCanvas" width="240" height="200"></canvas>
-            <div class="doodle-time-tag">🎨 <span id="widgetDoodleTime">18:45</span></div>
-            <div class="doodle-react-btn" id="widgetReactionBtn" onclick="event.stopPropagation(); toggleWidgetReaction()">❤️</div>
-          </div>
-          <div class="hero-right-col">
-            <div class="mini-stat-pill" id="smCdTitle" onclick="scrollToCountdowns()">✈️ 14 дн. Встреча в аэропорту</div>
-            <div class="mini-stat-pill" onclick="requestMyGpsNow()">
-              📍 Между нами: <b id="smDistTag">640 км</b>
-            </div>
-            <div class="mini-stat-pill" id="wChallengeStatus" onclick="switchTab(2)">🔐 Челленджи пары</div>
-          </div>
+      <!-- Живой посекундный таймер (ДН. : ЧАС. : МИН. : СЕК.) -->
+      <div class="big-timer-wrap" onclick="openCountdownModal()">
+        <div class="timer-col">
+          <div class="timer-num accent" id="tDays">14</div>
+          <div class="timer-label">ДН.</div>
         </div>
-
-        <div class="square-widgets-grid">
-          <div class="sq-widget" id="cardU1" onclick="selectRole('user1')">
-            <div class="sq-top">
-              <span class="big-emoji" id="u1Emoji">🔥</span>
-              <span class="bat-badge" id="u1Battery">⚡ 92%</span>
-            </div>
-            <div class="sq-title">
-              <span id="u1Name">Матвей</span>
-              <span class="you-tag" id="u1YouTag" style="display:none">ВЫ</span>
-            </div>
-            <div class="sq-sub" id="u1MoodText">В работе</div>
-            <div class="sq-foot" id="u1Foot">📍 На связи</div>
-          </div>
-
-          <div class="sq-widget" id="cardU2" onclick="selectRole('user2')">
-            <div class="sq-top">
-              <span class="big-emoji" id="u2Emoji">🥰</span>
-              <span class="bat-badge" id="u2Battery">⚡ 84%</span>
-            </div>
-            <div class="sq-title">
-              <span id="u2Name">Полина</span>
-              <span class="you-tag" id="u2YouTag" style="display:none">ВЫ</span>
-            </div>
-            <div class="sq-sub" id="u2MoodText">Жду созвона</div>
-            <div class="sq-foot" id="u2Foot">📍 На связи</div>
-          </div>
+        <div class="timer-colon">:</div>
+        <div class="timer-col">
+          <div class="timer-num" id="tHours">23</div>
+          <div class="timer-label">ЧАС.</div>
+        </div>
+        <div class="timer-colon">:</div>
+        <div class="timer-col">
+          <div class="timer-num" id="tMins">54</div>
+          <div class="timer-label">МИН.</div>
+        </div>
+        <div class="timer-colon">:</div>
+        <div class="timer-col">
+          <div class="timer-num" id="tSecs">24</div>
+          <div class="timer-label">СЕК.</div>
         </div>
       </div>
 
-      <div class="lock-preview" id="lockWidgetsBox" onclick="openSettingsModal()">
-        <div class="lock-inline" id="lockInline">❤️ 14 дн. • 🔋 84% • 📍 640 км</div>
-        <div class="lock-clock" id="lockClockText">09:41</div>
-        <div class="lock-row">
-          <div class="lock-circle">
-            <span id="lockCircEmoji" style="font-size:18px">🥰</span>
-            <span id="lockCircBat">84%</span>
+      <!-- Главная Фото-карточка пары с каруселью и загрузкой фоток -->
+      <div class="photo-hero-card">
+        <img id="heroSlideImg" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=80" alt="Наше фото" />
+        <div class="photo-nav-Zone left" onclick="prevPhotoSlide()"></div>
+        <div class="photo-nav-Zone right" onclick="nextPhotoSlide()"></div>
+
+        <div class="photo-hero-overlay">
+          <div class="photo-top-bar">
+            <div class="star-badge" onclick="deleteCurrentSlide()" title="Удалить текущий слайд">★</div>
+            <button class="upload-photo-pill" onclick="openPhotoSlideModal()">📷 + Наше фото</button>
           </div>
-          <div class="lock-circle">
-            <span style="font-size:16px">❤️</span>
-            <span id="lockCircDays">14 дн.</span>
-          </div>
-          <div class="lock-rect">
-            <div style="font-weight:800" id="lockRectName">🥰 Полина</div>
-            <div style="color:var(--muted); margin:2px 0" id="lockRectMeta">🔋84% • 📍 640 км</div>
-            <div style="color:var(--pink); font-weight:700" id="lockRectCd">До встречи: 14 дн.</div>
+
+          <div class="photo-bottom-info">
+            <div class="photo-caption-title" id="heroSlideTitle">Выходные вместе ❤️</div>
+            <div class="photo-location-sub">
+              <span id="heroSlideSub">📍 Встреча мечты</span>
+              <span id="heroSlideAuthor" style="font-size:11px; opacity:0.85">Слайд 1/1</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="section-head">
-        <div class="section-title">Изменить статус (<span id="myRoleBadge" style="color:var(--pink)">Матвей</span> • 🔋 <span id="myRealBatteryLabel">100%</span>):</div>
-      </div>
-      <div class="chips-scroll" id="moodBox"></div>
+      <!-- Точки переключения фото-слайдов -->
+      <div class="carousel-dots" id="heroCarouselDots"></div>
 
+      <!-- Плашка "Задание дня" (как на референсе) -->
+      <div class="daily-task-banner" onclick="switchTab(2)">
+        <div class="dt-left">
+          <div class="dt-sparkle">✨</div>
+          <div class="dt-texts">
+            <div class="dt-label" id="bannerChallengeLabel">Задание дня</div>
+            <div class="dt-title" id="bannerChallengeTitle">Загрузка вопроса для пары...</div>
+          </div>
+        </div>
+        <div class="dt-right">
+          <span style="color:var(--pink); font-size:18px">❤️</span>
+          <span>›</span>
+        </div>
+      </div>
+
+      <!-- РАЗДЕЛ "ОТМЕТКА" И "ИСТОРИЯ" (С ФОТО-ОТМЕТКАМИ И НАСТРОЕНИЕМ) -->
+      <div class="checkin-header">
+        <div class="checkin-title">Отметка</div>
+        <div class="checkin-links">
+          <button class="pink-link-btn" onclick="openCheckinModal()">📸 + Фото-отметка</button>
+          <button class="pink-link-btn" onclick="openHistoryModal()" style="opacity:0.8">История</button>
+        </div>
+      </div>
+
+      <!-- Быстрые чипсы смены настроения -->
+      <div class="chips-scroll" id="moodBox" style="margin-bottom:14px"></div>
+
+      <!-- Карточки Отметки Партнёра и Моя -->
+      <div id="checkinsCardsBox"></div>
+
+      <!-- Компактный виджет совместного рисунка (Дудла) -->
+      <div class="mini-doodle-bar" onclick="switchTab(1)">
+        <div>
+          <div style="font-weight:800; font-size:15px; margin-bottom:4px">🎨 Общий рисунок на холсте</div>
+          <div style="font-size:12px; color:var(--muted)">Обновлено в <span id="widgetDoodleTime">18:45</span> • Реакция: <span id="widgetReactionBtn">❤️</span></div>
+        </div>
+        <div class="mini-doodle-canvas-box">
+          <canvas id="widgetDoodleCanvas" width="240" height="180"></canvas>
+        </div>
+      </div>
+
+      <!-- Все события обратного отсчёта -->
       <div class="section-head" id="countdownsSection">
-        <div class="section-title">Обратные отсчёты ⏳</div>
-        <button class="btn-small" onclick="openCountdownModal()">+ Добавить</button>
+        <div class="section-title">Наши события ⏳</div>
+        <button class="btn-small pink" onclick="openCountdownModal()">+ Событие</button>
       </div>
       <div id="countdownsList"></div>
     </section>
@@ -707,16 +989,14 @@
         </div>
       </div>
 
-      <!-- Баннер ежечасной генерации -->
       <div class="hourly-banner">
         <div>
-          <div style="font-weight:800; color:#fff">⏱️ Авто-генерация каждый час</div>
+          <div style="font-weight:800">⏱️ Авто-генерация каждый час</div>
           <div style="color:var(--muted); margin-top:2px">Новые вопрос + задание через: <b id="nextHourCountdown" style="color:var(--pink)">59:00</b></div>
         </div>
-        <button class="btn-small" id="btnArchiveAllDone" style="display:none" onclick="archiveAllCompleted()">📥 Убрать отвеченные</button>
+        <button class="btn-small pink" id="btnArchiveAllDone" style="display:none" onclick="archiveAllCompleted()">📥 В архив</button>
       </div>
 
-      <!-- Переключатель: Активные / Архив -->
       <div class="mode-switch">
         <button class="mode-btn active" id="btnChActive" onclick="setChallengeView('active')">
           🔥 Активные (<span id="countActiveCh">0</span>)
@@ -726,13 +1006,8 @@
         </button>
       </div>
 
-      <!-- Фильтр по типу (Все / Вопросы / Задания) -->
       <div class="chips-scroll" id="chTypeRow" style="margin-bottom:8px"></div>
-
-      <!-- Фильтр по категориям -->
       <div class="chips-scroll" id="chCategoryRow" style="margin-bottom:14px"></div>
-
-      <!-- Список карточек вопросов и заданий -->
       <div id="challengesListBox"></div>
     </section>
 
@@ -740,7 +1015,7 @@
     <section class="tab-page" id="tab3">
       <div class="section-head">
         <div class="section-title">Наши мечты и планы ✨</div>
-        <button class="btn-small" onclick="openWishModal()">+ Новое желание</button>
+        <button class="btn-small pink" onclick="openWishModal()">+ Новое желание</button>
       </div>
       <div class="chips-scroll" id="boardsRow" style="margin-bottom:12px"></div>
       <div id="wishesList"></div>
@@ -750,7 +1025,7 @@
     <section class="tab-page" id="tab4">
       <div class="section-head">
         <div class="section-title">Общие заметки 📝</div>
-        <button class="btn-small" onclick="openNoteModal()">+ Добавить</button>
+        <button class="btn-small pink" onclick="openNoteModal()">+ Добавить</button>
       </div>
       <div id="regularNotesList"></div>
     </section>
@@ -758,7 +1033,7 @@
 
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab(0)">
-      <span class="nav-icon">📱</span><span>Виджеты</span>
+      <span class="nav-icon">🏠</span><span>Главная</span>
     </button>
     <button class="nav-item" onclick="switchTab(1)">
       <span class="nav-icon">🎨</span><span>Дудлы</span>
@@ -774,17 +1049,95 @@
     </button>
   </nav>
 
+  <!-- МОДАЛЬНОЕ ОКНО: МЕНЮ "+ ДОБАВИТЬ" -->
+  <div class="modal-overlay" id="addMenuModal">
+    <div class="modal-box">
+      <h3 class="modal-title">✨ Что добавим?</h3>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <button class="btn-primary" onclick="closeModal('addMenuModal'); openPhotoSlideModal()">📷 Добавить общее фото на главный экран</button>
+        <button class="btn-secondary" onclick="closeModal('addMenuModal'); openCheckinModal()">📸 Отправить фото-отметку и настроение</button>
+        <button class="btn-secondary" onclick="closeModal('addMenuModal'); openCountdownModal()">⏳ Добавить новое событие отсчёта</button>
+        <button class="btn-secondary" onclick="closeModal('addMenuModal')">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ЗАГРУЗКА ФОТО В ГЛАВНУЮ КАРУСЕЛЬ -->
+  <div class="modal-overlay" id="photoSlideModal">
+    <div class="modal-box">
+      <h3 class="modal-title">📷 Добавить фото на главный экран</h3>
+      <input type="file" id="slideFileInput" accept="image/*" style="display:none" onchange="handleSlideFileChosen(event)" />
+      <div class="photo-preview-upload" onclick="document.getElementById('slideFileInput').click()">
+        <span id="slideUploadHint" style="font-weight:700; color:var(--muted)">📥 Нажмите, чтобы выбрать фото из галереи</span>
+        <img id="slidePreviewImg" style="display:none" alt="Preview" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Подпись / Название момента</label>
+        <input class="field-input" id="inpSlideTitle" type="text" placeholder="Например: Выходные в Париже ❤️" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Место или комментарий (📍)</label>
+        <input class="field-input" id="inpSlideLocation" type="text" placeholder="Например: Наше любимое место" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('photoSlideModal')">Отмена</button>
+        <button class="btn-primary" onclick="savePhotoSlide()">Опубликовать</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ФОТО-ОТМЕТКА НАСТРОЕНИЯ -->
+  <div class="modal-overlay" id="checkinModal">
+    <div class="modal-box">
+      <h3 class="modal-title">📸 Ваша отметка и фото момента</h3>
+      <input type="file" id="checkinFileInput" accept="image/*" style="display:none" onchange="handleCheckinFileChosen(event)" />
+      <div class="photo-preview-upload" onclick="document.getElementById('checkinFileInput').click()">
+        <span id="checkinUploadHint" style="font-weight:700; color:var(--muted)">📷 Прикрепить фото (необязательно)</span>
+        <img id="checkinPreviewImg" style="display:none" alt="Checkin" />
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Эмодзи</label>
+          <input class="field-input" id="inpCheckinEmoji" type="text" value="🥰" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Как настроение?</label>
+          <input class="field-input" id="inpCheckinHeadline" type="text" placeholder="хорошее настроение" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Сообщение для второй половинки</label>
+        <input class="field-input" id="inpCheckinText" type="text" placeholder="Жду не дождусь нашей встречи!" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('checkinModal')">Отмена</button>
+        <button class="btn-primary" onclick="saveCheckinModal()">Отправить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ИСТОРИЯ ОТМЕТОК И ФОТО -->
+  <div class="modal-overlay" id="historyModal">
+    <div class="modal-box">
+      <h3 class="modal-title">🕓 История ваших отметок и фото</h3>
+      <div id="checkinHistoryList" style="display:flex; flex-direction:column; gap:10px"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="closeModal('historyModal')">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
   <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
       <h3 class="modal-title">⚙️ Настройки пары</h3>
-      <label class="field-label">1. Чей это телефон?</label>
-      <div class="role-selector">
-        <button class="role-btn" id="roleBtnU1" onclick="selectRole('user1')">👦 Я — Матвей</button>
-        <button class="role-btn" id="roleBtnU2" onclick="selectRole('user2')">👧 Я — Полина</button>
+      <label class="field-label">1. Кто использует этот телефон?</label>
+      <div class="field-row" style="margin-bottom:12px">
+        <button class="btn-secondary" id="roleBtnU1" onclick="selectRole('user1')">👦 Я — Матвей</button>
+        <button class="btn-secondary" id="roleBtnU2" onclick="selectRole('user2')">👧 Я — Полина</button>
       </div>
 
-      <div class="status-banner" id="cloudDiagBox">
+      <div style="font-size:12px; padding:10px 12px; border-radius:12px; background:var(--card-2); margin-bottom:12px" id="cloudDiagBox">
         🟢 Облако Npoint.io подключено
       </div>
 
@@ -805,7 +1158,7 @@
           <input class="field-input" id="inpStreak" type="number" min="1" />
         </div>
         <div class="field-group">
-          <label class="field-label">Расстояние (км, если без GPS)</label>
+          <label class="field-label">Расстояние (км, без GPS)</label>
           <input class="field-input" id="inpManualDist" type="number" min="0" />
         </div>
       </div>
@@ -822,31 +1175,10 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО СВОЕГО СТАТУСА -->
-  <div class="modal-overlay" id="customMoodModal">
-    <div class="modal-box">
-      <h3 class="modal-title">✏️ Свой статус настроения</h3>
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">Эмодзи</label>
-          <input class="field-input" id="inpMyCustomEmoji" type="text" value="✨" />
-        </div>
-        <div class="field-group">
-          <label class="field-label">Текст статуса</label>
-          <input class="field-input" id="inpMyCustomText" type="text" placeholder="Думаю о тебе" />
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeModal('customMoodModal')">Отмена</button>
-        <button class="btn-primary" onclick="saveCustomMood()">Установить</button>
-      </div>
-    </div>
-  </div>
-
   <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ СВОЕГО ВОПРОСА / ЗАДАНИЯ -->
   <div class="modal-overlay" id="createChallengeModal">
     <div class="modal-box">
-      <h3 class="modal-title">✨ Добавить свой вопрос или задание</h3>
+      <h3 class="modal-title">✨ Добавить вопрос или задание</h3>
       <div class="field-row">
         <div class="field-group">
           <label class="field-label">Тип</label>
@@ -867,11 +1199,11 @@
         </div>
       </div>
       <div class="field-group">
-        <label class="field-label">Текст вопроса или задания для вас двоих</label>
-        <input class="field-input" id="inpNewChPrompt" type="text" placeholder="Например: Куда пойдём в первый вечер встречи?" />
+        <label class="field-label">Текст вопроса или задания</label>
+        <input class="field-input" id="inpNewChPrompt" type="text" placeholder="Куда пойдём в первый вечер встречи?" />
       </div>
       <div class="field-group">
-        <label class="field-label">Варианты ответа через точку с запятой (;)</label>
+        <label class="field-label">Варианты через точку с запятой (;)</label>
         <input class="field-input" id="inpNewChOptions" type="text" placeholder="Вариант 1; Вариант 2; Вариант 3" />
       </div>
       <div class="modal-actions">
@@ -881,7 +1213,7 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО СВОЕГО ОТВЕТА НА ВОПРОС/ЗАДАНИЕ -->
+  <!-- МОДАЛЬНОЕ ОКНО СВОЕГО ОТВЕТА НА ЧЕЛЛЕНДЖ -->
   <div class="modal-overlay" id="customAnswerModal">
     <div class="modal-box">
       <h3 class="modal-title">✍️ Ваш свой ответ</h3>
@@ -900,7 +1232,7 @@
   <!-- МОДАЛЬНОЕ ОКНО ОТСЧЕТА -->
   <div class="modal-overlay" id="countdownModal">
     <div class="modal-box">
-      <h3 class="modal-title" id="cdModalHeader">⏳ Событие</h3>
+      <h3 class="modal-title" id="cdModalHeader">⏳ Событие отсчёта</h3>
       <input type="hidden" id="inpCdId" />
       <div class="field-row">
         <div class="field-group">
@@ -945,9 +1277,10 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'couple_npoint_state_v12';
-    const ROLE_KEY = 'couple_device_role_v12';
-    const NPOINT_URL_KEY = 'couple_npoint_url_v12';
+    const STORAGE_KEY = 'couple_npoint_state_v13';
+    const ROLE_KEY = 'couple_device_role_v13';
+    const NPOINT_URL_KEY = 'couple_npoint_url_v13';
+    const THEME_KEY = 'couple_ui_theme_v13';
 
     const DEFAULT_NPOINT_URL = 'https://api.npoint.io/b93a24be9137c8a0c3d9';
 
@@ -958,11 +1291,58 @@
 
     let myRole = localStorage.getItem(ROLE_KEY) || 'user1';
     let npointUrl = normalizeUrl(localStorage.getItem(NPOINT_URL_KEY) || DEFAULT_NPOINT_URL);
+    let currentTheme = localStorage.getItem(THEME_KEY) || 'light';
+    let activeSlideIndex = 0;
+
+    let tempSlideDataUrl = null;
+    let tempCheckinDataUrl = null;
+
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    function toggleTheme() {
+      currentTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+      document.body.classList.toggle('dark-mode', currentTheme === 'dark');
+      localStorage.setItem(THEME_KEY, currentTheme);
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+    }
+
+    // УМНЫЙ КОМПРЕССОР ФОТОГРАФИЙ (Ужимает любое фото с iPhone/Android до ~45 КБ для мгновенной пересылки через Npoint)
+    function compressImageFile(file, maxWidth = 680, quality = 0.68) {
+      return new Promise((resolve, reject) => {
+        if (!file) return reject(new Error('Файл не выбран'));
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            let w = img.width;
+            let h = img.height;
+            if (w > maxWidth) {
+              h = Math.round((h * maxWidth) / w);
+              w = maxWidth;
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(dataUrl);
+          };
+          img.onerror = reject;
+          img.src = ev.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
 
     // Фильтры на вкладке Челленджей
-    let chViewMode = 'active'; // 'active' | 'archive'
-    let chTypeFilter = 'all';  // 'all' | 'question' | 'task'
-    let chCatFilter = 'all';   // 'all' | 'romance' | 'cozy' | 'dreams' | 'deep' | 'fun'
+    let chViewMode = 'active';
+    let chTypeFilter = 'all';
+    let chCatFilter = 'all';
 
     const CHALLENGE_CATEGORIES = [
       { id: 'all', label: '🌟 Все' },
@@ -978,9 +1358,7 @@
       return found ? found.label : '❤️ Пара';
     }
 
-    // БОЛЬШАЯ АВТОРСКАЯ БАЗА ОБЩИХ ВОПРОСОВ И ЗАДАНИЙ ДЛЯ МАТВЕЯ И ПОЛИНЫ
     const AI_CHALLENGE_BANK = [
-      // ВОПРОСЫ (type: 'question')
       {
         tplId: 'q_rom_1', type: 'question', category: 'romance',
         prompt: 'Какой момент нашей следующей встречи ты представляешь себе чаще всего?',
@@ -995,110 +1373,30 @@
         tplId: 'q_rom_2', type: 'question', category: 'romance',
         prompt: 'Что сильнее всего помогает нам чувствовать тепло друг друга на расстоянии?',
         options: [
-          'Голосовые сообщения и кружочки в течение дня 🎙️',
+          'Голосовые сообщения и фотки в течение дня 📸',
           'Наши вечерние созвоны перед сном 📞',
           'Обсуждение совместных планов и будущих поездок ✈️',
           'Внимание к мелочам и неожиданные тёплые слова ❤️'
         ]
       },
       {
-        tplId: 'q_rom_3', type: 'question', category: 'romance',
-        prompt: 'Какой язык любви для нашей пары сейчас самый главный?',
-        options: [
-          'Слова поддержки, нежности и комплименты 💬',
-          'Качественное время вместе (даже онлайн) ⏳',
-          'Забота и желание помочь в делах 🤲',
-          'Подарки, сюрпризы и милые знаки внимания 🎁'
-        ]
-      },
-      {
-        tplId: 'q_rom_4', type: 'question', category: 'romance',
-        prompt: 'Идеальное свидание в день, когда мы наконец окажемся в одном городе:',
-        options: [
-          'Остаться дома, заказать вкусную еду и не вылезать из объятий 🍕',
-          'Пойти в уютное место с красивым светом и вкусным чаем 🍵',
-          'Ночная поездка или долгая прогулка по вечерним улицам 🌃',
-          'Устроить домашний кинотеатр со свечами и пледом 🕯️'
-        ]
-      },
-      {
         tplId: 'q_cozy_1', type: 'question', category: 'cozy',
-        prompt: 'Наше идеальное совместное утро выходного дня выглядит так:',
+        prompt: 'Пятничный вечер вместе: остаться дома в уюте или пойти гулять?',
         options: [
-          'Спать до победного в обнимку без будильников 😴',
-          'Заварить хороший чай и не спеша болтать на кухне 🍵',
-          'Вместе приготовить красивый завтрак под музыку 🥞',
-          'Включить любимый сериал или фильм прямо в постели 🎬'
-        ]
-      },
-      {
-        tplId: 'q_cozy_2', type: 'question', category: 'cozy',
-        prompt: 'Какую домашнюю традицию мы обязательно заведём, когда будем рядом каждый день?',
-        options: [
-          'Вечернее чаепитие со свечами и разговорами без телефонов 🫖',
-          'Готовить новое необычное блюдо каждые выходные 👨‍🍳',
-          'Гулять перед сном в любую погоду 🌙',
-          'Устраивать тематические киновечера с вкусняшками 🍿'
-        ]
-      },
-      {
-        tplId: 'q_cozy_3', type: 'question', category: 'cozy',
-        prompt: 'Что создаёт самый главный уют, когда мы проводим время вдвоём?',
-        options: [
-          'Приглушённый тёплый свет, плед и горячий пуэр или чай 🍵',
-          'Фоновая музыка или хороший фильм на экране 🎶',
-          'Вкусная домашняя еда и ощущение полного спокойствия 🍲',
-          'Просто присутствие друг друга рядом — остальное неважно ❤️'
-        ]
-      },
-      {
-        tplId: 'q_cozy_4', type: 'question', category: 'cozy',
-        prompt: 'Как мы распределим роли, если решим вместе приготовить праздничный ужин?',
-        options: [
-          'Готовим всё синхронно в четыре руки и дегустируем по ходу 👩‍❤️‍👨',
-          'Один — шеф-повар горячего, второй отвечает за атмосферу и чай 🍵',
-          'Включаем музыку, танцуем на кухне, а еда готовится сама 💃',
-          'Быстро делаем лёгкие закуски, чтобы осталось больше времени на отдых ✨'
+          'Домашний уют, вкусная еда и фильм в обнимку 🍕',
+          'Заварить ароматный чай и болтать при свечах 🍵',
+          'Пойти на вечернюю прогулку по красивым улочкам 🌃',
+          'Сначала прогулка, а потом уютные объятия дома ❤️'
         ]
       },
       {
         tplId: 'q_drm_1', type: 'question', category: 'dreams',
-        prompt: 'В какое путешествие нам больше всего хочется отправиться вдвоём в ближайшем будущем?',
+        prompt: 'В какое путешествие нам больше всего хочется отправиться вдвоём?',
         options: [
-          'Уединённый домик с панорамными окнами на природе или севере 🏔️',
+          'Уединённый домик с панорамными окнами на природе 🏔️',
           'Атмосферный город с историей, уютными улочками и чайными 🏮',
           'К тёплому морю, где можно встречать закаты на берегу 🌊',
           'Большое автопутешествие вдвоём под наш общий плейлист 🚗'
-        ]
-      },
-      {
-        tplId: 'q_drm_2', type: 'question', category: 'dreams',
-        prompt: 'Что мы обязательно должны попробовать сделать вместе хотя бы раз в жизни?',
-        options: [
-          'Увидеть северное сияние или звёздное небо вдали от городов 🌌',
-          'Сорваться в спонтанную поездку на выходные без долгих сборов 🎒',
-          'Побывать на настоящей чайной церемонии и собрать свою коллекцию 🍵',
-          'Снять уютный домик в горах на целую неделю только для нас двоих 🏡'
-        ]
-      },
-      {
-        tplId: 'q_drm_3', type: 'question', category: 'dreams',
-        prompt: 'Какой сувенир из наших будущих совместных поездок мы будем собирать?',
-        options: [
-          'Красивую посуду, пиалы или редкие сорта чая из каждого места 🍵',
-          'Живые совместные фотографии для нашего общего альбома 📸',
-          'Необычные вещицы для уюта в нашем доме 🕯️',
-          'Билеты, открытки и памятные мелочи в общую шкатулку 🎟️'
-        ]
-      },
-      {
-        tplId: 'q_drm_4', type: 'question', category: 'dreams',
-        prompt: 'Через 5 лет наш идеальный вечер пятницы — это:',
-        options: [
-          'Возвращаться в наш общий уютный дом, где всё устроено по любви 🏠',
-          'Собирать чемоданы для поездки на выходные вдвоём ✈️',
-          'Принимать близких друзей или сидеть на террасе с горячим чаем 🍵',
-          'Смотреть кино в обнимку и радоваться тому, как много мы прошли вместе ❤️'
         ]
       },
       {
@@ -1106,29 +1404,9 @@
         prompt: 'Что в наших отношениях даёт тебе больше всего внутренней опоры и спокойствия?',
         options: [
           'Уверенность, что мы всегда на стороне друг друга 🤝',
-          'Искренность: с тобой можно быть собой настоящим без масок 💫',
+          'Искренность: с тобой можно быть собой настоящим 💫',
           'То, как бережно мы относимся к чувствам друг друга ❤️',
-          'Наше умение разговаривать, слышать и поддерживать в любой день 🌿'
-        ]
-      },
-      {
-        tplId: 'q_deep_2', type: 'question', category: 'deep',
-        prompt: 'Какая суперсила есть у нашей пары?',
-        options: [
-          'Сохранять близость и нежность даже через сотни километров 📍',
-          'Понимать настроение друг друга буквально по голосу и одной фразе 🔮',
-          'Поднимать друг другу настроение даже после самого трудного дня 🔥',
-          'Смотреть в одну сторону и мечтать об одном и том же ✨'
-        ]
-      },
-      {
-        tplId: 'q_deep_3', type: 'question', category: 'deep',
-        prompt: 'За что тебе больше всего хочется сказать «спасибо» партнёру прямо сейчас?',
-        options: [
-          'За ежедневное тепло, внимание и ощущение «мы рядом» 🥰',
-          'За терпение, мудрость и веру в нас двоих 💪',
-          'За то, как легко и светло становится на душе после каждого разговора ☀️',
-          'За то, что делаешь мою жизнь глубже, счастливее и интереснее ❤️'
+          'Наше умение разговаривать, слышать и поддерживать 🌿'
         ]
       },
       {
@@ -1138,128 +1416,25 @@
           'Тёплая романтическая комедия с фирменными шутками 🎬',
           'Красивое атмосферное роуд-муви про любовь и дороги 🚗',
           'Уютный фильм с эстетичными кадрами и классным саундтреком 🎧',
-          'Приключенческий фильм, где главные герои справляются со всем вместе 🔥'
-        ]
-      },
-      {
-        tplId: 'q_fun_2', type: 'question', category: 'fun',
-        prompt: 'Как мы будем выбирать фильм на вечер, если вкусы вдруг разойдутся?',
-        options: [
-          'Тянем жребий или кидаем монетку — всё по-честному 🪙',
-          'Сегодня выбирает один, а завтра — второй 🔄',
-          'Ищем компромисс полчаса, а потом просто болтаем под чаёк 😂',
-          'Смотрим оба фильма подряд — ночь длинная! 🍿'
-        ]
-      },
-      {
-        tplId: 'q_fun_3', type: 'question', category: 'fun',
-        prompt: 'Кто в нашей паре главный генератор спонтанных идей и приключений?',
-        options: [
-          'Матвей подаёт идею, Полина добавляет магии и деталей ✨',
-          'Полина вдохновляет, а Матвей продумывает, как всё организовать 🚀',
-          'Оба хороши: стоит одному намекнуть, второй уже за! 🔥',
-          'Зависит от настроения — чередуем роль главного авантюриста 😎'
-        ]
-      },
-
-      // ПАРНЫЕ ЗАДАНИЯ (type: 'task')
-      {
-        tplId: 't_rom_1', type: 'task', category: 'romance',
-        prompt: '🎯 Задание: Запишите друг другу голосовое или кружочек и назовите 3 вещи, которые особенно порадовали вас в партнёре на этой неделе.',
-        options: [
-          '✅ Уже записал(а) и отправил(а)!',
-          '🎙️ Запишу в ближайший час!',
-          '🥰 Прослушал(а) и отправил(а) ответное!'
-        ]
-      },
-      {
-        tplId: 't_rom_2', type: 'task', category: 'romance',
-        prompt: '🎯 Задание: Напишите друг другу в личку одно самое тёплое воспоминание о вашей прошлой встрече, от которого сразу хочется улыбнуться.',
-        options: [
-          '💌 Воспоминание уже в чате!',
-          '✨ Вспоминаю и пишу прямо сейчас',
-          '❤️ Прочитали и поностальгировали вместе!'
-        ]
-      },
-      {
-        tplId: 't_rom_3', type: 'task', category: 'romance',
-        prompt: '🎯 Задание: Придумайте и напишите прямо в ответе ниже один необычный комплимент для второй половинки (можно через кнопку «Свой ответ»).',
-        options: [
-          '💖 Написал(а) комплимент через «Свой ответ»!',
-          '🥰 Сказал(а) лично / в голосовом!',
-          '✨ Комплимент доставлен, улыбка получена!'
+          'Приключенческий фильм, где герои справляются со всем вместе 🔥'
         ]
       },
       {
         tplId: 't_cozy_1', type: 'task', category: 'cozy',
-        prompt: '🎯 Задание: Сделайте прямо сейчас фото того, что перед вами (кружка чая, рабочий уголок или вид вокруг), и обменяйтесь кадрами момента.',
+        prompt: '🎯 Задание: Сделайте прямо сейчас фото того, что перед вами, и загрузите его через кнопку «📸 Фото-отметка» на главном экране!',
         options: [
-          '📸 Фото момента отправлено!',
-          '🍵 Сейчас налью чай и сфоткаю',
-          '✅ Обменялись кадрами, как будто рядом!'
+          '📸 Фото-отметка уже загружена на главный экран!',
+          '🍵 Сейчас заварю чай и сфоткаю момент',
+          '✅ Обменялись живыми кадрами!'
         ]
       },
       {
-        tplId: 't_cozy_2', type: 'task', category: 'cozy',
-        prompt: '🎯 Задание: Устройте сегодня синхронное чаепитие! Заварите себе вкусный чай (или пуэр) в одно время и поболтайте хотя бы 10 минут.',
+        tplId: 't_rom_1', type: 'task', category: 'romance',
+        prompt: '🎯 Задание: Добавьте ваше любимое совместное фото или картинку мечты в главную фото-карусель через кнопку «📷 + Наше фото»!',
         options: [
-          '🍵 Чай уже заварен, я в деле!',
-          '⏳ Договорились на вечернее чаепитие',
-          '✅ Попили чай синхронно — 10/10 к уюту!'
-        ]
-      },
-      {
-        tplId: 't_cozy_3', type: 'task', category: 'cozy',
-        prompt: '🎯 Задание: Пожелайте друг другу сегодня чего-то очень конкретного и уютного на остаток дня (и обновите свой статус на главном экране!).',
-        options: [
-          '✅ Статус обновлён, пожелание отправлено!',
-          '🌟 Сейчас поставлю новый статус на виджете',
-          '❤️ Сделано с любовью!'
-        ]
-      },
-      {
-        tplId: 't_drm_1', type: 'task', category: 'dreams',
-        prompt: '🎯 Задание: Зайдите во вкладку «Мечты ✨» в нашем приложении и добавьте по одному новому желанию для вашей пары.',
-        options: [
-          '✨ Новая мечта уже добавлена в список!',
-          '💭 Уже придумал(а), иду записывать',
-          '✅ Пополнили нашу копилку планов!'
-        ]
-      },
-      {
-        tplId: 't_drm_2', type: 'task', category: 'dreams',
-        prompt: '🎯 Задание: Придумайте одну деталь для вашего первого дня после встречи (место, блюдо или занятие) и запишите её во вкладку «Заметки 📝».',
-        options: [
-          '📝 Записал(а) идею в общие заметки!',
-          '💡 Напишу свой вариант прямо здесь в ответе',
-          '👩‍❤️‍👨 Обсудили и запланировали!'
-        ]
-      },
-      {
-        tplId: 't_drm_3', type: 'task', category: 'dreams',
-        prompt: '🎯 Задание: Выберите фильм или сериал, который вы хотите посмотреть вместе, и внесите его в заметку «Фильмы на вечер».',
-        options: [
-          '🎬 Фильм выбран и добавлен!',
-          '🍿 Предложил(а) свой вариант на вечер',
-          '✅ Список к просмотру готов!'
-        ]
-      },
-      {
-        tplId: 't_deep_1', type: 'task', category: 'deep',
-        prompt: '🎯 Задание: Отправьте друг другу песню, которая сегодня лучше всего передаёт ваше настроение или напоминает о любимом человеке.',
-        options: [
-          '🎧 Трек уже летит в личку!',
-          '🎵 Выбираю ту самую песню',
-          '🔥 Послушали треки друг друга!'
-        ]
-      },
-      {
-        tplId: 't_deep_2', type: 'task', category: 'deep',
-        prompt: '🎯 Задание: Напишите через кнопку «✍️ Свой ответ» одну вещь, которой вы научились благодаря вашим отношениям.',
-        options: [
-          '✍️ Написал(а) через кнопку своего ответа!',
-          '💬 Расскажу об этом вечером голосом',
-          '❤️ Поделились друг с другом самым важным!'
+          '📷 Уже добавил(а) новое фото в нашу карусель!',
+          '✨ Выбираю самый красивый кадр в галерее',
+          '❤️ Любуемся нашими фотографиями!'
         ]
       },
       {
@@ -1268,16 +1443,7 @@
         options: [
           '🎨 Уже нарисовал(а) на общем холсте!',
           '🖌️ Бегу рисовать свой шедевр!',
-          '😂 Картина готова, смотри на виджете!'
-        ]
-      },
-      {
-        tplId: 't_fun_2', type: 'task', category: 'fun',
-        prompt: '🎯 Задание: Опишите сегодняшний день только тремя эмодзи (нажмите «✍️ Свой ответ» и отправьте свои 3 смайлика, а партнёр угадает сюжет!).',
-        options: [
-          '😎 Отправил(а) 3 эмодзи через «Свой ответ»!',
-          '😂 Угадал(а) шифр партнёра!',
-          '🔥 Сделано!'
+          '😂 Картина готова!'
         ]
       }
     ];
@@ -1295,37 +1461,24 @@
       return `${d}.${m} в ${hh}:${mm}`;
     }
 
-    // Стартовый набор, чтобы сразу были вопросы и задания в разных категориях
     function buildInitialChallenges() {
       const nowLabel = formatTimeTag();
       return [
         {
-          id: 'ch_init_q1', tplId: 'q_rom_1', type: 'question', category: 'romance',
-          prompt: AI_CHALLENGE_BANK[0].prompt, options: AI_CHALLENGE_BANK[0].options,
-          user1Answer: null, user2Answer: null, createdAtLabel: nowLabel, archived: false
-        },
-        {
-          id: 'ch_init_t1', tplId: 't_cozy_1', type: 'task', category: 'cozy',
-          prompt: AI_CHALLENGE_BANK.find(x => x.tplId === 't_cozy_1').prompt,
-          options: AI_CHALLENGE_BANK.find(x => x.tplId === 't_cozy_1').options,
-          user1Answer: null, user2Answer: null, createdAtLabel: nowLabel, archived: false
-        },
-        {
-          id: 'ch_init_q2', tplId: 'q_cozy_1', type: 'question', category: 'cozy',
+          id: 'ch_init_q_cozy', tplId: 'q_cozy_1', type: 'question', category: 'cozy',
           prompt: AI_CHALLENGE_BANK.find(x => x.tplId === 'q_cozy_1').prompt,
           options: AI_CHALLENGE_BANK.find(x => x.tplId === 'q_cozy_1').options,
           user1Answer: null, user2Answer: null, createdAtLabel: nowLabel, archived: false
         },
         {
-          id: 'ch_init_q3', tplId: 'q_drm_1', type: 'question', category: 'dreams',
-          prompt: AI_CHALLENGE_BANK.find(x => x.tplId === 'q_drm_1').prompt,
-          options: AI_CHALLENGE_BANK.find(x => x.tplId === 'q_drm_1').options,
+          id: 'ch_init_t_photo', tplId: 't_cozy_1', type: 'task', category: 'cozy',
+          prompt: AI_CHALLENGE_BANK.find(x => x.tplId === 't_cozy_1').prompt,
+          options: AI_CHALLENGE_BANK.find(x => x.tplId === 't_cozy_1').options,
           user1Answer: null, user2Answer: null, createdAtLabel: nowLabel, archived: false
         },
         {
-          id: 'ch_init_t2', tplId: 't_fun_1', type: 'task', category: 'fun',
-          prompt: AI_CHALLENGE_BANK.find(x => x.tplId === 't_fun_1').prompt,
-          options: AI_CHALLENGE_BANK.find(x => x.tplId === 't_fun_1').options,
+          id: 'ch_init_q_rom', tplId: 'q_rom_1', type: 'question', category: 'romance',
+          prompt: AI_CHALLENGE_BANK[0].prompt, options: AI_CHALLENGE_BANK[0].options,
           user1Answer: null, user2Answer: null, createdAtLabel: nowLabel, archived: false
         }
       ];
@@ -1338,11 +1491,59 @@
       doodleReaction: '❤️',
       lastGeneratedHourKey: getCurrentHourKey(),
       users: {
-        user1: { name: 'Матвей', moodEmoji: '🔥', moodText: 'В работе', battery: 92, lat: null, lng: null, updatedAt: null, strokes: [] },
-        user2: { name: 'Полина', moodEmoji: '🥰', moodText: 'Жду созвона', battery: 84, lat: null, lng: null, updatedAt: null, strokes: [] }
+        user1: {
+          name: 'Матвей',
+          avatar: null,
+          moodEmoji: '🔥',
+          moodHeadline: 'отличное настроение',
+          moodText: 'Думаю о тебе и нашей встрече ❤️',
+          checkinPhoto: null,
+          battery: 92,
+          lat: null,
+          lng: null,
+          updatedAt: '12:30',
+          strokes: []
+        },
+        user2: {
+          name: 'Полина',
+          avatar: null,
+          moodEmoji: '🥰',
+          moodHeadline: 'хорошее настроение',
+          moodText: 'Жду не дождусь нашей встречи!',
+          checkinPhoto: null,
+          battery: 84,
+          lat: null,
+          lng: null,
+          updatedAt: '12:45',
+          strokes: []
+        }
       },
+      photoSlides: [
+        {
+          id: 's_default_1',
+          imgUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=80',
+          title: 'Наше путешествие мечты',
+          location: 'Вместе куда угодно ✨',
+          author: 'Матвей & Полина'
+        },
+        {
+          id: 's_default_2',
+          imgUrl: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=900&q=80',
+          title: 'Скоро будем рядом ❤️',
+          location: 'Крепкие объятия при встрече',
+          author: 'Матвей & Полина'
+        }
+      ],
+      checkinHistory: [],
       countdowns: [
-        { id: 'c1', emoji: '✈️', title: 'Встреча в аэропорту', days: 14, pinned: true }
+        {
+          id: 'c1',
+          emoji: '✈️',
+          title: 'Встреча в аэропорту',
+          days: 14,
+          targetTs: Date.now() + 14 * 86400000 + 23 * 3600000 + 54 * 60000,
+          pinned: true
+        }
       ],
       challenges: buildInitialChallenges(),
       boards: [
@@ -1366,30 +1567,27 @@
       if (!obj.users) obj.users = JSON.parse(JSON.stringify(defaultState.users));
       if (!obj.users.user1) obj.users.user1 = JSON.parse(JSON.stringify(defaultState.users.user1));
       if (!obj.users.user2) obj.users.user2 = JSON.parse(JSON.stringify(defaultState.users.user2));
+      if (!obj.users.user1.moodHeadline) obj.users.user1.moodHeadline = 'хорошее настроение';
+      if (!obj.users.user2.moodHeadline) obj.users.user2.moodHeadline = 'хорошее настроение';
       if (!Array.isArray(obj.users.user1.strokes)) obj.users.user1.strokes = [];
       if (!Array.isArray(obj.users.user2.strokes)) obj.users.user2.strokes = [];
-      if (!Array.isArray(obj.countdowns)) obj.countdowns = JSON.parse(JSON.stringify(defaultState.countdowns));
 
-      // Миграция старого todayChallenge, если он был в облаке, чтобы ничего не потерялось
+      if (!Array.isArray(obj.photoSlides) || obj.photoSlides.length === 0) {
+        obj.photoSlides = JSON.parse(JSON.stringify(defaultState.photoSlides));
+      }
+      if (!Array.isArray(obj.checkinHistory)) obj.checkinHistory = [];
+      if (!Array.isArray(obj.countdowns) || obj.countdowns.length === 0) {
+        obj.countdowns = JSON.parse(JSON.stringify(defaultState.countdowns));
+      }
+      obj.countdowns.forEach(cd => {
+        if (!cd.targetTs) {
+          cd.targetTs = Date.now() + (Number(cd.days) || 14) * 86400000;
+        }
+      });
+
       if (!Array.isArray(obj.challenges) || obj.challenges.length === 0) {
         obj.challenges = buildInitialChallenges();
-        if (obj.todayChallenge && obj.todayChallenge.prompt) {
-          const bothDone = Boolean(obj.todayChallenge.user1Answer && obj.todayChallenge.user2Answer);
-          obj.challenges.unshift({
-            id: 'ch_migrated_1',
-            tplId: 'migrated',
-            type: 'question',
-            category: 'romance',
-            prompt: obj.todayChallenge.prompt,
-            options: obj.todayChallenge.options || [],
-            user1Answer: obj.todayChallenge.user1Answer || null,
-            user2Answer: obj.todayChallenge.user2Answer || null,
-            createdAtLabel: 'Ранее',
-            archived: bothDone
-          });
-        }
       }
-
       if (!obj.lastGeneratedHourKey) obj.lastGeneratedHourKey = getCurrentHourKey();
       if (!Array.isArray(obj.boards)) obj.boards = JSON.parse(JSON.stringify(defaultState.boards));
       if (!obj.activeBoardId) obj.activeBoardId = 'b_trips';
@@ -1400,7 +1598,256 @@
     function getMyKey() { return myRole === 'user2' ? 'user2' : 'user1'; }
     function getPartnerKey() { return myRole === 'user2' ? 'user1' : 'user2'; }
 
-    // УМНОЕ СЛИЯНИЕ МАССИВА ЧЕЛЛЕНДЖЕЙ МЕЖДУ ДВУМЯ ТЕЛЕФОНАМИ (БЕЗ ПОТЕРИ ОТВЕТОВ)
+    function getGreetingByHour() {
+      const h = new Date().getHours();
+      if (h >= 5 && h < 12) return 'Доброе утро';
+      if (h >= 12 && h < 18) return 'Добрый день';
+      if (h >= 18 && h < 23) return 'Добрый вечер';
+      return 'Доброй ночи';
+    }
+
+    // ЖИВОЙ ПОСЕКУНДНЫЙ ОТСЧЁТ ВРЕМЕНИ (17 : 23 : 54 : 24)
+    function updateLiveCountdownClock() {
+      const countdowns = state.countdowns || [];
+      const cd = countdowns.find(c => c.pinned) || countdowns[0] || { title: 'Встреча', days: 14, targetTs: Date.now() + 14 * 86400000 };
+
+      let diffMs = (cd.targetTs || (Date.now() + (cd.days || 14) * 86400000)) - Date.now();
+      if (diffMs < 0) diffMs = 0;
+
+      const totalSecs = Math.floor(diffMs / 1000);
+      const days = Math.floor(totalSecs / 86400);
+      const hours = Math.floor((totalSecs % 86400) / 3600);
+      const mins = Math.floor((totalSecs % 3600) / 60);
+      const secs = totalSecs % 60;
+
+      const elD = document.getElementById('tDays');
+      const elH = document.getElementById('tHours');
+      const elM = document.getElementById('tMins');
+      const elS = document.getElementById('tSecs');
+
+      if (elD) elD.textContent = String(days);
+      if (elH) elH.textContent = String(hours).padStart(2, '0');
+      if (elM) elM.textContent = String(mins).padStart(2, '0');
+      if (elS) elS.textContent = String(secs).padStart(2, '0');
+
+      const subEl = document.getElementById('greetingSub');
+      if (subEl) {
+        subEl.textContent = `Всего ${days} дн. до ${cd.title}!`;
+      }
+    }
+    setInterval(updateLiveCountdownClock, 1000);
+
+    // ЗАГРУЗКА АВАТАРКИ ПРОФИЛЯ
+    function triggerAvatarUpload() {
+      document.getElementById('avatarFileInput').click();
+    }
+
+    async function handleAvatarSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      try {
+        const compressed = await compressImageFile(file, 260, 0.72);
+        const myKey = getMyKey();
+        state.users[myKey].avatar = compressed;
+        syncSection(myKey, state.users[myKey]);
+      } catch (e) {
+        alert('Не удалось обработать фото');
+      }
+    }
+
+    // ФОТО-КАРУСЕЛЬ И ДОБАВЛЕНИЕ НОВЫХ ФОТОГРАФИЙ НА ГЛАВНЫЙ ЭКРАН
+    function prevPhotoSlide() {
+      const slides = state.photoSlides || [];
+      if (slides.length <= 1) return;
+      activeSlideIndex = (activeSlideIndex - 1 + slides.length) % slides.length;
+      renderHeroCarousel();
+    }
+
+    function nextPhotoSlide() {
+      const slides = state.photoSlides || [];
+      if (slides.length <= 1) return;
+      activeSlideIndex = (activeSlideIndex + 1) % slides.length;
+      renderHeroCarousel();
+    }
+
+    function selectPhotoSlide(idx) {
+      activeSlideIndex = idx;
+      renderHeroCarousel();
+    }
+
+    function openAddMenuModal() {
+      document.getElementById('addMenuModal').classList.add('open');
+    }
+
+    function openPhotoSlideModal() {
+      tempSlideDataUrl = null;
+      document.getElementById('slidePreviewImg').style.display = 'none';
+      document.getElementById('slideUploadHint').style.display = 'block';
+      document.getElementById('inpSlideTitle').value = '';
+      document.getElementById('inpSlideLocation').value = '';
+      document.getElementById('photoSlideModal').classList.add('open');
+    }
+
+    async function handleSlideFileChosen(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      document.getElementById('slideUploadHint').textContent = '⏳ Сжимаем фото...';
+      try {
+        tempSlideDataUrl = await compressImageFile(file, 720, 0.68);
+        const img = document.getElementById('slidePreviewImg');
+        img.src = tempSlideDataUrl;
+        img.style.display = 'block';
+        document.getElementById('slideUploadHint').style.display = 'none';
+      } catch (e) {
+        document.getElementById('slideUploadHint').textContent = '⚠️ Ошибка выбора фото';
+      }
+    }
+
+    function savePhotoSlide() {
+      if (!tempSlideDataUrl) {
+        alert('Пожалуйста, выберите фотографию из галереи!');
+        return;
+      }
+      const me = state.users[getMyKey()];
+      const title = document.getElementById('inpSlideTitle').value.trim() || 'Наш момент ❤️';
+      const location = document.getElementById('inpSlideLocation').value.trim() || `От: ${me.name}`;
+
+      if (!Array.isArray(state.photoSlides)) state.photoSlides = [];
+      state.photoSlides.unshift({
+        id: 'slide_' + Date.now(),
+        imgUrl: tempSlideDataUrl,
+        title,
+        location,
+        author: `${me.name} • ${formatTimeTag()}`
+      });
+
+      // Храним до 8 лучших фото в карусели, чтобы облако работало мгновенно
+      if (state.photoSlides.length > 8) {
+        state.photoSlides = state.photoSlides.slice(0, 8);
+      }
+
+      activeSlideIndex = 0;
+      closeModal('photoSlideModal');
+      syncSection('photoSlides', state.photoSlides);
+    }
+
+    function deleteCurrentSlide() {
+      const slides = state.photoSlides || [];
+      if (slides.length <= 1) {
+        openPhotoSlideModal();
+        return;
+      }
+      if (!confirm('Удалить текущее фото из карусели?')) return;
+      slides.splice(activeSlideIndex, 1);
+      activeSlideIndex = 0;
+      syncSection('photoSlides', state.photoSlides);
+    }
+
+    function renderHeroCarousel() {
+      const slides = state.photoSlides || defaultState.photoSlides;
+      if (activeSlideIndex >= slides.length) activeSlideIndex = 0;
+      const cur = slides[activeSlideIndex] || slides[0];
+
+      document.getElementById('heroSlideImg').src = cur.imgUrl;
+      document.getElementById('heroSlideTitle').textContent = cur.title || 'Мы Рядом ❤️';
+      document.getElementById('heroSlideSub').textContent = `📍 ${cur.location || 'Наше место'}`;
+      document.getElementById('heroSlideAuthor').textContent = `${cur.author || ''} (${activeSlideIndex + 1}/${slides.length})`;
+
+      document.getElementById('heroCarouselDots').innerHTML = slides.map((s, idx) => `
+        <div class="c-dot ${idx === activeSlideIndex ? 'active' : ''}" onclick="selectPhotoSlide(${idx})"></div>
+      `).join('');
+    }
+
+    // РАЗДЕЛ "ОТМЕТКА" (СТАТУС НАСТРОЕНИЯ + ПРИКРЕПЛЕНИЕ ЖИВОГО ФОТО)
+    function openCheckinModal() {
+      const me = state.users[getMyKey()];
+      tempCheckinDataUrl = me.checkinPhoto || null;
+      const prevImg = document.getElementById('checkinPreviewImg');
+      const hint = document.getElementById('checkinUploadHint');
+      if (tempCheckinDataUrl) {
+        prevImg.src = tempCheckinDataUrl;
+        prevImg.style.display = 'block';
+        hint.style.display = 'none';
+      } else {
+        prevImg.style.display = 'none';
+        hint.style.display = 'block';
+        hint.textContent = '📷 Прикрепить фото момента (необязательно)';
+      }
+      document.getElementById('inpCheckinEmoji').value = me.moodEmoji || '🥰';
+      document.getElementById('inpCheckinHeadline').value = me.moodHeadline || 'хорошее настроение';
+      document.getElementById('inpCheckinText').value = me.moodText || '';
+      document.getElementById('checkinModal').classList.add('open');
+    }
+
+    async function handleCheckinFileChosen(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      document.getElementById('checkinUploadHint').textContent = '⏳ Сжимаем фото...';
+      try {
+        tempCheckinDataUrl = await compressImageFile(file, 640, 0.66);
+        const img = document.getElementById('checkinPreviewImg');
+        img.src = tempCheckinDataUrl;
+        img.style.display = 'block';
+        document.getElementById('checkinUploadHint').style.display = 'none';
+      } catch (e) {
+        document.getElementById('checkinUploadHint').textContent = '⚠️ Ошибка загрузки';
+      }
+    }
+
+    function saveCheckinModal() {
+      const myKey = getMyKey();
+      const me = state.users[myKey];
+      const emoji = document.getElementById('inpCheckinEmoji').value.trim() || '🥰';
+      const headline = document.getElementById('inpCheckinHeadline').value.trim() || 'хорошее настроение';
+      const text = document.getElementById('inpCheckinText').value.trim() || 'Думаю о тебе ❤️';
+      const nowTime = new Date().toTimeString().slice(0, 5);
+
+      me.moodEmoji = emoji;
+      me.moodHeadline = headline;
+      me.moodText = text;
+      me.checkinPhoto = tempCheckinDataUrl;
+      me.updatedAt = nowTime;
+
+      if (!Array.isArray(state.checkinHistory)) state.checkinHistory = [];
+      state.checkinHistory.unshift({
+        id: 'chk_' + Date.now(),
+        userName: me.name,
+        emoji,
+        headline,
+        text,
+        photo: tempCheckinDataUrl,
+        timeLabel: formatTimeTag()
+      });
+      if (state.checkinHistory.length > 10) {
+        state.checkinHistory = state.checkinHistory.slice(0, 10);
+      }
+
+      closeModal('checkinModal');
+      syncSection(myKey, me);
+      syncSection('checkinHistory', state.checkinHistory);
+    }
+
+    function openHistoryModal() {
+      const hist = state.checkinHistory || [];
+      const box = document.getElementById('checkinHistoryList');
+      if (hist.length === 0) {
+        box.innerHTML = `<div style="text-align:center; color:var(--muted); padding:20px">История отметок пока пуста. Нажмите «📸 + Фото-отметка», чтобы поделиться моментом!</div>`;
+      } else {
+        box.innerHTML = hist.map(item => `
+          <div style="background:var(--card-2); padding:12px; border-radius:16px">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:4px">
+              <b>${item.emoji} ${item.userName}: ${item.headline}</b>
+              <span>${item.timeLabel}</span>
+            </div>
+            <div style="font-size:14px; font-weight:600">${item.text}</div>
+            ${item.photo ? `<img src="${item.photo}" style="width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-top:8px" />` : ''}
+          </div>
+        `).join('');
+      }
+      document.getElementById('historyModal').classList.add('open');
+    }
+
+    // УМНОЕ СЛИЯНИЕ МАССИВА ЧЕЛЛЕНДЖЕЙ
     function mergeChallengesLists(cloudList = [], localList = []) {
       const map = new Map();
       cloudList.forEach(item => {
@@ -1415,16 +1862,11 @@
           if (localItem.user1Answer) merged.user1Answer = localItem.user1Answer;
           if (localItem.user2Answer) merged.user2Answer = localItem.user2Answer;
           if (localItem.archived) merged.archived = true;
-          // Если оба ответили, автоматически помечаем доступным для архивации
-          if (merged.user1Answer && merged.user2Answer && localItem.archived) {
-            merged.archived = true;
-          }
         }
       });
       return Array.from(map.values());
     }
 
-    // ДЕТЕРМИНИРОВАННАЯ ЕЖЕЧАСНАЯ ГЕНЕРАЦИЯ (1 НОВЫЙ ВОПРОС + 1 НОВОЕ ЗАДАНИЕ КАЖДЫЙ ЧАС)
     function hashString(str) {
       let h = 0;
       for (let i = 0; i < str.length; i++) {
@@ -1454,49 +1896,27 @@
       const currentHourKey = getCurrentHourKey();
       if (state.lastGeneratedHourKey === currentHourKey) return;
 
-      // 1. Все вопросы и задания, на которые УЖЕ ответили оба партнёра, бережно переносим в Архив
       (state.challenges || []).forEach(ch => {
-        if (ch.user1Answer && ch.user2Answer) {
-          ch.archived = true;
-        }
+        if (ch.user1Answer && ch.user2Answer) ch.archived = true;
       });
 
-      // 2. Проверяем, не созданы ли уже элементы за этот час
       const qHourId = `ch_q_${currentHourKey}`;
       const tHourId = `ch_t_${currentHourKey}`;
-      const alreadyHasQ = state.challenges.some(c => c.id === qHourId);
-      const alreadyHasT = state.challenges.some(c => c.id === tHourId);
-
       const { qTpl, tTpl } = pickNextPairFromBank(currentHourKey, state.challenges);
       const timeLabel = formatTimeTag();
 
-      if (!alreadyHasT && tTpl) {
+      if (!state.challenges.some(c => c.id === tHourId) && tTpl) {
         state.challenges.unshift({
-          id: tHourId,
-          tplId: tTpl.tplId,
-          type: 'task',
-          category: tTpl.category,
-          prompt: tTpl.prompt,
-          options: tTpl.options,
-          user1Answer: null,
-          user2Answer: null,
-          createdAtLabel: timeLabel,
-          archived: false
+          id: tHourId, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
+          prompt: tTpl.prompt, options: tTpl.options,
+          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
         });
       }
-
-      if (!alreadyHasQ && qTpl) {
+      if (!state.challenges.some(c => c.id === qHourId) && qTpl) {
         state.challenges.unshift({
-          id: qHourId,
-          tplId: qTpl.tplId,
-          type: 'question',
-          category: qTpl.category,
-          prompt: qTpl.prompt,
-          options: qTpl.options,
-          user1Answer: null,
-          user2Answer: null,
-          createdAtLabel: timeLabel,
-          archived: false
+          id: qHourId, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
+          prompt: qTpl.prompt, options: qTpl.options,
+          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
         });
       }
 
@@ -1505,7 +1925,6 @@
       syncSection('lastGeneratedHourKey', state.lastGeneratedHourKey);
     }
 
-    // Кнопка ручной генерации ещё одной пары (вопрос + задание) в любой момент
     function generateExtraPairNow() {
       const seed = 'manual_' + Date.now();
       const { qTpl, tTpl } = pickNextPairFromBank(seed, state.challenges);
@@ -1514,38 +1933,22 @@
 
       if (tTpl) {
         state.challenges.unshift({
-          id: `ch_t_${stamp}`,
-          tplId: tTpl.tplId,
-          type: 'task',
-          category: tTpl.category,
-          prompt: tTpl.prompt,
-          options: tTpl.options,
-          user1Answer: null,
-          user2Answer: null,
-          createdAtLabel: timeLabel,
-          archived: false
+          id: `ch_t_${stamp}`, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
+          prompt: tTpl.prompt, options: tTpl.options,
+          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
         });
       }
       if (qTpl) {
         state.challenges.unshift({
-          id: `ch_q_${stamp}`,
-          tplId: qTpl.tplId,
-          type: 'question',
-          category: qTpl.category,
-          prompt: qTpl.prompt,
-          options: qTpl.options,
-          user1Answer: null,
-          user2Answer: null,
-          createdAtLabel: timeLabel,
-          archived: false
+          id: `ch_q_${stamp}`, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
+          prompt: qTpl.prompt, options: qTpl.options,
+          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
         });
       }
-
       chViewMode = 'active';
       syncSection('challenges', state.challenges);
     }
 
-    // Таймер обратного отсчёта до следующего часа
     function updateHourlyCountdownUI() {
       const now = new Date();
       const minsLeft = 59 - now.getMinutes();
@@ -1565,17 +1968,14 @@
 
     function setSyncIndicator(status, message) {
       const dot = document.getElementById('syncDot');
-      const label = document.getElementById('syncTextLabel');
+      const label = document.getElementById('topGpsStatus');
       const diag = document.getElementById('cloudDiagBox');
       if (status === 'online') {
-        dot.className = 'sync-dot online';
-        label.textContent = 'Онлайн';
-      } else if (status === 'error') {
-        dot.className = 'sync-dot error';
-        label.textContent = 'Ошибка';
+        dot.className = 'avatar-online-dot';
+        if (label) label.textContent = 'Онлайн';
       } else {
-        dot.className = 'sync-dot';
-        label.textContent = 'Синхр...';
+        dot.className = 'avatar-online-dot error';
+        if (label) label.textContent = 'Сеть...';
       }
       if (diag && message) diag.innerHTML = message;
     }
@@ -1628,9 +2028,9 @@
           renderAll();
           redrawBothLayers();
           const nowTime = new Date().toTimeString().slice(0, 8);
-          setSyncIndicator('online', `🟢 <b>Синхронизировано с Npoint.io!</b><br>Последняя отправка: ${nowTime}`);
+          setSyncIndicator('online', `🟢 <b>Синхронизировано с Npoint.io!</b><br>Отправлено: ${nowTime}`);
         } else {
-          setSyncIndicator('error', `🔴 <b>Ошибка записи Npoint:</b> HTTP ${postRes.status}`);
+          setSyncIndicator('error', `🔴 <b>Ошибка записи:</b> HTTP ${postRes.status}`);
         }
       } catch (err) {
         setSyncIndicator('error', `🔴 <b>Ошибка сети:</b> ${err.message}`);
@@ -1666,7 +2066,7 @@
           }
         }
       } catch (err) {
-        setSyncIndicator('error', `🔴 Нет связи с Npoint.io (${err.message})`);
+        setSyncIndicator('error', `🔴 Нет связи с Npoint.io`);
       } finally {
         isPolling = false;
       }
@@ -1674,10 +2074,9 @@
 
     async function forceSyncNow() {
       const btn = document.getElementById('topGpsStatus');
-      btn.textContent = 'Связь...';
+      if (btn) btn.textContent = 'Синхр...';
       await pollCloudData();
-      btn.textContent = 'Готово!';
-      setTimeout(() => { btn.textContent = 'Обновить'; }, 1200);
+      if (btn) btn.textContent = 'Онлайн';
     }
 
     function calcDistanceKm(lat1, lon1, lat2, lon2) {
@@ -1696,9 +2095,9 @@
       const u2 = state.users.user2;
       const dist = calcDistanceKm(u1.lat, u1.lng, u2.lat, u2.lng);
       if (dist !== null) {
-        if (dist < 1) return `${Math.round(dist * 1000)} м (GPS)`;
-        if (dist < 10) return `${dist.toFixed(1)} км (GPS)`;
-        return `${Math.round(dist)} км (GPS)`;
+        if (dist < 1) return `${Math.round(dist * 1000)} м`;
+        if (dist < 10) return `${dist.toFixed(1)} км`;
+        return `${Math.round(dist)} км`;
       }
       return `${state.manualDistanceKm || 640} км`;
     }
@@ -1724,16 +2123,10 @@
       gpsWatchId = navigator.geolocation.watchPosition(onPosSuccess, () => {}, { enableHighAccuracy: true, maximumAge: 20000 });
     }
 
-    function requestMyGpsNow() {
-      startAutoGpsTracking();
-      forceSyncNow();
-    }
-
     if ('getBattery' in navigator) {
       navigator.getBattery().then(bat => {
         const updateBat = () => {
           const lvl = Math.round(bat.level * 100);
-          document.getElementById('myRealBatteryLabel').textContent = lvl + '%';
           const myKey = getMyKey();
           if (state.users[myKey].battery !== lvl) {
             state.users[myKey].battery = lvl;
@@ -1746,26 +2139,28 @@
     }
 
     const moodPresets = [
-      ['🔥', 'В работе'], ['🥺', 'Скучаю'], ['🍵', 'Пью пуэр'], ['😴', 'Сплю'], ['🎧', 'Музыка'], ['❤️', 'Люблю тебя']
+      ['🔥', 'боевое настроение', 'В работе, но думаю о тебе'],
+      ['🥺', 'нежное настроение', 'Очень скучаю по тебе!'],
+      ['🍵', 'уютное настроение', 'Пью горячий пуэр и отдыхаю'],
+      ['🥰', 'хорошее настроение', 'Жду не дождусь нашей встречи!'],
+      ['😴', 'сонное настроение', 'Обнимаю тебя сквозь сон']
     ];
+
+    function setQuickMood(em, headline, txt) {
+      const myKey = getMyKey();
+      const me = state.users[myKey];
+      me.moodEmoji = em;
+      me.moodHeadline = headline;
+      me.moodText = txt;
+      me.updatedAt = new Date().toTimeString().slice(0, 5);
+      syncSection(myKey, me);
+    }
 
     function switchTab(idx) {
       document.querySelectorAll('.tab-page').forEach((el, i) => el.classList.toggle('active', i === idx));
       document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === idx));
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (idx === 1) exportCompositeToWidgets();
-    }
-
-    function setWidgetPreviewMode(mode) {
-      document.getElementById('btnModeHome').classList.toggle('active', mode === 'home');
-      document.getElementById('btnModeLock').classList.toggle('active', mode === 'lock');
-      document.getElementById('homeWidgetsBox').style.display = mode === 'home' ? 'block' : 'none';
-      document.getElementById('lockWidgetsBox').style.display = mode === 'lock' ? 'block' : 'none';
-    }
-
-    function scrollToCountdowns() {
-      switchTab(0);
-      document.getElementById('countdownsSection').scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -1779,8 +2174,10 @@
     }
 
     function openSettingsModal() {
-      document.getElementById('roleBtnU1').classList.toggle('active', myRole === 'user1');
-      document.getElementById('roleBtnU2').classList.toggle('active', myRole === 'user2');
+      document.getElementById('roleBtnU1').style.background = myRole === 'user1' ? 'var(--pink)' : 'var(--card-2)';
+      document.getElementById('roleBtnU1').style.color = myRole === 'user1' ? '#fff' : 'var(--text)';
+      document.getElementById('roleBtnU2').style.background = myRole === 'user2' ? 'var(--pink)' : 'var(--card-2)';
+      document.getElementById('roleBtnU2').style.color = myRole === 'user2' ? '#fff' : 'var(--text)';
       document.getElementById('inpU1Name').value = state.users.user1.name;
       document.getElementById('inpU2Name').value = state.users.user2.name;
       document.getElementById('inpStreak').value = state.streakDays;
@@ -1811,53 +2208,69 @@
       syncSection('manualDistanceKm', state.manualDistanceKm);
     }
 
-    function setMyMood(em, txt) {
-      const myKey = getMyKey();
-      state.users[myKey].moodEmoji = em;
-      state.users[myKey].moodText = txt;
-      state.users[myKey].updatedAt = new Date().toTimeString().slice(0, 5);
-      syncSection(myKey, state.users[myKey]);
+    function cyclePinnedCountdown() {
+      const list = state.countdowns || [];
+      if (list.length <= 1) {
+        openCountdownModal();
+        return;
+      }
+      const curIdx = list.findIndex(c => c.pinned);
+      const nextIdx = (curIdx + 1) % list.length;
+      list.forEach((c, i) => c.pinned = (i === nextIdx));
+      syncSection('countdowns', state.countdowns);
     }
 
-    function openCustomMoodModal() {
-      const me = state.users[getMyKey()];
-      document.getElementById('inpMyCustomEmoji').value = me.moodEmoji;
-      document.getElementById('inpMyCustomText').value = me.moodText;
-      document.getElementById('customMoodModal').classList.add('open');
+    function pinCountdown(id) {
+      state.countdowns.forEach(c => c.pinned = (c.id === id));
+      syncSection('countdowns', state.countdowns);
     }
 
-    function saveCustomMood() {
-      const em = document.getElementById('inpMyCustomEmoji').value.trim() || '✨';
-      const txt = document.getElementById('inpMyCustomText').value.trim() || 'На связи';
-      closeModal('customMoodModal');
-      setMyMood(em, txt);
+    function openCountdownModal(id = '') {
+      const existing = (state.countdowns || []).find(c => c.id === id);
+      document.getElementById('inpCdId').value = existing ? existing.id : '';
+      document.getElementById('inpCdEmoji').value = existing ? existing.emoji : '✈️';
+      document.getElementById('inpCdDays').value = existing ? existing.days : 14;
+      document.getElementById('inpCdTitle').value = existing ? existing.title : '';
+      document.getElementById('countdownModal').classList.add('open');
     }
 
-    // ФУНКЦИИ ЧЕЛЛЕНДЖЕЙ, КАТЕГОРИЙ И АРХИВА
-    function setChallengeView(mode) {
-      chViewMode = mode;
-      renderAll();
+    function saveCountdownModal() {
+      if (!state.countdowns) state.countdowns = [];
+      const id = document.getElementById('inpCdId').value;
+      const emoji = document.getElementById('inpCdEmoji').value.trim() || '✈️';
+      const days = parseInt(document.getElementById('inpCdDays').value) || 1;
+      const title = document.getElementById('inpCdTitle').value.trim() || 'Событие';
+      const targetTs = Date.now() + days * 86400000;
+
+      if (id) {
+        const item = state.countdowns.find(c => c.id === id);
+        if (item) { item.emoji = emoji; item.days = days; item.title = title; item.targetTs = targetTs; }
+      } else {
+        state.countdowns.forEach(c => c.pinned = false);
+        state.countdowns.push({ id: 'c' + Date.now(), emoji, title, days, targetTs, pinned: true });
+      }
+      closeModal('countdownModal');
+      syncSection('countdowns', state.countdowns);
     }
 
-    function setChallengeTypeFilter(type) {
-      chTypeFilter = type;
-      renderAll();
+    function deleteCountdown(id) {
+      state.countdowns = (state.countdowns || []).filter(c => c.id !== id);
+      if (state.countdowns.length > 0 && !state.countdowns.some(c => c.pinned)) {
+        state.countdowns[0].pinned = true;
+      }
+      syncSection('countdowns', state.countdowns);
     }
 
-    function setChallengeCatFilter(cat) {
-      chCatFilter = cat;
-      renderAll();
-    }
+    // ФУНКЦИИ ЧЕЛЛЕНДЖЕЙ
+    function setChallengeView(mode) { chViewMode = mode; renderAll(); }
+    function setChallengeTypeFilter(type) { chTypeFilter = type; renderAll(); }
+    function setChallengeCatFilter(cat) { chCatFilter = cat; renderAll(); }
 
     function answerChallengeItem(chId, answerText) {
       const item = (state.challenges || []).find(c => c.id === chId);
       if (!item) return;
-      if (myRole === 'user2') {
-        item.user2Answer = answerText;
-      } else {
-        item.user1Answer = answerText;
-      }
-      // Как только оба партнёра ответили — карточка сразу становится доступной в Архиве!
+      if (myRole === 'user2') item.user2Answer = answerText;
+      else item.user1Answer = answerText;
       syncSection('challenges', state.challenges);
     }
 
@@ -1913,64 +2326,21 @@
       const rawOpts = document.getElementById('inpNewChOptions').value.trim();
       if (!prompt) return;
 
-      let options = rawOpts
+      const options = rawOpts
         ? rawOpts.split(';').map(s => s.trim()).filter(Boolean)
         : (type === 'task'
             ? ['✅ Выполнено!', '⏳ Сделаю сегодня', '👩‍❤️‍👨 Сделаем вместе!']
             : ['Конечно да! ❤️', 'Обсудим вечером ✨', 'Напишу свой вариант ✍️']);
 
       state.challenges.unshift({
-        id: 'ch_custom_' + Date.now(),
-        tplId: 'custom',
-        type,
-        category,
+        id: 'ch_custom_' + Date.now(), tplId: 'custom', type, category,
         prompt: type === 'task' && !prompt.startsWith('🎯') ? '🎯 Задание: ' + prompt : prompt,
-        options,
-        user1Answer: null,
-        user2Answer: null,
-        createdAtLabel: formatTimeTag(),
-        archived: false
+        options, user1Answer: null, user2Answer: null, createdAtLabel: formatTimeTag(), archived: false
       });
 
       chViewMode = 'active';
       closeModal('createChallengeModal');
       syncSection('challenges', state.challenges);
-    }
-
-    function pinCountdown(id) {
-      state.countdowns.forEach(c => c.pinned = (c.id === id));
-      syncSection('countdowns', state.countdowns);
-    }
-
-    function openCountdownModal(id = '') {
-      const existing = (state.countdowns || []).find(c => c.id === id);
-      document.getElementById('inpCdId').value = existing ? existing.id : '';
-      document.getElementById('inpCdEmoji').value = existing ? existing.emoji : '✈️';
-      document.getElementById('inpCdDays').value = existing ? existing.days : 14;
-      document.getElementById('inpCdTitle').value = existing ? existing.title : '';
-      document.getElementById('countdownModal').classList.add('open');
-    }
-
-    function saveCountdownModal() {
-      if (!state.countdowns) state.countdowns = [];
-      const id = document.getElementById('inpCdId').value;
-      const emoji = document.getElementById('inpCdEmoji').value.trim() || '✨';
-      const days = parseInt(document.getElementById('inpCdDays').value) || 1;
-      const title = document.getElementById('inpCdTitle').value.trim() || 'Событие';
-
-      if (id) {
-        const item = state.countdowns.find(c => c.id === id);
-        if (item) { item.emoji = emoji; item.days = days; item.title = title; }
-      } else {
-        state.countdowns.push({ id: 'c' + Date.now(), emoji, title, days, pinned: state.countdowns.length === 0 });
-      }
-      closeModal('countdownModal');
-      syncSection('countdowns', state.countdowns);
-    }
-
-    function deleteCountdown(id) {
-      state.countdowns = (state.countdowns || []).filter(c => c.id !== id);
-      syncSection('countdowns', state.countdowns);
     }
 
     function openWishModal(id = '') {
@@ -2032,22 +2402,13 @@
       if (w) w.done = !w.done;
       syncSection('wishes', state.wishes);
     }
-
     function deleteWish(id) {
       state.wishes = (state.wishes || []).filter(x => x.id !== id);
       syncSection('wishes', state.wishes);
     }
-
     function deleteNote(id) {
       state.notes = (state.notes || []).filter(x => x.id !== id);
       syncSection('notes', state.notes);
-    }
-
-    function toggleWidgetReaction() {
-      const list = ['❤️', '🥰', '🔥', '💋', '✨'];
-      const next = list[(list.indexOf(state.doodleReaction) + 1) % list.length];
-      state.doodleReaction = next;
-      syncSection('doodleReaction', next);
     }
 
     function escapeQuotes(str) {
@@ -2061,8 +2422,6 @@
       const partner = state.users[getPartnerKey()];
       const allCh = state.challenges || [];
 
-      // Активные — те, что ещё не отправлены в архив
-      // Архив — все, на которые ответили оба партнёра ИЛИ которые помечены archived === true
       const activeList = allCh.filter(c => !c.archived);
       const archiveList = allCh.filter(c => c.archived || (c.user1Answer && c.user2Answer));
 
@@ -2072,26 +2431,21 @@
       document.getElementById('btnChActive').classList.toggle('active', chViewMode === 'active');
       document.getElementById('btnChArchive').classList.toggle('active', chViewMode === 'archive');
 
-      // Кнопка «Убрать отвеченные в архив», если в активных есть полностью отвеченные карточки
       const completedInActive = activeList.filter(c => c.user1Answer && c.user2Answer).length;
       const btnArchAll = document.getElementById('btnArchiveAllDone');
       if (btnArchAll) {
         btnArchAll.style.display = (chViewMode === 'active' && completedInActive > 0) ? 'inline-block' : 'none';
-        btnArchAll.textContent = `📥 В архив (${completedInActive})`;
       }
 
-      // Статус на главном виджете
-      const waitingForMe = activeList.filter(c => {
-        const myAns = myRole === 'user2' ? c.user2Answer : c.user1Answer;
-        return !myAns;
-      }).length;
-      document.getElementById('wChallengeStatus').textContent = waitingForMe > 0
-        ? `🔐 Ждут ответа: ${waitingForMe} (Архив: ${archiveList.length})`
-        : `🔓 Все пройдены! Архив: ${archiveList.length}`;
+      // Обновляем баннер "Задание дня" на главном экране
+      const featuredCh = activeList[0] || allCh[0];
+      if (featuredCh) {
+        document.getElementById('bannerChallengeLabel').textContent = featuredCh.type === 'task' ? 'Задание дня' : 'Вопрос дня';
+        document.getElementById('bannerChallengeTitle').textContent = featuredCh.prompt.replace(/^🎯 Задание:\s*/i, '');
+      }
 
-      // Фильтр по типу
       const types = [
-        { id: 'all', label: '📋 Все типы' },
+        { id: 'all', label: '📋 Все' },
         { id: 'question', label: '❓ Вопросы' },
         { id: 'task', label: '🎯 Задания' }
       ];
@@ -2099,25 +2453,17 @@
         <button class="chip ${chTypeFilter === t.id ? 'active' : ''}" onclick="setChallengeTypeFilter('${t.id}')">${t.label}</button>
       `).join('');
 
-      // Фильтр по категориям
       document.getElementById('chCategoryRow').innerHTML = CHALLENGE_CATEGORIES.map(cat => `
         <button class="chip ${chCatFilter === cat.id ? 'active' : ''}" onclick="setChallengeCatFilter('${cat.id}')">${cat.label}</button>
       `).join('');
 
-      // Фильтрация текущего списка
       let sourceList = chViewMode === 'active' ? activeList : archiveList;
-      if (chTypeFilter !== 'all') {
-        sourceList = sourceList.filter(c => c.type === chTypeFilter);
-      }
-      if (chCatFilter !== 'all') {
-        sourceList = sourceList.filter(c => c.category === chCatFilter);
-      }
+      if (chTypeFilter !== 'all') sourceList = sourceList.filter(c => c.type === chTypeFilter);
+      if (chCatFilter !== 'all') sourceList = sourceList.filter(c => c.category === chCatFilter);
 
       const box = document.getElementById('challengesListBox');
       if (sourceList.length === 0) {
-        box.innerHTML = chViewMode === 'active'
-          ? `<div class="empty-box">🎉 В этой категории все вопросы и задания пройдены!<br><br><button class="btn-small pink" onclick="generateExtraPairNow()">⚡ Сгенерировать новую пару</button></div>`
-          : `<div class="empty-box">📚 В архиве этой категории пока нет завершённых вопросов или заданий.<br>Ответьте вместе на активные челленджи, и они сохранятся сюда!</div>`;
+        box.innerHTML = `<div style="background:var(--card); padding:26px; border-radius:22px; text-align:center; color:var(--muted)">Пока пусто в этой категории ✨</div>`;
         return;
       }
 
@@ -2127,67 +2473,53 @@
         const partnerAns = myRole === 'user2' ? item.user1Answer : item.user2Answer;
         const bothDone = Boolean(item.user1Answer && item.user2Answer);
 
-        const optionsHtml = (item.options || []).map(opt => {
-          const isSel = myAns === opt;
-          return `<button class="ch-opt-btn ${isSel ? 'selected' : ''}" onclick="answerChallengeItem('${item.id}', '${escapeQuotes(opt)}')">${opt}</button>`;
-        }).join('');
+        const optionsHtml = (item.options || []).map(opt => `
+          <button class="ch-opt-btn ${myAns === opt ? 'selected' : ''}" onclick="answerChallengeItem('${item.id}', '${escapeQuotes(opt)}')">${opt}</button>
+        `).join('');
 
         let statusHtml = '';
         if (bothDone) {
           statusHtml = `
             <div class="ch-answers-box">
-              <div style="color:var(--green); font-weight:800; margin-bottom:6px">🔓 Оба ответили! Сохранено в архиве:</div>
-              <div style="margin-bottom:4px">👦 <b>${u1.name}:</b> ${item.user1Answer}</div>
+              <div style="color:var(--green); font-weight:800; margin-bottom:4px">🔓 Ответы открыты (в Архиве):</div>
+              <div>👦 <b>${u1.name}:</b> ${item.user1Answer}</div>
               <div>👧 <b>${u2.name}:</b> ${item.user2Answer}</div>
             </div>
           `;
         } else if (myAns) {
           statusHtml = `
             <div class="ch-answers-box">
-              <div>✅ <b>Ваш ответ (${me.name}):</b> ${myAns}</div>
-              <div style="margin-top:6px; color:var(--muted)">⏳ <b>${partner.name}:</b> ещё не ответил(а)... Ответы откроются, когда ответят оба!</div>
+              <div>✅ <b>Ваш ответ:</b> ${myAns}</div>
+              <div style="color:var(--muted); margin-top:4px">⏳ Ждём ответа от ${partner.name}...</div>
             </div>
           `;
         } else if (partnerAns) {
           statusHtml = `
-            <div class="ch-answers-box" style="border-color:rgba(255,59,127,0.4)">
-              <div style="color:var(--pink); font-weight:800">🔥 ${partner.name} уже ответил(а)!</div>
-              <div style="color:var(--muted); margin-top:4px">Выберите вариант выше или напишите свой ответ, чтобы рассекретить ответ партнёра.</div>
+            <div class="ch-answers-box">
+              <div style="color:var(--pink); font-weight:800">🔥 ${partner.name} уже ответил(а)! Ответьте, чтобы открыть.</div>
             </div>
           `;
         }
 
-        const archiveActionBtn = chViewMode === 'active'
-          ? (bothDone
-              ? `<button class="btn-small pink" onclick="moveChallengeToArchive('${item.id}')">📥 Скрыть в архив</button>`
-              : `<button class="btn-small" onclick="moveChallengeToArchive('${item.id}')">📥 В архив</button>`)
-          : (item.archived
-              ? `<button class="btn-small" onclick="restoreChallengeFromArchive('${item.id}')">↩️ Вернуть в активные</button>`
-              : `<span style="font-size:11px; color:var(--green); font-weight:700">✅ В архиве</span>`);
+        const archiveBtn = chViewMode === 'active'
+          ? `<button class="btn-small" onclick="moveChallengeToArchive('${item.id}')">📥 В архив</button>`
+          : `<button class="btn-small" onclick="restoreChallengeFromArchive('${item.id}')">↩️ Вернуть</button>`;
 
         return `
-          <div class="challenge-card ${isTask ? 'type-task' : ''} ${bothDone ? 'both-done' : ''}">
+          <div class="challenge-card ${bothDone ? 'both-done' : ''}">
             <div class="ch-meta-row">
               <div class="ch-badges">
-                <span class="badge-pill ${isTask ? 'badge-task' : 'badge-question'}">
-                  ${isTask ? '🎯 Задание' : '❓ Вопрос'}
-                </span>
+                <span class="badge-pill ${isTask ? 'badge-task' : 'badge-question'}">${isTask ? '🎯 Задание' : '❓ Вопрос'}</span>
                 <span class="badge-pill badge-cat">${getCategoryLabel(item.category)}</span>
               </div>
-              <span class="badge-time">🕒 ${item.createdAtLabel || 'Сегодня'}</span>
+              <span class="badge-time">🕒 ${item.createdAtLabel || ''}</span>
             </div>
-
             <div class="ch-prompt">${item.prompt}</div>
-
-            <div class="ch-options">
-              ${optionsHtml}
-            </div>
-
+            <div class="ch-options">${optionsHtml}</div>
             <div class="ch-custom-row">
-              <button class="btn-small" onclick="openCustomAnswerModal('${item.id}')">✍️ Написать свой ответ...</button>
-              ${archiveActionBtn}
+              <button class="btn-small" onclick="openCustomAnswerModal('${item.id}')">✍️ Свой ответ...</button>
+              ${archiveBtn}
             </div>
-
             ${statusHtml}
           </div>
         `;
@@ -2201,72 +2533,89 @@
       const partner = state.users[getPartnerKey()];
       const distStr = formatDistanceText();
 
+      // Шапка с приветствием и аватаркой
+      document.getElementById('greetingTitle').textContent = `${getGreetingByHour()}, ${me.name}`;
+      const avatarImg = document.getElementById('headerAvatarImg');
+      const avatarFallback = document.getElementById('headerAvatarFallback');
+      if (me.avatar) {
+        avatarImg.src = me.avatar;
+        avatarImg.style.display = 'block';
+        avatarFallback.style.display = 'none';
+      } else {
+        avatarImg.style.display = 'none';
+        avatarFallback.style.display = 'block';
+        avatarFallback.textContent = myRole === 'user1' ? '👦' : '👧';
+      }
+
       document.getElementById('qRoleU1').classList.toggle('active', myRole === 'user1');
       document.getElementById('qRoleU2').classList.toggle('active', myRole === 'user2');
-      document.getElementById('roleBtnU1').classList.toggle('active', myRole === 'user1');
-      document.getElementById('roleBtnU2').classList.toggle('active', myRole === 'user2');
+      document.getElementById('smDistTag').textContent = distStr;
 
-      document.getElementById('coupleTitle').textContent = `${u1.name} & ${u2.name}`;
-      document.getElementById('streakText').textContent = `${state.streakDays} дн.`;
-      document.getElementById('myRoleBadge').textContent = me.name;
-
-      document.getElementById('cardU1').classList.toggle('is-me', myRole === 'user1');
-      document.getElementById('u1Emoji').textContent = u1.moodEmoji;
-      document.getElementById('u1Battery').textContent = `⚡ ${u1.battery}%`;
-      document.getElementById('u1Name').textContent = u1.name;
-      document.getElementById('u1YouTag').style.display = myRole === 'user1' ? 'inline-block' : 'none';
-      document.getElementById('u1MoodText').textContent = u1.moodText;
-      document.getElementById('u1Foot').textContent = u1.updatedAt ? `🕒 Обновлено в ${u1.updatedAt}` : '📍 В сети';
-
-      document.getElementById('cardU2').classList.toggle('is-me', myRole === 'user2');
-      document.getElementById('u2Emoji').textContent = u2.moodEmoji;
-      document.getElementById('u2Battery').textContent = `⚡ ${u2.battery}%`;
-      document.getElementById('u2Name').textContent = u2.name;
-      document.getElementById('u2YouTag').style.display = myRole === 'user2' ? 'inline-block' : 'none';
-      document.getElementById('u2MoodText').textContent = u2.moodText;
-      document.getElementById('u2Foot').textContent = u2.updatedAt ? `🕒 Обновлено в ${u2.updatedAt}` : '📍 В сети';
-
+      // Таймер и название события
       const countdowns = state.countdowns || [];
-      const cd = countdowns.find(c => c.pinned) || countdowns[0] || { emoji: '⏳', title: 'Событие', days: 0 };
+      const cd = countdowns.find(c => c.pinned) || countdowns[0] || { emoji: '✈️', title: 'Встреча', days: 14 };
+      document.getElementById('activeCdBadgeText').textContent = `ИДЁТ ОТСЧЁТ • ${cd.emoji}`;
+      updateLiveCountdownClock();
+
+      // Главная фото-карусель
+      renderHeroCarousel();
+
+      // Быстрые чипсы настроения
+      document.getElementById('moodBox').innerHTML = moodPresets.map(([em, head, txt]) => {
+        const act = (me.moodEmoji === em && me.moodText === txt) ? 'active' : '';
+        return `<button class="chip ${act}" onclick="setQuickMood('${em}','${head}','${txt}')">${em} ${txt}</button>`;
+      }).join('') + `<button class="chip" onclick="openCheckinModal()">📸 Своя отметка + Фото...</button>`;
+
+      // Карточки в разделе "Отметка" (Сначала партнёр, затем Вы — как в референсе!)
+      const orderedUsers = [
+        { key: getPartnerKey(), user: partner, isPartner: true },
+        { key: getMyKey(), user: me, isPartner: false }
+      ];
+
+      document.getElementById('checkinsCardsBox').innerHTML = orderedUsers.map(({ user, isPartner }) => {
+        const avatarContent = user.avatar
+          ? `<img src="${user.avatar}" alt="${user.name}" />`
+          : `<span>${user.moodEmoji || '🥰'}</span>`;
+
+        return `
+          <div class="checkin-card" onclick="${isPartner ? 'openHistoryModal()' : 'openCheckinModal()'}" style="cursor:pointer">
+            <div class="checkin-top">
+              <div class="checkin-avatar">${avatarContent}</div>
+              <div class="checkin-info">
+                <div class="checkin-headline">У ${user.name} ${user.moodHeadline || 'хорошее настроение'} ${user.moodEmoji || ''}</div>
+                <div class="checkin-quote">«${user.moodText || 'На связи ❤️'}»</div>
+                <div class="checkin-meta-pills">
+                  <span class="meta-mini-tag">⚡ ${user.battery || 90}%</span>
+                  <span class="meta-mini-tag">🕒 ${user.updatedAt || 'сейчас'}</span>
+                  ${isPartner ? `<span class="meta-mini-tag">📍 ${distStr}</span>` : `<span class="meta-mini-tag" style="color:var(--pink)">✏️ Нажмите, чтобы обновить</span>`}
+                </div>
+              </div>
+            </div>
+            ${user.checkinPhoto ? `<div class="checkin-photo-box"><img src="${user.checkinPhoto}" alt="Фото от ${user.name}" /></div>` : ''}
+          </div>
+        `;
+      }).join('');
 
       document.getElementById('widgetDoodleTime').textContent = state.doodleTime || '18:45';
       document.getElementById('widgetReactionBtn').textContent = state.doodleReaction || '❤️';
-
-      document.getElementById('smDistTag').textContent = distStr;
-      document.getElementById('smCdTitle').textContent = `${cd.emoji} ${cd.days} дн. ${cd.title}`;
-
-      document.getElementById('lockInline').textContent = `❤️ ${cd.days} дн. • 🔋 ${partner.battery}% • 📍 ${distStr}`;
-      document.getElementById('lockCircEmoji').textContent = partner.moodEmoji;
-      document.getElementById('lockCircBat').textContent = `${partner.battery}%`;
-      document.getElementById('lockCircDays').textContent = `${cd.days} дн.`;
-      document.getElementById('lockRectName').textContent = `${partner.moodEmoji} ${partner.name}`;
-      document.getElementById('lockRectMeta').textContent = `🔋${partner.battery}% • 📍 ${distStr}`;
-      document.getElementById('lockRectCd').textContent = `До встречи: ${cd.days} дн.`;
-
-      const isCustom = !moodPresets.some(p => p[0] === me.moodEmoji && p[1] === me.moodText);
-      document.getElementById('moodBox').innerHTML = moodPresets.map(([em, txt]) => {
-        const act = (me.moodEmoji === em && me.moodText === txt) ? 'active' : '';
-        return `<button class="chip ${act}" onclick="setMyMood('${em}','${txt}')">${em} ${txt}</button>`;
-      }).join('') + `<button class="chip ${isCustom ? 'active' : ''}" onclick="openCustomMoodModal()">✏️ ${isCustom ? me.moodEmoji + ' ' + me.moodText : 'Свой статус...'}</button>`;
 
       document.getElementById('countdownsList').innerHTML = countdowns.map(item => `
         <div class="list-card ${item.pinned ? 'pinned' : ''}">
           <div class="list-left" onclick="pinCountdown('${item.id}')">
             <span style="font-size:26px">${item.emoji}</span>
             <div>
-              <div style="font-weight:700; font-size:15px">${item.title}</div>
-              <div style="font-size:11px; color:${item.pinned ? 'var(--pink)' : 'var(--muted)'}">${item.pinned ? '📌 На главном виджете' : 'Нажмите, чтобы закрепить'}</div>
+              <div style="font-weight:800; font-size:15px">${item.title}</div>
+              <div style="font-size:11px; color:${item.pinned ? 'var(--pink)' : 'var(--muted)'}">${item.pinned ? '📌 Главный отсчёт' : 'Нажмите, чтобы вывести наверх'}</div>
             </div>
           </div>
           <div class="item-actions">
-            <span style="font-size:18px; font-weight:900; color:var(--pink); margin-right:6px">${item.days} дн.</span>
+            <span style="font-size:16px; font-weight:900; color:var(--pink); margin-right:6px">${item.days} дн.</span>
             <button class="icon-btn" onclick="openCountdownModal('${item.id}')">✏️</button>
             <button class="icon-btn" onclick="deleteCountdown('${item.id}')">🗑️</button>
           </div>
         </div>
       `).join('');
 
-      // Отрисовка нового Центра Челленджей и Архива
       renderChallengesTab();
 
       document.getElementById('boardsRow').innerHTML = (state.boards || []).map(b => `
@@ -2307,12 +2656,13 @@
       `).join('');
     }
 
+    // ДУДЛ-СТУДИЯ
     const partnerCanvas = document.getElementById('partnerCanvas');
     const partnerCtx = partnerCanvas.getContext('2d');
     const myCanvas = document.getElementById('myCanvas');
     const myCtx = myCanvas.getContext('2d');
-    const paletteColors = ['#FF3B7F', '#FF9F43', '#FECA57', '#1DD1A1', '#54A0FF', '#A55EEA', '#FFFFFF'];
-    let currentColor = '#FF3B7F';
+    const paletteColors = ['#EE3E6A', '#FF9F43', '#FECA57', '#1DD1A1', '#54A0FF', '#A55EEA', '#FFFFFF'];
+    let currentColor = '#EE3E6A';
     let activePoints = [];
     let isDrawing = false;
 
@@ -2329,14 +2679,11 @@
       redrawBothLayers();
     }
 
-    function selectColor(c) {
-      currentColor = c;
-      initDoodleStudio();
-    }
+    function selectColor(c) { currentColor = c; initDoodleStudio(); }
 
     function drawPartnerBaseHeart() {
       partnerCtx.save();
-      partnerCtx.strokeStyle = 'rgba(255, 59, 127, 0.25)';
+      partnerCtx.strokeStyle = 'rgba(238, 62, 106, 0.32)';
       partnerCtx.lineWidth = 10;
       partnerCtx.lineCap = 'round';
       partnerCtx.lineJoin = 'round';
@@ -2429,18 +2776,19 @@
 
     function exportCompositeToWidgets() {
       const wCanvas = document.getElementById('widgetDoodleCanvas');
+      if (!wCanvas) return;
       const wCtx = wCanvas.getContext('2d');
       wCtx.clearRect(0, 0, wCanvas.width, wCanvas.height);
       wCtx.drawImage(partnerCanvas, 0, 0, wCanvas.width, wCanvas.height);
       wCtx.drawImage(myCanvas, 0, 0, wCanvas.width, wCanvas.height);
     }
 
-    // Запуск
+    // Старт
     renderAll();
     updateHourlyCountdownUI();
     initDoodleStudio();
     pollCloudData();
-    setInterval(pollCloudData, 1500);
+    setInterval(pollCloudData, 1800);
     window.addEventListener('focus', pollCloudData);
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) pollCloudData();
@@ -2448,4 +2796,4 @@
     startAutoGpsTracking();
   </script>
 </body>
-  </html>
+</html>
