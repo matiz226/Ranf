@@ -632,10 +632,10 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'couple_live_state_v8';
-    const ROLE_KEY = 'couple_device_role_v8';
-    const ROOM_KEY = 'couple_room_code_v8';
-    const DB_URL_KEY = 'couple_db_url_v8';
+    const STORAGE_KEY = 'couple_live_state_v10';
+    const ROLE_KEY = 'couple_device_role_v10';
+    const ROOM_KEY = 'couple_room_code_v10';
+    const DB_URL_KEY = 'couple_db_url_v10';
 
     const FULL_DEFAULT_DB = 'https://coupleapp-705bf-default-rtdb.firebaseio.com';
 
@@ -687,7 +687,7 @@
 
     let isSyncing = false;
 
-    // Главная функция синхронизации без кэша (добавлен префикс времени, чтобы iOS Safari не кешировал GET-запросы)
+    // Главная функция синхронизации через надежный публичный эндпоинт Firebase REST API
     function pollCloudData() {
       if (isSyncing) return;
       isSyncing = true;
@@ -699,9 +699,7 @@
         .then(cloudData => {
           isSyncing = false;
           if (cloudData) {
-            const oldStr = JSON.stringify(state);
-            const newStr = JSON.stringify(cloudData);
-            if (oldStr !== newStr) {
+            if (JSON.stringify(state) !== JSON.stringify(cloudData)) {
               state = Object.assign({}, defaultState, cloudData);
               state.users.user1.strokes = state.users.user1.strokes || [];
               state.users.user2.strokes = state.users.user2.strokes || [];
@@ -732,12 +730,15 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             renderAll();
             redrawBothLayers();
+            btn.textContent = 'Готово!';
+          } else {
+            btn.textContent = 'Пусто';
           }
-          btn.textContent = 'Обновить';
+          setTimeout(() => btn.textContent = 'Обновить', 1500);
         })
         .catch(() => {
           btn.textContent = 'Ошибка';
-          setTimeout(() => btn.textContent = 'Обновить', 2000);
+          setTimeout(() => btn.textContent = 'Обновить', 1500);
         });
     }
 
@@ -750,23 +751,21 @@
       }).catch(() => {});
     }
 
-    function syncPatch(partialPaths) {
+    function syncBranch(branchPath, branchData) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       renderAll();
       const cleanUrl = customDbUrl.replace(/\/$/, '');
-      fetch(`${cleanUrl}/couples/${roomCode}.json`, {
-        method: 'PATCH',
+      fetch(`${cleanUrl}/couples/${roomCode}/${branchPath}.json`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(partialPaths)
+        body: JSON.stringify(branchData)
       }).catch(() => {});
     }
 
     function syncMyUserField(field, value) {
       const myKey = getMyKey();
       state.users[myKey][field] = value;
-      const patch = {};
-      patch[`users/${myKey}/${field}`] = value;
-      syncPatch(patch);
+      syncBranch(`users/${myKey}/${field}`, value);
     }
 
     function calcDistanceKm(lat1, lon1, lat2, lon2) {
@@ -803,11 +802,7 @@
         const nowStr = new Date().toTimeString().slice(0, 5);
         if (me.lat !== newLat || me.lng !== newLng) {
           me.lat = newLat; me.lng = newLng; me.updatedAt = nowStr;
-          const patch = {};
-          patch[`users/${myKey}/lat`] = newLat;
-          patch[`users/${myKey}/lng`] = newLng;
-          patch[`users/${myKey}/updatedAt`] = nowStr;
-          syncPatch(patch);
+          syncBranch(`users/${myKey}`, me);
         }
       };
       navigator.geolocation.getCurrentPosition(onPosSuccess, () => {}, { enableHighAccuracy: true });
@@ -900,10 +895,7 @@
       const myKey = getMyKey();
       state.users[myKey].moodEmoji = em;
       state.users[myKey].moodText = txt;
-      const patch = {};
-      patch[`users/${myKey}/moodEmoji`] = em;
-      patch[`users/${myKey}/moodText`] = txt;
-      syncPatch(patch);
+      syncBranch(`users/${myKey}`, state.users[myKey]);
     }
 
     function openCustomMoodModal() {
@@ -922,7 +914,7 @@
 
     function pinCountdown(id) {
       state.countdowns.forEach(c => c.pinned = (c.id === id));
-      syncPatch({ countdowns: state.countdowns });
+      syncBranch('countdowns', state.countdowns);
     }
 
     function openCountdownModal(id = '') {
@@ -948,12 +940,12 @@
         state.countdowns.push({ id: 'c' + Date.now(), emoji, title, days, pinned: state.countdowns.length === 0 });
       }
       closeModal('countdownModal');
-      syncPatch({ countdowns: state.countdowns });
+      syncBranch('countdowns', state.countdowns);
     }
 
     function deleteCountdown(id) {
       state.countdowns = (state.countdowns || []).filter(c => c.id !== id);
-      syncPatch({ countdowns: state.countdowns });
+      syncBranch('countdowns', state.countdowns);
     }
 
     function openChallengeModal() {
@@ -1001,7 +993,7 @@
         state.todayChallenge.prompt = v1;
         if (v2) state.todayChallenge.options = v2.split(';').map(s => s.trim()).filter(Boolean);
         closeModal('itemModal');
-        syncPatch({ todayChallenge: state.todayChallenge });
+        syncBranch('todayChallenge', state.todayChallenge);
       } else if (mode === 'wish') {
         if (!state.wishes) state.wishes = [];
         if (id) {
@@ -1011,7 +1003,7 @@
           state.wishes.unshift({ id: 'w' + Date.now(), boardId: state.activeBoardId, title: v1, sub: v2, done: false });
         }
         closeModal('itemModal');
-        syncPatch({ wishes: state.wishes });
+        syncBranch('wishes', state.wishes);
       } else if (mode === 'note') {
         if (!state.notes) state.notes = [];
         if (id) {
@@ -1021,39 +1013,37 @@
           state.notes.unshift({ id: 'n' + Date.now(), title: v1, text: v2 });
         }
         closeModal('itemModal');
-        syncPatch({ notes: state.notes });
+        syncBranch('notes', state.notes);
       }
     }
 
     function selectChallengeAnswer(opt) {
       const field = myRole === 'user2' ? 'user2Answer' : 'user1Answer';
       state.todayChallenge[field] = opt;
-      const patch = {};
-      patch[`todayChallenge/${field}`] = opt;
-      syncPatch(patch);
+      syncBranch('todayChallenge', state.todayChallenge);
     }
 
     function toggleWish(id) {
       const w = (state.wishes || []).find(x => x.id === id);
       if (w) w.done = !w.done;
-      syncPatch({ wishes: state.wishes });
+      syncBranch('wishes', state.wishes);
     }
 
     function deleteWish(id) {
       state.wishes = (state.wishes || []).filter(x => x.id !== id);
-      syncPatch({ wishes: state.wishes });
+      syncBranch('wishes', state.wishes);
     }
 
     function deleteNote(id) {
       state.notes = (state.notes || []).filter(x => x.id !== id);
-      syncPatch({ notes: state.notes });
+      syncBranch('notes', state.notes);
     }
 
     function toggleWidgetReaction() {
       const list = ['❤️', '🥰', '🔥', '💋', '✨'];
       const next = list[(list.indexOf(state.doodleReaction) + 1) % list.length];
       state.doodleReaction = next;
-      syncPatch({ doodleReaction: next });
+      syncBranch('doodleReaction', next);
     }
 
     function renderAll() {
@@ -1185,7 +1175,7 @@
 
       const emojis = ['❤️', '🥰', '😂', '🔥', '💋', '✨'];
       document.getElementById('doodleReactionsRow').innerHTML = emojis.map(e => `
-        <button class="chip ${state.doodleReaction === e ? 'active' : ''}" onclick="state.doodleReaction='${e}'; syncPatch({ doodleReaction: '${e}' })">${e}</button>
+        <button class="chip ${state.doodleReaction === e ? 'active' : ''}" onclick="state.doodleReaction='${e}'; syncBranch('doodleReaction', '${e}')">${e}</button>
       `).join('');
 
       redrawBothLayers();
@@ -1265,10 +1255,8 @@
         const nowStr = new Date().toTimeString().slice(0, 5);
         state.doodleTime = nowStr;
 
-        const patch = {};
-        patch[`users/${myKey}/strokes`] = me.strokes;
-        patch['doodleTime'] = nowStr;
-        syncPatch(patch);
+        syncBranch(`users/${myKey}/strokes`, me.strokes);
+        syncBranch('doodleTime', nowStr);
         exportCompositeToWidgets();
       }
       activePoints = [];
@@ -1280,9 +1268,7 @@
       if (me.strokes && me.strokes.length > 0) {
         me.strokes.pop();
         redrawBothLayers();
-        const patch = {};
-        patch[`users/${myKey}/strokes`] = me.strokes;
-        syncPatch(patch);
+        syncBranch(`users/${myKey}/strokes`, me.strokes);
       }
     }
 
@@ -1290,9 +1276,7 @@
       const myKey = getMyKey();
       state.users[myKey].strokes = [];
       redrawBothLayers();
-      const patch = {};
-      patch[`users/${myKey}/strokes`] = [];
-      syncPatch(patch);
+      syncBranch(`users/${myKey}/strokes`, []);
     }
 
     function exportCompositeToWidgets() {
@@ -1305,8 +1289,8 @@
 
     renderAll();
     initDoodleStudio();
-    setInterval(pollCloudData, 2000); // Плавный опрос облака без лишних раздражающих плашек
+    setInterval(pollCloudData, 1500); // Фоновый опрос облака каждые 1.5 сек
     startAutoGpsTracking();
   </script>
 </body>
-</html>
+  </html>
