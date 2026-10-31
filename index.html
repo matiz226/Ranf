@@ -2,22 +2,9 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#faf7f5" id="metaThemeColor" />
-
-  <!-- Настройки нативного полноэкранного приложения для iOS и Android -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
-  <meta name="format-detection" content="telephone=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#faf7f5" />
   <title>Мы Рядом ❤️</title>
-
-  <!-- Автоматическая иконка для экрана «Домой» на iOS -->
-  <link rel="apple-touch-icon" id="appleTouchIconLink" href="" />
-  <link rel="icon" type="image/png" id="faviconLink" href="" />
-
-  <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#faf7f5","theme_color":"#ee3e6a","orientation":"portrait"}' />
 
   <style>
     :root {
@@ -37,7 +24,7 @@
       --text: #19171c;
       --muted: #867f8e;
       --colon: #dfd9dd;
-      --nav-bg: rgba(255, 255, 255, 0.94);
+      --nav-bg: rgba(255, 255, 255, 0.95);
     }
 
     body.dark-mode {
@@ -51,34 +38,28 @@
       --text: #ffffff;
       --muted: #9b95b0;
       --colon: #3a344c;
-      --nav-bg: rgba(18, 15, 28, 0.94);
+      --nav-bg: rgba(18, 15, 28, 0.95);
     }
 
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
       user-select: none;
     }
 
     input, textarea, select {
       user-select: text;
-      -webkit-user-select: text;
     }
 
-    html, body {
+    body {
       margin: 0;
       padding: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      overscroll-behavior-y: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding-bottom: 98px;
       overflow-x: hidden;
       transition: background 0.25s ease, color 0.25s ease;
-    }
-
-    body {
-      padding-bottom: calc(96px + env(safe-area-inset-bottom));
     }
 
     .container {
@@ -87,20 +68,15 @@
       margin: 0 auto;
     }
 
-    /* ВЕРХНЯЯ ПАНЕЛЬ С УЧЁТОМ ВЫРЕЗА IPHONE */
+    /* ВЕРХНЯЯ ПАНЕЛЬ */
     .ref-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: calc(14px + env(safe-area-inset-top)) 18px 10px;
+      padding: 16px 18px 10px;
       max-width: 500px;
       margin: 0 auto;
-      gap: 10px;
-      position: sticky;
-      top: 0;
-      z-index: 60;
-      background: var(--bg);
-      transition: background 0.25s ease;
+      gap: 12px;
     }
 
     .ref-user-left {
@@ -159,7 +135,7 @@
     }
 
     .greeting-title {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 800;
       letter-spacing: -0.3px;
       white-space: nowrap;
@@ -181,12 +157,12 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
     }
 
     .circle-icon-btn {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: var(--card);
       border: 1px solid var(--border);
@@ -195,23 +171,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 17px;
+      font-size: 18px;
       cursor: pointer;
       transition: transform 0.12s ease;
     }
     .circle-icon-btn:active {
       transform: scale(0.94);
-    }
-    .circle-icon-btn.ios-install-btn {
-      background: var(--pink-soft);
-      color: var(--pink);
-      border-color: rgba(238, 62, 106, 0.25);
-    }
-
-    @media all and (display-mode: standalone) {
-      .ios-install-btn {
-        display: none !important;
-      }
     }
 
     /* БЫСТРЫЙ ПЕРЕКЛЮЧАТЕЛЬ РОЛИ */
@@ -1072,13 +1037,12 @@
       background: var(--card-2); font-size: 13px; line-height: 1.45;
     }
 
-    /* НИЖНЯЯ НАВИГАЦИЯ С УЧЁТОМ IPHONE HOME INDICATOR */
+    /* НИЖНЯЯ НАВИГАЦИЯ */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--nav-bg); backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: var(--nav-bg); backdrop-filter: blur(12px);
       border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr);
-      padding: 8px 6px calc(10px + env(safe-area-inset-bottom)); z-index: 100;
+      padding: 8px 6px 10px; z-index: 100;
     }
     .nav-item {
       background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; cursor: pointer; padding: 4px 0;
@@ -1088,8 +1052,7 @@
 
     /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62); backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62);
       display: none; align-items: center; justify-content: center; padding: 16px; z-index: 200;
     }
     .modal-overlay.open { display: flex; }
@@ -1100,9 +1063,8 @@
     .modal-title { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
     .field-group { margin-bottom: 12px; }
     .field-label { display: block; font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
-
     .field-input {
-      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 14px; font-size: 16px; outline: none; font-family: inherit;
+      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 14px; font-size: 14px; outline: none; font-family: inherit;
     }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .modal-actions { display: flex; gap: 10px; margin-top: 14px; }
@@ -1132,31 +1094,6 @@
       height: 100%;
       object-fit: cover;
     }
-
-    .ios-step-card {
-      background: var(--card-2);
-      border-radius: 16px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      line-height: 1.45;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .ios-step-num {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--pink);
-      color: #fff;
-      font-weight: 800;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
   </style>
 </head>
 <body>
@@ -1179,7 +1116,6 @@
     </div>
 
     <div class="header-actions">
-      <button class="circle-icon-btn ios-install-btn" id="iosInstallHeaderBtn" onclick="openIosInstallModal()" title="Установить как приложение на iPhone">📲</button>
       <button class="circle-icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Светлая / Тёмная тема">☀️</button>
       <button class="circle-icon-btn" onclick="openSettingsModal()" title="Настройки и синхронизация">⚙️</button>
     </div>
@@ -1406,42 +1342,6 @@
     </button>
   </nav>
 
-  <!-- МОДАЛЬНОЕ ОКНО: УСТАНОВКА ПРИЛОЖЕНИЯ НА IPHONE (iOS) И ANDROID -->
-  <div class="modal-overlay" id="iosInstallModal">
-    <div class="modal-box">
-      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px">
-        <img id="installModalAppIcon" src="" style="width:56px; height:56px; border-radius:14px; box-shadow:0 6px 16px rgba(238,62,106,0.3)" alt="App Icon" />
-        <div>
-          <h3 class="modal-title" style="margin:0">Мы Рядом ❤️ для iOS</h3>
-          <div style="font-size:12px; color:var(--muted); font-weight:600">Полноэкранное приложение для iPhone и Android</div>
-        </div>
-      </div>
-
-      <div class="ios-step-card">
-        <div class="ios-step-num">1</div>
-        <div>Откройте этот сайт в браузере <b>Safari</b> на iPhone (или в Chrome на Android).</div>
-      </div>
-
-      <div class="ios-step-card">
-        <div class="ios-step-num">2</div>
-        <div>Нажмите кнопку <b>«Поделиться»</b> <span style="font-size:16px">⬆️</span> в нижней панели экрана iPhone.</div>
-      </div>
-
-      <div class="ios-step-card">
-        <div class="ios-step-num">3</div>
-        <div>Прокрутите меню чуть ниже и выберите <b>«На экран „Домой“» (Add to Home Screen) ➕</b>, затем нажмите <b>«Добавить»</b>.</div>
-      </div>
-
-      <div style="font-size:12px; color:var(--muted); text-align:center; margin:10px 0 4px">
-        ✨ Готово! На рабочем столе iPhone появится фирменная иконка <b>«Мы Рядом»</b>, и приложение будет открываться на весь экран без рамок браузера!
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-primary" onclick="closeModal('iosInstallModal')">Понятно, супер! ❤️</button>
-      </div>
-    </div>
-  </div>
-
   <!-- МОДАЛЬНОЕ ОКНО: СТУДИЯ РИСОВАНИЯ ДУДЛА -->
   <div class="modal-overlay" id="doodleStudioModal">
     <div class="modal-box">
@@ -1601,10 +1501,6 @@
         <input class="field-input" id="inpDbUrl" type="text" />
       </div>
 
-      <div style="margin-bottom:12px">
-        <button class="btn-secondary" style="width:100%" onclick="closeModal('settingsModal'); openIosInstallModal()">📲 Инструкция: как установить на iPhone</button>
-      </div>
-
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeModal('settingsModal')">Закрыть</button>
         <button class="btn-primary" onclick="saveSettingsModal()">Сохранить</button>
@@ -1735,60 +1631,8 @@
     let tempSlideDataUrl = null;
     let tempCheckinDataUrl = null;
 
-    // ГЕНЕРАЦИЯ ФИРМЕННОЙ ИКОНКИ ДЛЯ ЭКРАНА «ДОМОЙ» НА IPHONE (180x180 PNG)
-    function initIosAppIconAndStandalone() {
-      try {
-        const c = document.createElement('canvas');
-        c.width = 180;
-        c.height = 180;
-        const ctx = c.getContext('2d');
-
-        const grad = ctx.createLinearGradient(0, 0, 180, 180);
-        grad.addColorStop(0, '#ff5e8e');
-        grad.addColorStop(1, '#ee3e6a');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 180, 180);
-
-        const rad = ctx.createRadialGradient(90, 65, 10, 90, 90, 95);
-        rad.addColorStop(0, 'rgba(255,255,255,0.28)');
-        rad.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.fillStyle = rad;
-        ctx.fillRect(0, 0, 180, 180);
-
-        ctx.save();
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.moveTo(90, 62);
-        ctx.bezierCurveTo(66, 34, 26, 56, 26, 92);
-        ctx.bezierCurveTo(26, 122, 58, 144, 90, 160);
-        ctx.bezierCurveTo(122, 144, 154, 122, 154, 92);
-        ctx.bezierCurveTo(154, 56, 114, 34, 90, 62);
-        ctx.fill();
-        ctx.restore();
-
-        const pngUrl = c.toDataURL('image/png');
-        const touchLink = document.getElementById('appleTouchIconLink');
-        const favLink = document.getElementById('faviconLink');
-        const modalIcon = document.getElementById('installModalAppIcon');
-        if (touchLink) touchLink.href = pngUrl;
-        if (favLink) favLink.href = pngUrl;
-        if (modalIcon) modalIcon.src = pngUrl;
-
-        if (window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
-          const btn = document.getElementById('iosInstallHeaderBtn');
-          if (btn) btn.style.display = 'none';
-        }
-      } catch (e) {}
-    }
-
-    function openIosInstallModal() {
-      document.getElementById('iosInstallModal').classList.add('open');
-    }
-
     if (currentTheme === 'dark') {
       document.body.classList.add('dark-mode');
-      const metaTheme = document.getElementById('metaThemeColor');
-      if (metaTheme) metaTheme.content = '#0d0b14';
     }
 
     function toggleTheme() {
@@ -1797,8 +1641,6 @@
       localStorage.setItem(THEME_KEY, currentTheme);
       const btn = document.getElementById('themeToggleBtn');
       if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
-      const metaTheme = document.getElementById('metaThemeColor');
-      if (metaTheme) metaTheme.content = currentTheme === 'dark' ? '#0d0b14' : '#faf7f5';
     }
 
     function compressImageFile(file, maxWidth = 680, quality = 0.68) {
@@ -2458,8 +2300,6 @@
       // =========================================================================
       // ПАРНЫЕ ЗАДАНИЯ ПО КАТЕГОРИЯМ (30 ШТ.)
       // =========================================================================
-
-      // --- РОМАНТИКА: ЗАДАНИЯ (6 шт.) ---
       {
         tplId: 't_rom_1', type: 'task', category: 'romance',
         prompt: '🎯 Задание: Добавьте ваше любимое совместное фото или картинку мечты в главную фото-карусель через кнопку «📷 + Наше фото»!',
@@ -2515,7 +2355,6 @@
         ]
       },
 
-      // --- УЮТ И БЫТ: ЗАДАНИЯ (6 шт.) ---
       {
         tplId: 't_cozy_1', type: 'task', category: 'cozy',
         prompt: '🎯 Задание: Сделайте прямо сейчас фото того, что перед вами, и загрузите его через кнопку «📸 + Фото-отметка» на главном экране!',
@@ -2571,7 +2410,6 @@
         ]
       },
 
-      // --- МЕЧТЫ И ПЛАНЫ: ЗАДАНИЯ (6 шт.) ---
       {
         tplId: 't_drm_1', type: 'task', category: 'dreams',
         prompt: '🎯 Задание: Зайдите во вкладку «Мечты ✨» в нашем приложении и добавьте по одному новому желанию для вашей пары.',
@@ -2627,7 +2465,6 @@
         ]
       },
 
-      // --- ГЛУБОКОЕ: ЗАДАНИЯ (6 шт.) ---
       {
         tplId: 't_deep_1', type: 'task', category: 'deep',
         prompt: '🎯 Задание: Отправьте друг другу песню, которая сегодня лучше всего передаёт ваше настроение или напоминает о любимом человеке.',
@@ -2683,7 +2520,6 @@
         ]
       },
 
-      // --- ВЕСЁЛОЕ: ЗАДАНИЯ (6 шт.) ---
       {
         tplId: 't_fun_1', type: 'task', category: 'fun',
         prompt: '🎯 Задание: Перейдите во вкладку «Дудлы 🎨» и нажмите «♡ Добавь штрих» на рисунке партнёра или создайте новый холст!',
@@ -2740,7 +2576,6 @@
       }
     ];
 
-    // КЛЮЧ СЛОТА НА КАЖДЫЕ 3 ЧАСА (8 слотов в сутки: 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00)
     function getCurrent3HourSlotKey() {
       const d = new Date();
       const slot = Math.floor(d.getHours() / 3);
@@ -2855,7 +2690,6 @@
     let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || JSON.parse(JSON.stringify(defaultState));
     ensureStateShape(state);
 
-    // Очищает дубликаты вопросов/заданий по тексту, сохраняя ответы, если они были даны
     function deduplicateChallengesByPrompt(list = []) {
       const byPrompt = new Map();
       list.forEach(item => {
@@ -2903,7 +2737,6 @@
       if (!Array.isArray(obj.challenges) || obj.challenges.length === 0) {
         obj.challenges = buildInitialChallenges();
       }
-      // Автоматически убираем старые дубликаты, если они накопились
       obj.challenges = deduplicateChallengesByPrompt(obj.challenges);
 
       if (!Array.isArray(obj.usedChallengeTplIds)) {
@@ -3488,7 +3321,6 @@
       return h;
     }
 
-    // ГАРАНТИРОВАННЫЙ ВЫБОР БЕЗ ПОВТОРЕНИЙ ИЗ БАНКА НА 70 ЭЛЕМЕНТОВ
     function pickUniqueNextPair(seedStr) {
       if (!Array.isArray(state.usedChallengeTplIds)) state.usedChallengeTplIds = [];
       const usedSet = new Set(state.usedChallengeTplIds);
@@ -3504,7 +3336,6 @@
       let availQ = allQuestions.filter(q => !usedSet.has(q.tplId) && !existingPrompts.has(q.prompt.trim()));
       let availT = allTasks.filter(t => !usedSet.has(t.tplId) && !existingPrompts.has(t.prompt.trim()));
 
-      // Если когда-нибудь все 40 вопросов или 30 заданий будут пройдены — сбрасываем историю только тех, что уже давно не на экране
       if (availQ.length === 0) {
         availQ = allQuestions.filter(q => !existingPrompts.has(q.prompt.trim()));
         if (availQ.length === 0) availQ = allQuestions;
@@ -3528,12 +3359,10 @@
       return { qTpl, tTpl };
     }
 
-    // ГЕНЕРАЦИЯ КАЖДЫЕ 3 ЧАСА БЕЗ ПОВТОРОВ
     function check3HourChallengeGeneration() {
       const currentSlotKey = getCurrent3HourSlotKey();
       if (state.lastGeneratedSlotKey === currentSlotKey) return;
 
-      // Все вопросы и задания, на которые уже ответили оба партнёра, переносим в Архив
       (state.challenges || []).forEach(ch => {
         if (ch.user1Answer && ch.user2Answer) ch.archived = true;
       });
@@ -3589,7 +3418,6 @@
       syncSection('usedChallengeTplIds', state.usedChallengeTplIds);
     }
 
-    // Таймер обратного отсчёта до следующего 3-часового окна (ЧЧ:ММ:СС)
     function update3HourCountdownUI() {
       const now = new Date();
       const nextSlotHour = (Math.floor(now.getHours() / 3) + 1) * 3;
@@ -4301,7 +4129,6 @@
     }
 
     // Старт
-    initIosAppIconAndStandalone();
     renderAll();
     update3HourCountdownUI();
     pollCloudData();
@@ -4313,4 +4140,4 @@
     startAutoGpsTracking();
   </script>
 </body>
-</html>
+  </html>
