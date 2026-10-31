@@ -216,7 +216,7 @@
       color: #fff;
     }
 
-    /* ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" НА ГЛАВНОЙ */
+    /* ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" */
     .interactive-nudge-widget {
       background: linear-gradient(135deg, #1b162a, #13101d);
       border: 1px solid rgba(255, 59, 127, 0.3);
@@ -1183,7 +1183,7 @@
         </div>
       </div>
 
-      <!-- ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" КАК НА ПРИМЕРЕ -->
+      <!-- ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" (С ПРАВИЛЬНЫМИ ИМЕНАМИ) -->
       <div class="interactive-nudge-widget">
         <div class="nudge-left">
           <div class="nudge-title">👋 Напомнить о себе</div>
@@ -1669,6 +1669,28 @@
 
     const DEFAULT_NPOINT_URL = 'https://api.npoint.io/b93a24be9137c8a0c3d9';
 
+    // Telegram Bot константы
+    const TELEGRAM_BOT_TOKEN = '9126764838:AAH4XDfDlHS3bJE7IL8juJRFkxXRFLjpR9U';
+    const TELEGRAM_IDS = {
+      user1: '749452668', // Матвей
+      user2: '465329516'  // Полина
+    };
+
+    function sendTelegramNotification(recipientRole, messageText) {
+      const targetChatId = TELEGRAM_IDS[recipientRole];
+      if (!targetChatId || !TELEGRAM_BOT_TOKEN) return;
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: targetChatId,
+          text: messageText,
+          parse_mode: 'HTML'
+        })
+      }).catch(() => {});
+    }
+
     function normalizeUrl(u) {
       if (!u) return DEFAULT_NPOINT_URL;
       return u.trim().replace(/^Https:/i, 'https:').replace(/\/$/, '');
@@ -1695,17 +1717,19 @@
       if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
     }
 
-    // ИНТЕРАКТИВНАЯ КНОПКА "ПОДТОЛКНУТЬ"
+    // ИСПРАВЛЕННАЯ КНОПКА "ПОДТОЛКНУТЬ" С ИМЕНАМИ
     function sendNudgeSignal() {
-      const me = state.users[getMyKey()];
+      const myKey = getMyKey();
+      const me = state.users[myKey];
       const partnerKey = getPartnerKey();
       const partner = state.users[partnerKey];
       
       me.moodHeadline = 'отправил(а) поцелуй 👋';
-      me.moodText = 'Матвей подтолкнул тебя! ❤️';
+      me.moodText = `${me.name} подтолкнул(а) тебя! ❤️`;
       me.updatedAt = new Date().toTimeString().slice(0, 5);
       
-      syncSection(getMyKey(), me);
+      syncSection(myKey, me);
+      sendTelegramNotification(partnerKey, `👋 <b>${me.name}</b> подтолкнул(а) тебя в приложении! ❤️`);
       alert(`❤️ Сигнал успешно отправлен для ${partner.name}!`);
     }
 
