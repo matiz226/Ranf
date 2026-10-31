@@ -3,12 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#faf7f5" />
+  <meta name="theme-color" content="#faf7f5" id="metaThemeColor" />
+
+  <!-- Настройки нативного полноэкранного приложения для iOS (iPhone) и Android -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
+  <meta name="format-detection" content="telephone=no" />
   <title>Мы Рядом ❤️</title>
+
+  <!-- Иконка для экрана «Домой» на iOS (генерируется автоматически в высоком разрешении) -->
+  <link rel="apple-touch-icon" id="appleTouchIconLink" href="" />
+  <link rel="icon" type="image/png" id="faviconLink" href="" />
 
   <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#faf7f5","theme_color":"#ee3e6a","orientation":"portrait"}' />
 
@@ -50,18 +57,28 @@
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
       user-select: none;
     }
 
-    body {
+    input, textarea, select {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    html, body {
       margin: 0;
       padding: 0;
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding-bottom: 98px;
+      overscroll-behavior-y: none;
       overflow-x: hidden;
       transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    body {
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
     }
 
     .container {
@@ -70,15 +87,20 @@
       margin: 0 auto;
     }
 
-    /* ВЕРХНЯЯ ПАНЕЛЬ */
+    /* ВЕРХНЯЯ ПАНЕЛЬ С УЧЁТОМ ЧЁЛКИ / DYNAMIC ISLAND НА IPHONE */
     .ref-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 18px 10px;
+      padding: calc(14px + env(safe-area-inset-top)) 18px 10px;
       max-width: 500px;
       margin: 0 auto;
-      gap: 12px;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: var(--bg);
+      transition: background 0.25s ease;
     }
 
     .ref-user-left {
@@ -137,7 +159,7 @@
     }
 
     .greeting-title {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 800;
       letter-spacing: -0.3px;
       white-space: nowrap;
@@ -159,12 +181,12 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .circle-icon-btn {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: var(--card);
       border: 1px solid var(--border);
@@ -173,12 +195,24 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 17px;
       cursor: pointer;
       transition: transform 0.12s ease;
     }
     .circle-icon-btn:active {
       transform: scale(0.94);
+    }
+    .circle-icon-btn.ios-install-btn {
+      background: var(--pink-soft);
+      color: var(--pink);
+      border-color: rgba(238, 62, 106, 0.25);
+    }
+
+    /* Скрываем кнопку установки, когда приложение уже запущено как нативное с экрана «Домой» */
+    @media all and (display-mode: standalone) {
+      .ios-install-btn {
+        display: none !important;
+      }
     }
 
     /* БЫСТРЫЙ ПЕРЕКЛЮЧАТЕЛЬ РОЛИ */
@@ -630,9 +664,7 @@
       object-fit: contain;
     }
 
-    /* =====================================================
-       НОВЫЙ ДИЗАЙН ВКЛАДКИ "ДУДЛЫ" КАК НА СКРИНШОТЕ
-       ===================================================== */
+    /* ВКЛАДКА "ДУДЛЫ" */
     .doodles-top-header {
       position: relative;
       display: flex;
@@ -763,7 +795,7 @@
       font-weight: 500;
     }
 
-    /* КАЛЕНДАРНАЯ СЕКЦИЯ И СЕТКА СОХРАНЕННЫХ ХОЛСТОВ */
+    /* КАЛЕНДАРНАЯ СЕКЦИЯ И СЕТКА ХОЛСТОВ */
     .doodle-month-header {
       display: flex;
       align-items: center;
@@ -873,7 +905,7 @@
       margin-top: 2px;
     }
 
-    /* МОДАЛЬНОЕ ОКНО РИСОВАНИЯ НА ХОЛСТЕ */
+    /* МОДАЛЬНОЕ ОКНО РИСОВАНИЯ */
     .studio-canvas-box {
       width: 100%;
       aspect-ratio: 1 / 0.92;
@@ -1041,12 +1073,13 @@
       background: var(--card-2); font-size: 13px; line-height: 1.45;
     }
 
-    /* НИЖНЯЯ НАВИГАЦИЯ */
+    /* НИЖНЯЯ НАВИГАЦИЯ С УЧЁТОМ IPHONE HOME INDICATOR */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--nav-bg); backdrop-filter: blur(16px);
+      background: var(--nav-bg); backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr);
-      padding: 8px 6px calc(8px + env(safe-area-inset-bottom)); z-index: 100;
+      padding: 8px 6px calc(10px + env(safe-area-inset-bottom)); z-index: 100;
     }
     .nav-item {
       background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; cursor: pointer; padding: 4px 0;
@@ -1057,18 +1090,21 @@
     /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62); backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       display: none; align-items: center; justify-content: center; padding: 16px; z-index: 200;
     }
     .modal-overlay.open { display: flex; }
 
     .modal-box {
-      background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 26px; width: 100%; max-width: 430px; padding: 20px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 26px; width: 100%; max-width: 430px; padding: 20px; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
     .modal-title { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
     .field-group { margin-bottom: 12px; }
     .field-label { display: block; font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
+
+    /* 16px предотвращает принудительный зум экрана в iOS Safari / WebApp */
     .field-input {
-      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 14px; font-size: 14px; outline: none; font-family: inherit;
+      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 14px; font-size: 16px; outline: none; font-family: inherit;
     }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .modal-actions { display: flex; gap: 10px; margin-top: 14px; }
@@ -1098,6 +1134,31 @@
       height: 100%;
       object-fit: cover;
     }
+
+    .ios-step-card {
+      background: var(--card-2);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.45;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ios-step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--pink);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -1120,6 +1181,7 @@
     </div>
 
     <div class="header-actions">
+      <button class="circle-icon-btn ios-install-btn" id="iosInstallHeaderBtn" onclick="openIosInstallModal()" title="Установить как приложение на iPhone">📲</button>
       <button class="circle-icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Светлая / Тёмная тема">☀️</button>
       <button class="circle-icon-btn" onclick="openSettingsModal()" title="Настройки и синхронизация">⚙️</button>
     </div>
@@ -1234,7 +1296,7 @@
       <div id="countdownsList"></div>
     </section>
 
-    <!-- ВКЛАДКА 1: ДУДЛЫ (НОВЫЙ ДИЗАЙН С ОТДЕЛЬНЫМИ ХОЛСТАМИ И ГАЛЕРЕЕЙ) -->
+    <!-- ВКЛАДКА 1: ДУДЛЫ -->
     <section class="tab-page" id="tab1">
       <div class="doodles-top-header">
         <h2 class="doodles-main-title">Дудлы</h2>
@@ -1345,7 +1407,43 @@
     </button>
   </nav>
 
-  <!-- МОДАЛЬНОЕ ОКНО: СТУДИЯ РИСОВАНИЯ ДУДЛА (НОВЫЙ ХОЛСТ ИЛИ ДОРИСОВАТЬ ШТРИХ) -->
+  <!-- МОДАЛЬНОЕ ОКНО: УСТАНОВКА ПРИЛОЖЕНИЯ НА IPHONE (iOS) И ANDROID -->
+  <div class="modal-overlay" id="iosInstallModal">
+    <div class="modal-box">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px">
+        <img id="installModalAppIcon" src="" style="width:56px; height:56px; border-radius:14px; box-shadow:0 6px 16px rgba(238,62,106,0.3)" alt="App Icon" />
+        <div>
+          <h3 class="modal-title" style="margin:0">Мы Рядом ❤️ для iOS</h3>
+          <div style="font-size:12px; color:var(--muted); font-weight:600">Полноэкранное приложение для iPhone и Android</div>
+        </div>
+      </div>
+
+      <div class="ios-step-card">
+        <div class="ios-step-num">1</div>
+        <div>Откройте этот сайт в браузере <b>Safari</b> на iPhone (или в Chrome на Android).</div>
+      </div>
+
+      <div class="ios-step-card">
+        <div class="ios-step-num">2</div>
+        <div>Нажмите кнопку <b>«Поделиться»</b> <span style="font-size:16px">⬆️</span> в нижней панели экрана iPhone.</div>
+      </div>
+
+      <div class="ios-step-card">
+        <div class="ios-step-num">3</div>
+        <div>Прокрутите меню чуть ниже и выберите <b>«На экран „Домой“» (Add to Home Screen) ➕</b>, затем нажмите <b>«Добавить»</b>.</div>
+      </div>
+
+      <div style="font-size:12px; color:var(--muted); text-align:center; margin:10px 0 4px">
+        ✨ Готово! На рабочем столе iPhone появится фирменная иконка <b>«Мы Рядом»</b>, и приложение будет открываться на весь экран без рамок браузера!
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="closeModal('iosInstallModal')">Понятно, супер! ❤️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: СТУДИЯ РИСОВАНИЯ ДУДЛА -->
   <div class="modal-overlay" id="doodleStudioModal">
     <div class="modal-box">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px">
@@ -1357,15 +1455,12 @@
         </div>
       </div>
 
-      <!-- Белое полотно для рисования -->
       <div class="studio-canvas-box">
         <canvas id="studioEditorCanvas" width="380" height="350"></canvas>
       </div>
 
-      <!-- Палитра цветов (включая чёрный контур и нежно-розовые щёчки Flork) -->
       <div class="studio-palette-scroll" id="studioPaletteRow"></div>
 
-      <!-- Выбор толщины кисти и реакции -->
       <div class="studio-size-row">
         <div style="display:flex; gap:6px">
           <button class="btn-small" id="sizeBtn4" onclick="setStudioBrushSize(4)">Тонкая</button>
@@ -1394,7 +1489,7 @@
       <div style="display:flex; flex-direction:column; gap:10px">
         <button class="btn-primary" onclick="closeModal('addMenuModal'); openPhotoSlideModal()">📷 Добавить общее фото на главный экран</button>
         <button class="btn-secondary" onclick="closeModal('addMenuModal'); switchTab(1); openDoodleStudioModal(null)">🎨 Нарисовать новый Дудл на отдельном холсте</button>
-        <button class="btn-secondary" onclick="closeModal('addMenuModal'); openCheckinModal()">📸 Отправить фото-отметку и настроение</button>
+        <button class="btn-secondary" onclick="closeModal('addMenuModal'); openCheckinModal()">📸 Отправить фото-отметка и настроение</button>
         <button class="btn-secondary" onclick="closeModal('addMenuModal'); openCountdownModal()">⏳ Добавить новое событие отсчёта</button>
         <button class="btn-secondary" onclick="closeModal('addMenuModal')">Отмена</button>
       </div>
@@ -1505,6 +1600,10 @@
       <div class="field-group">
         <label class="field-label">Ссылка на облако Npoint.io</label>
         <input class="field-input" id="inpDbUrl" type="text" />
+      </div>
+
+      <div style="margin-bottom:12px">
+        <button class="btn-secondary" style="width:100%" onclick="closeModal('settingsModal'); openIosInstallModal()">📲 Инструкция: как установить на iPhone</button>
       </div>
 
       <div class="modal-actions">
@@ -1637,8 +1736,64 @@
     let tempSlideDataUrl = null;
     let tempCheckinDataUrl = null;
 
+    // ГЕНЕРАЦИЯ ФИРМЕННОЙ ИКОНКИ ПРИЛОЖЕНИЯ ДЛЯ ЭКРАНА «ДОМОЙ» НА IPHONE (180x180 PNG)
+    function initIosAppIconAndStandalone() {
+      try {
+        const c = document.createElement('canvas');
+        c.width = 180;
+        c.height = 180;
+        const ctx = c.getContext('2d');
+
+        // Градиентный фон в стиле iOS App Icon
+        const grad = ctx.createLinearGradient(0, 0, 180, 180);
+        grad.addColorStop(0, '#ff5e8e');
+        grad.addColorStop(1, '#ee3e6a');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 180, 180);
+
+        // Мягкое свечение внутри
+        const rad = ctx.createRadialGradient(90, 65, 10, 90, 90, 95);
+        rad.addColorStop(0, 'rgba(255,255,255,0.28)');
+        rad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = rad;
+        ctx.fillRect(0, 0, 180, 180);
+
+        // Белое объёмное сердце по центру
+        ctx.save();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(90, 62);
+        ctx.bezierCurveTo(66, 34, 26, 56, 26, 92);
+        ctx.bezierCurveTo(26, 122, 58, 144, 90, 160);
+        ctx.bezierCurveTo(122, 144, 154, 122, 154, 92);
+        ctx.bezierCurveTo(154, 56, 114, 34, 90, 62);
+        ctx.fill();
+        ctx.restore();
+
+        const pngUrl = c.toDataURL('image/png');
+        const touchLink = document.getElementById('appleTouchIconLink');
+        const favLink = document.getElementById('faviconLink');
+        const modalIcon = document.getElementById('installModalAppIcon');
+        if (touchLink) touchLink.href = pngUrl;
+        if (favLink) favLink.href = pngUrl;
+        if (modalIcon) modalIcon.src = pngUrl;
+
+        // Если приложение уже запущено с экрана «Домой» на iPhone — скрываем кнопку установки
+        if (window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
+          const btn = document.getElementById('iosInstallHeaderBtn');
+          if (btn) btn.style.display = 'none';
+        }
+      } catch (e) {}
+    }
+
+    function openIosInstallModal() {
+      document.getElementById('iosInstallModal').classList.add('open');
+    }
+
     if (currentTheme === 'dark') {
       document.body.classList.add('dark-mode');
+      const metaTheme = document.getElementById('metaThemeColor');
+      if (metaTheme) metaTheme.content = '#0d0b14';
     }
 
     function toggleTheme() {
@@ -1647,6 +1802,8 @@
       localStorage.setItem(THEME_KEY, currentTheme);
       const btn = document.getElementById('themeToggleBtn');
       if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+      const metaTheme = document.getElementById('metaThemeColor');
+      if (metaTheme) metaTheme.content = currentTheme === 'dark' ? '#0d0b14' : '#faf7f5';
     }
 
     function compressImageFile(file, maxWidth = 680, quality = 0.68) {
@@ -1677,7 +1834,7 @@
       });
     }
 
-    // СТАРТОВЫЕ АВТОРСКИЕ ДУДЛЫ (КАК НА СКРИНШОТЕ-РЕФЕРЕНСЕ: FLORK, БУКЕТ ЦВЕТОВ И СЕРДЦЕ)
+    // СТАРТОВЫЕ АВТОРСКИЕ ДУДЛЫ
     function buildStarterDoodles() {
       const now = Date.now();
       return [
@@ -1714,7 +1871,6 @@
       ];
     }
 
-    // Отрисовка стартовых векторных иллюстраций (чтобы сразу выглядело 10/10 как на референсе)
     function drawPresetArtOnCanvas(ctx, presetName) {
       if (!presetName) return;
       ctx.save();
@@ -1722,11 +1878,9 @@
       ctx.lineJoin = 'round';
 
       if (presetName === 'flork') {
-        // Милый персонаж Flork с румяными щёчками как на фото-примере
         ctx.strokeStyle = '#111111';
         ctx.lineWidth = 9;
 
-        // Контур головы и спины
         ctx.beginPath();
         ctx.moveTo(135, 18);
         ctx.bezierCurveTo(105, 65, 125, 118, 185, 112);
@@ -1737,20 +1891,17 @@
         ctx.bezierCurveTo(268, 85, 278, 195, 290, 290);
         ctx.stroke();
 
-        // Тело
         ctx.beginPath();
         ctx.moveTo(152, 112);
         ctx.lineTo(146, 300);
         ctx.stroke();
 
-        // Ручки сложенные в милую позу
         ctx.beginPath();
         ctx.moveTo(150, 145);
         ctx.lineTo(95, 255);
         ctx.lineTo(220, 185);
         ctx.stroke();
 
-        // Розовые румяные щёчки
         ctx.fillStyle = '#ee8578';
         ctx.beginPath();
         ctx.arc(122, 46, 15, 0, Math.PI * 2);
@@ -1760,7 +1911,6 @@
         ctx.arc(188, 96, 15, 0, Math.PI * 2);
         ctx.fill();
 
-        // Блестящие глазки
         ctx.fillStyle = '#111111';
         ctx.beginPath(); ctx.arc(142, 26, 11, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(189, 68, 11, 0, Math.PI * 2); ctx.fill();
@@ -1771,20 +1921,17 @@
         ctx.beginPath(); ctx.arc(187, 65, 4, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(192, 71, 2.5, 0, Math.PI * 2); ctx.fill();
 
-        // Розовое сердечко сверху
         ctx.fillStyle = '#ee3e6a';
         ctx.beginPath();
         ctx.arc(72, 18, 12, 0, Math.PI * 2);
         ctx.fill();
       } else if (presetName === 'bouquet') {
-        // Красочный букет цветов с сердечками как на средней карточке примера
         ctx.strokeStyle = '#16a34a';
         ctx.lineWidth = 7;
         [[190, 295, 155, 165], [190, 295, 190, 140], [190, 295, 225, 170]].forEach(([x1, y1, x2, y2]) => {
           ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
         });
 
-        // Тюльпан и цветы
         ctx.fillStyle = '#fb7185';
         ctx.beginPath(); ctx.arc(165, 130, 32, 0, Math.PI * 2); ctx.fill();
 
@@ -1797,13 +1944,11 @@
         ctx.fillStyle = '#f472b6';
         ctx.beginPath(); ctx.arc(145, 195, 24, 0, Math.PI * 2); ctx.fill();
 
-        // Маленькие сердечки и искорки вокруг букета
         ctx.fillStyle = '#facc15';
         [[110, 95], [135, 65], [245, 85], [270, 125], [260, 185], [115, 150]].forEach(([cx, cy]) => {
           ctx.beginPath(); ctx.arc(cx, cy, 4.5, 0, Math.PI * 2); ctx.fill();
         });
       } else if (presetName === 'heart_sketch') {
-        // Нежное двойное сердце
         ctx.strokeStyle = '#ee3e6a';
         ctx.lineWidth = 9;
         ctx.beginPath();
@@ -1822,7 +1967,6 @@
       const h = canvasEl.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Заливаем чистым белым фоном как на референсе
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
 
@@ -2392,21 +2536,19 @@
       document.getElementById('historyModal').classList.add('open');
     }
 
-    // =====================================================
-    // НОВАЯ ГАЛЕРЕЯ ДУДЛОВ И СТУДИЯ ОТДЕЛЬНЫХ ХОЛСТОВ
-    // =====================================================
+    // ГАЛЕРЕЯ ДУДЛОВ И СТУДИЯ ОТДЕЛЬНЫХ ХОЛСТОВ
     const studioCanvas = document.getElementById('studioEditorCanvas');
     const studioCtx = studioCanvas.getContext('2d');
     const studioPaletteColors = [
-      '#111111', // Чёрный маркер (как у человечка Flork)
-      '#ee3e6a', // Ярко-розовый
-      '#ee8578', // Румяные щёчки Flork
-      '#ff9f43', // Оранжевый
-      '#facc15', // Солнечно-жёлтый
-      '#16a34a', // Зелёный
-      '#3b82f6', // Голубой
-      '#9333ea', // Фиолетовый
-      '#ffffff'  // Ластик (белый)
+      '#111111',
+      '#ee3e6a',
+      '#ee8578',
+      '#ff9f43',
+      '#facc15',
+      '#16a34a',
+      '#3b82f6',
+      '#9333ea',
+      '#ffffff'
     ];
 
     let studioCurrentColor = '#111111';
@@ -2592,7 +2734,7 @@
           item.strokes = studioStrokes;
           item.caption = caption;
           item.reaction = studioReaction;
-          item.authorRole = myKey; // Показывает, кто последний добавил штрих
+          item.authorRole = myKey;
           item.updatedAtTs = now;
         }
         selectedDoodleId = studioEditingId;
@@ -2611,7 +2753,6 @@
         selectedDoodleId = newId;
       }
 
-      // Храним до 15 отдельных холстов для быстрой синхронизации
       if (state.doodles.length > 15) {
         state.doodles = state.doodles.slice(0, 15);
       }
@@ -2643,7 +2784,6 @@
         renderDoodleObjectToCanvas(document.getElementById('featuredDoodleCanvas'), feat);
       }
 
-      // Рендерим мини-превью на Главном экране (Вкладка 0)
       const latestDoodle = doodles[0] || feat;
       if (latestDoodle) {
         renderDoodleObjectToCanvas(document.getElementById('widgetDoodleCanvas'), latestDoodle);
@@ -2654,7 +2794,6 @@
         }
       }
 
-      // Рендерим сетку всех сохранённых холстов по 3 в ряд (как на референсе)
       const grid = document.getElementById('doodleGalleryGrid');
       grid.innerHTML = doodles.map(d => {
         const isMe = d.authorRole === myKey;
@@ -2676,14 +2815,12 @@
         `;
       }).join('');
 
-      // Отрисовываем каждый мини-холст в сетке
       doodles.forEach(d => {
         const cEl = document.getElementById(`thumb_canvas_${d.id}`);
         if (cEl) renderDoodleObjectToCanvas(cEl, d);
       });
     }
 
-    // УМНОЕ СЛИЯНИЕ СПИСКА ДУДЛОВ МЕЖДУ ДВУМЯ ТЕЛЕФОНАМИ
     function mergeDoodlesLists(cloudList = [], localList = []) {
       const map = new Map();
       cloudList.forEach(item => {
@@ -3500,6 +3637,7 @@
     }
 
     // Старт
+    initIosAppIconAndStandalone();
     renderAll();
     updateHourlyCountdownUI();
     pollCloudData();
@@ -3511,4 +3649,4 @@
     startAutoGpsTracking();
   </script>
 </body>
-</html>
+          </html>
