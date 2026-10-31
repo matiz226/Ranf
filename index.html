@@ -3,12 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#faf7f5" />
+  <meta name="theme-color" content="#faf7f5" id="metaThemeColor" />
+
+  <!-- Настройки нативного полноэкранного приложения для iOS и Android -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
+  <meta name="format-detection" content="telephone=no" />
   <title>Мы Рядом ❤️</title>
+
+  <!-- Автоматическая иконка для экрана «Домой» на iOS -->
+  <link rel="apple-touch-icon" id="appleTouchIconLink" href="" />
+  <link rel="icon" type="image/png" id="faviconLink" href="" />
 
   <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#faf7f5","theme_color":"#ee3e6a","orientation":"portrait"}' />
 
@@ -50,18 +57,28 @@
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
       user-select: none;
     }
 
-    body {
+    input, textarea, select {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    html, body {
       margin: 0;
       padding: 0;
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding-bottom: 98px;
+      overscroll-behavior-y: none;
       overflow-x: hidden;
       transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    body {
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
     }
 
     .container {
@@ -70,15 +87,20 @@
       margin: 0 auto;
     }
 
-    /* ВЕРХНЯЯ ПАНЕЛЬ */
+    /* ВЕРХНЯЯ ПАНЕЛЬ С УЧЁТОМ ВЫРЕЗА IPHONE */
     .ref-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 18px 10px;
+      padding: calc(14px + env(safe-area-inset-top)) 18px 10px;
       max-width: 500px;
       margin: 0 auto;
-      gap: 12px;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: var(--bg);
+      transition: background 0.25s ease;
     }
 
     .ref-user-left {
@@ -137,7 +159,7 @@
     }
 
     .greeting-title {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 800;
       letter-spacing: -0.3px;
       white-space: nowrap;
@@ -159,12 +181,12 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .circle-icon-btn {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: var(--card);
       border: 1px solid var(--border);
@@ -173,12 +195,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 17px;
       cursor: pointer;
       transition: transform 0.12s ease;
     }
     .circle-icon-btn:active {
       transform: scale(0.94);
+    }
+    .circle-icon-btn.ios-install-btn {
+      background: var(--pink-soft);
+      color: var(--pink);
+      border-color: rgba(238, 62, 106, 0.25);
+    }
+
+    @media all and (display-mode: standalone) {
+      .ios-install-btn {
+        display: none !important;
+      }
     }
 
     /* БЫСТРЫЙ ПЕРЕКЛЮЧАТЕЛЬ РОЛИ */
@@ -630,9 +663,7 @@
       object-fit: contain;
     }
 
-    /* =====================================================
-       НОВЫЙ ДИЗАЙН ВКЛАДКИ "ДУДЛЫ" КАК НА СКРИНШОТЕ
-       ===================================================== */
+    /* ВКЛАДКА "ДУДЛЫ" */
     .doodles-top-header {
       position: relative;
       display: flex;
@@ -763,7 +794,7 @@
       font-weight: 500;
     }
 
-    /* КАЛЕНДАРНАЯ СЕКЦИЯ И СЕТКА СОХРАНЕННЫХ ХОЛСТОВ */
+    /* КАЛЕНДАРНАЯ СЕКЦИЯ И СЕТКА ХОЛСТОВ */
     .doodle-month-header {
       display: flex;
       align-items: center;
@@ -873,7 +904,7 @@
       margin-top: 2px;
     }
 
-    /* МОДАЛЬНОЕ ОКНО РИСОВАНИЯ НА ХОЛСТЕ */
+    /* МОДАЛЬНОЕ ОКНО РИСОВАНИЯ */
     .studio-canvas-box {
       width: 100%;
       aspect-ratio: 1 / 0.92;
@@ -1041,12 +1072,13 @@
       background: var(--card-2); font-size: 13px; line-height: 1.45;
     }
 
-    /* НИЖНЯЯ НАВИГАЦИЯ */
+    /* НИЖНЯЯ НАВИГАЦИЯ С УЧЁТОМ IPHONE HOME INDICATOR */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--nav-bg); backdrop-filter: blur(16px);
+      background: var(--nav-bg); backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr);
-      padding: 8px 6px calc(8px + env(safe-area-inset-bottom)); z-index: 100;
+      padding: 8px 6px calc(10px + env(safe-area-inset-bottom)); z-index: 100;
     }
     .nav-item {
       background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; cursor: pointer; padding: 4px 0;
@@ -1057,18 +1089,20 @@
     /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62); backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       display: none; align-items: center; justify-content: center; padding: 16px; z-index: 200;
     }
     .modal-overlay.open { display: flex; }
 
     .modal-box {
-      background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 26px; width: 100%; max-width: 430px; padding: 20px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 26px; width: 100%; max-width: 430px; padding: 20px; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
     .modal-title { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
     .field-group { margin-bottom: 12px; }
     .field-label { display: block; font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
+
     .field-input {
-      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 14px; font-size: 14px; outline: none; font-family: inherit;
+      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 14px; font-size: 16px; outline: none; font-family: inherit;
     }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .modal-actions { display: flex; gap: 10px; margin-top: 14px; }
@@ -1098,6 +1132,31 @@
       height: 100%;
       object-fit: cover;
     }
+
+    .ios-step-card {
+      background: var(--card-2);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.45;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ios-step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--pink);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -1120,6 +1179,7 @@
     </div>
 
     <div class="header-actions">
+      <button class="circle-icon-btn ios-install-btn" id="iosInstallHeaderBtn" onclick="openIosInstallModal()" title="Установить как приложение на iPhone">📲</button>
       <button class="circle-icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Светлая / Тёмная тема">☀️</button>
       <button class="circle-icon-btn" onclick="openSettingsModal()" title="Настройки и синхронизация">⚙️</button>
     </div>
@@ -1234,14 +1294,13 @@
       <div id="countdownsList"></div>
     </section>
 
-    <!-- ВКЛАДКА 1: ДУДЛЫ (НОВЫЙ ДИЗАЙН С ОТДЕЛЬНЫМИ ХОЛСТАМИ И ГАЛЕРЕЕЙ) -->
+    <!-- ВКЛАДКА 1: ДУДЛЫ -->
     <section class="tab-page" id="tab1">
       <div class="doodles-top-header">
         <h2 class="doodles-main-title">Дудлы</h2>
         <button class="doodles-new-btn" onclick="openDoodleStudioModal(null)" title="Создать новый отдельный холст">✏️</button>
       </div>
 
-      <!-- ГЛАВНАЯ КАРТОЧКА ВЫБРАННОГО ХОЛСТА -->
       <div class="doodle-featured-card">
         <div class="doodle-featured-canvas-wrap" onclick="openFeaturedDoodleInStudio()">
           <canvas id="featuredDoodleCanvas" width="380" height="350"></canvas>
@@ -1263,7 +1322,6 @@
         <div class="doodle-caption-quote" id="featuredDoodleCaption">"думаю о тебе"</div>
       </div>
 
-      <!-- АРХИВ / ГАЛЕРЕЯ СОХРАНЁННЫХ ХОЛСТОВ -->
       <div class="doodle-month-header">
         <div class="doodle-month-left">
           <span class="doodle-month-icon">📅</span>
@@ -1275,7 +1333,7 @@
       <div class="doodle-gallery-grid" id="doodleGalleryGrid"></div>
     </section>
 
-    <!-- ВКЛАДКА 2: ЧЕЛЛЕНДЖИ И ВОПРОСЫ С АРХИВОМ -->
+    <!-- ВКЛАДКА 2: ЧЕЛЛЕНДЖИ И ВОПРОСЫ С АРХИВОМ (КАЖДЫЕ 3 ЧАСА БЕЗ ПОВТОРОВ) -->
     <section class="tab-page" id="tab2">
       <div class="section-head">
         <div class="section-title">Вопросы и Задания пары 🔐</div>
@@ -1287,8 +1345,11 @@
 
       <div class="hourly-banner">
         <div>
-          <div style="font-weight:800">⏱️ Авто-генерация каждый час</div>
-          <div style="color:var(--muted); margin-top:2px">Новые вопрос + задание через: <b id="nextHourCountdown" style="color:var(--pink)">59:00</b></div>
+          <div style="font-weight:800">⏱️ Новая пара каждые 3 часа (без повторов)</div>
+          <div style="color:var(--muted); margin-top:3px">
+            Следующие через: <b id="nextHourCountdown" style="color:var(--pink)">02:59:00</b>
+            • <span id="uniquePoolBadge">В базе: 70</span>
+          </div>
         </div>
         <button class="btn-small pink" id="btnArchiveAllDone" style="display:none" onclick="archiveAllCompleted()">📥 В архив</button>
       </div>
@@ -1345,7 +1406,43 @@
     </button>
   </nav>
 
-  <!-- МОДАЛЬНОЕ ОКНО: СТУДИЯ РИСОВАНИЯ ДУДЛА (НОВЫЙ ХОЛСТ ИЛИ ДОРИСОВАТЬ ШТРИХ) -->
+  <!-- МОДАЛЬНОЕ ОКНО: УСТАНОВКА ПРИЛОЖЕНИЯ НА IPHONE (iOS) И ANDROID -->
+  <div class="modal-overlay" id="iosInstallModal">
+    <div class="modal-box">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px">
+        <img id="installModalAppIcon" src="" style="width:56px; height:56px; border-radius:14px; box-shadow:0 6px 16px rgba(238,62,106,0.3)" alt="App Icon" />
+        <div>
+          <h3 class="modal-title" style="margin:0">Мы Рядом ❤️ для iOS</h3>
+          <div style="font-size:12px; color:var(--muted); font-weight:600">Полноэкранное приложение для iPhone и Android</div>
+        </div>
+      </div>
+
+      <div class="ios-step-card">
+        <div class="ios-step-num">1</div>
+        <div>Откройте этот сайт в браузере <b>Safari</b> на iPhone (или в Chrome на Android).</div>
+      </div>
+
+      <div class="ios-step-card">
+        <div class="ios-step-num">2</div>
+        <div>Нажмите кнопку <b>«Поделиться»</b> <span style="font-size:16px">⬆️</span> в нижней панели экрана iPhone.</div>
+      </div>
+
+      <div class="ios-step-card">
+        <div class="ios-step-num">3</div>
+        <div>Прокрутите меню чуть ниже и выберите <b>«На экран „Домой“» (Add to Home Screen) ➕</b>, затем нажмите <b>«Добавить»</b>.</div>
+      </div>
+
+      <div style="font-size:12px; color:var(--muted); text-align:center; margin:10px 0 4px">
+        ✨ Готово! На рабочем столе iPhone появится фирменная иконка <b>«Мы Рядом»</b>, и приложение будет открываться на весь экран без рамок браузера!
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="closeModal('iosInstallModal')">Понятно, супер! ❤️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: СТУДИЯ РИСОВАНИЯ ДУДЛА -->
   <div class="modal-overlay" id="doodleStudioModal">
     <div class="modal-box">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px">
@@ -1357,15 +1454,12 @@
         </div>
       </div>
 
-      <!-- Белое полотно для рисования -->
       <div class="studio-canvas-box">
         <canvas id="studioEditorCanvas" width="380" height="350"></canvas>
       </div>
 
-      <!-- Палитра цветов (включая чёрный контур и нежно-розовые щёчки Flork) -->
       <div class="studio-palette-scroll" id="studioPaletteRow"></div>
 
-      <!-- Выбор толщины кисти и реакции -->
       <div class="studio-size-row">
         <div style="display:flex; gap:6px">
           <button class="btn-small" id="sizeBtn4" onclick="setStudioBrushSize(4)">Тонкая</button>
@@ -1507,6 +1601,10 @@
         <input class="field-input" id="inpDbUrl" type="text" />
       </div>
 
+      <div style="margin-bottom:12px">
+        <button class="btn-secondary" style="width:100%" onclick="closeModal('settingsModal'); openIosInstallModal()">📲 Инструкция: как установить на iPhone</button>
+      </div>
+
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeModal('settingsModal')">Закрыть</button>
         <button class="btn-primary" onclick="saveSettingsModal()">Сохранить</button>
@@ -1637,8 +1735,60 @@
     let tempSlideDataUrl = null;
     let tempCheckinDataUrl = null;
 
+    // ГЕНЕРАЦИЯ ФИРМЕННОЙ ИКОНКИ ДЛЯ ЭКРАНА «ДОМОЙ» НА IPHONE (180x180 PNG)
+    function initIosAppIconAndStandalone() {
+      try {
+        const c = document.createElement('canvas');
+        c.width = 180;
+        c.height = 180;
+        const ctx = c.getContext('2d');
+
+        const grad = ctx.createLinearGradient(0, 0, 180, 180);
+        grad.addColorStop(0, '#ff5e8e');
+        grad.addColorStop(1, '#ee3e6a');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 180, 180);
+
+        const rad = ctx.createRadialGradient(90, 65, 10, 90, 90, 95);
+        rad.addColorStop(0, 'rgba(255,255,255,0.28)');
+        rad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = rad;
+        ctx.fillRect(0, 0, 180, 180);
+
+        ctx.save();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(90, 62);
+        ctx.bezierCurveTo(66, 34, 26, 56, 26, 92);
+        ctx.bezierCurveTo(26, 122, 58, 144, 90, 160);
+        ctx.bezierCurveTo(122, 144, 154, 122, 154, 92);
+        ctx.bezierCurveTo(154, 56, 114, 34, 90, 62);
+        ctx.fill();
+        ctx.restore();
+
+        const pngUrl = c.toDataURL('image/png');
+        const touchLink = document.getElementById('appleTouchIconLink');
+        const favLink = document.getElementById('faviconLink');
+        const modalIcon = document.getElementById('installModalAppIcon');
+        if (touchLink) touchLink.href = pngUrl;
+        if (favLink) favLink.href = pngUrl;
+        if (modalIcon) modalIcon.src = pngUrl;
+
+        if (window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches) {
+          const btn = document.getElementById('iosInstallHeaderBtn');
+          if (btn) btn.style.display = 'none';
+        }
+      } catch (e) {}
+    }
+
+    function openIosInstallModal() {
+      document.getElementById('iosInstallModal').classList.add('open');
+    }
+
     if (currentTheme === 'dark') {
       document.body.classList.add('dark-mode');
+      const metaTheme = document.getElementById('metaThemeColor');
+      if (metaTheme) metaTheme.content = '#0d0b14';
     }
 
     function toggleTheme() {
@@ -1647,6 +1797,8 @@
       localStorage.setItem(THEME_KEY, currentTheme);
       const btn = document.getElementById('themeToggleBtn');
       if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+      const metaTheme = document.getElementById('metaThemeColor');
+      if (metaTheme) metaTheme.content = currentTheme === 'dark' ? '#0d0b14' : '#faf7f5';
     }
 
     function compressImageFile(file, maxWidth = 680, quality = 0.68) {
@@ -1677,7 +1829,6 @@
       });
     }
 
-    // СТАРТОВЫЕ АВТОРСКИЕ ДУДЛЫ (КАК НА СКРИНШОТЕ-РЕФЕРЕНСЕ: FLORK, БУКЕТ ЦВЕТОВ И СЕРДЦЕ)
     function buildStarterDoodles() {
       const now = Date.now();
       return [
@@ -1714,7 +1865,6 @@
       ];
     }
 
-    // Отрисовка стартовых векторных иллюстраций (чтобы сразу выглядело 10/10 как на референсе)
     function drawPresetArtOnCanvas(ctx, presetName) {
       if (!presetName) return;
       ctx.save();
@@ -1722,11 +1872,9 @@
       ctx.lineJoin = 'round';
 
       if (presetName === 'flork') {
-        // Милый персонаж Flork с румяными щёчками как на фото-примере
         ctx.strokeStyle = '#111111';
         ctx.lineWidth = 9;
 
-        // Контур головы и спины
         ctx.beginPath();
         ctx.moveTo(135, 18);
         ctx.bezierCurveTo(105, 65, 125, 118, 185, 112);
@@ -1737,20 +1885,17 @@
         ctx.bezierCurveTo(268, 85, 278, 195, 290, 290);
         ctx.stroke();
 
-        // Тело
         ctx.beginPath();
         ctx.moveTo(152, 112);
         ctx.lineTo(146, 300);
         ctx.stroke();
 
-        // Ручки сложенные в милую позу
         ctx.beginPath();
         ctx.moveTo(150, 145);
         ctx.lineTo(95, 255);
         ctx.lineTo(220, 185);
         ctx.stroke();
 
-        // Розовые румяные щёчки
         ctx.fillStyle = '#ee8578';
         ctx.beginPath();
         ctx.arc(122, 46, 15, 0, Math.PI * 2);
@@ -1760,7 +1905,6 @@
         ctx.arc(188, 96, 15, 0, Math.PI * 2);
         ctx.fill();
 
-        // Блестящие глазки
         ctx.fillStyle = '#111111';
         ctx.beginPath(); ctx.arc(142, 26, 11, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(189, 68, 11, 0, Math.PI * 2); ctx.fill();
@@ -1771,20 +1915,17 @@
         ctx.beginPath(); ctx.arc(187, 65, 4, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(192, 71, 2.5, 0, Math.PI * 2); ctx.fill();
 
-        // Розовое сердечко сверху
         ctx.fillStyle = '#ee3e6a';
         ctx.beginPath();
         ctx.arc(72, 18, 12, 0, Math.PI * 2);
         ctx.fill();
       } else if (presetName === 'bouquet') {
-        // Красочный букет цветов с сердечками как на средней карточке примера
         ctx.strokeStyle = '#16a34a';
         ctx.lineWidth = 7;
         [[190, 295, 155, 165], [190, 295, 190, 140], [190, 295, 225, 170]].forEach(([x1, y1, x2, y2]) => {
           ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
         });
 
-        // Тюльпан и цветы
         ctx.fillStyle = '#fb7185';
         ctx.beginPath(); ctx.arc(165, 130, 32, 0, Math.PI * 2); ctx.fill();
 
@@ -1797,13 +1938,11 @@
         ctx.fillStyle = '#f472b6';
         ctx.beginPath(); ctx.arc(145, 195, 24, 0, Math.PI * 2); ctx.fill();
 
-        // Маленькие сердечки и искорки вокруг букета
         ctx.fillStyle = '#facc15';
         [[110, 95], [135, 65], [245, 85], [270, 125], [260, 185], [115, 150]].forEach(([cx, cy]) => {
           ctx.beginPath(); ctx.arc(cx, cy, 4.5, 0, Math.PI * 2); ctx.fill();
         });
       } else if (presetName === 'heart_sketch') {
-        // Нежное двойное сердце
         ctx.strokeStyle = '#ee3e6a';
         ctx.lineWidth = 9;
         ctx.beginPath();
@@ -1822,7 +1961,6 @@
       const h = canvasEl.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Заливаем чистым белым фоном как на референсе
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
 
@@ -1885,7 +2023,6 @@
       return `${months[d.getMonth()]} ${d.getFullYear()}`;
     }
 
-    // Фильтры на вкладке Челленджей
     let chViewMode = 'active';
     let chTypeFilter = 'all';
     let chCatFilter = 'all';
@@ -1904,7 +2041,11 @@
       return found ? found.label : '❤️ Пара';
     }
 
+    // =========================================================================
+    // ОГРОМНЫЙ БАНК ИЗ 70 РАЗНЫХ ВОПРОСОВ И ЗАДАНИЙ (40 ВОПРОСОВ + 30 ЗАДАНИЙ)
+    // =========================================================================
     const AI_CHALLENGE_BANK = [
+      // --- 1. РОМАНТИКА: ВОПРОСЫ (8 шт.) ---
       {
         tplId: 'q_rom_1', type: 'question', category: 'romance',
         prompt: 'Какой момент нашей следующей встречи ты представляешь себе чаще всего?',
@@ -1926,6 +2067,68 @@
         ]
       },
       {
+        tplId: 'q_rom_3', type: 'question', category: 'romance',
+        prompt: 'Какой язык любви в нашей паре ощущается ярче всего?',
+        options: [
+          'Слова поддержки, нежности и комплименты 💬',
+          'Время, проведённое вместе (даже на расстоянии) ⏳',
+          'Реальная забота и желание помочь в делах 🤲',
+          'Милые сюрпризы, подарки и знаки внимания 🎁'
+        ]
+      },
+      {
+        tplId: 'q_rom_4', type: 'question', category: 'romance',
+        prompt: 'Идеальное свидание в день, когда мы наконец окажемся в одном городе:',
+        options: [
+          'Остаться дома, заказать вкусную еду и не вылезать из объятий 🍕',
+          'Пойти в атмосферное место с мягким светом и вкусным чаем 🍵',
+          'Ночная поездка на машине или прогулка по вечерним улицам 🌃',
+          'Домашний кинотеатр со свечами и одним пледом на двоих 🕯️'
+        ]
+      },
+      {
+        tplId: 'q_rom_5', type: 'question', category: 'romance',
+        prompt: 'Какая мелкая привычка или черта во мне вызывает у тебя самую тёплую улыбку?',
+        options: [
+          'Интонация голоса, когда ты рассказываешь что-то увлечённо 🎙️',
+          'Твой взгляд и мимика, когда ты радуешься или смеёшься 😊',
+          'То, как трогательно ты проявляешь заботу о мелочах ❤️',
+          'Твоё чувство юмора и наши локальные шутки 😂'
+        ]
+      },
+      {
+        tplId: 'q_rom_6', type: 'question', category: 'romance',
+        prompt: 'В какой атмосфере нам лучше всего проводить романтический вечер вдвоём?',
+        options: [
+          'Полное уединение дома, свечи и тихая музыка на фоне 🕯️',
+          'На крыше или смотровой площадке с видом на ночные огни 🌆',
+          'У камина или костра на природе под тёплым пледом 🔥',
+          'В уютном ресторане за долгим ужином и разговорами 🍷'
+        ]
+      },
+      {
+        tplId: 'q_rom_7', type: 'question', category: 'romance',
+        prompt: 'Какое прикосновение при встрече ты ждёшь сильнее всего?',
+        options: [
+          'Долгие объятия, в которых можно просто раствориться 🤗',
+          'Когда мы переплетаем пальцы и идём за руку 🤝',
+          'Поцелуй после долгой разлуки 💋',
+          'Когда можно положить голову на плечо и просто молчать 🥰'
+        ]
+      },
+      {
+        tplId: 'q_rom_8', type: 'question', category: 'romance',
+        prompt: 'Какой парный предмет или символ нам было бы круто иметь двоим?',
+        options: [
+          'Парные браслеты или кольца с минималистичной гравировкой 💍',
+          'Одинаковые уютные худи или домашние футболки 👕',
+          'Две любимые чайные пиалы из одной коллекции 🍵',
+          'Общий бумажный фотоальбом с нашими моментами 📸'
+        ]
+      },
+
+      // --- 2. УЮТ И БЫТ: ВОПРОСЫ (8 шт.) ---
+      {
         tplId: 'q_cozy_1', type: 'question', category: 'cozy',
         prompt: 'Пятничный вечер вместе: остаться дома в уюте или пойти гулять?',
         options: [
@@ -1936,25 +2139,241 @@
         ]
       },
       {
+        tplId: 'q_cozy_2', type: 'question', category: 'cozy',
+        prompt: 'Наше идеальное совместное утро выходного дня выглядит так:',
+        options: [
+          'Спать до победного в обнимку без будильников 😴',
+          'Не спеша заварить хороший пуэр или чай и болтать на кухне 🍵',
+          'Вместе приготовить вкусный завтрак под музыку 🥞',
+          'Валяться в постели и смотреть что-нибудь интересное 🎬'
+        ]
+      },
+      {
+        tplId: 'q_cozy_3', type: 'question', category: 'cozy',
+        prompt: 'Какую домашнюю традицию мы обязательно заведём, когда будем рядом каждый день?',
+        options: [
+          'Вечернее чаепитие со свечами без телефонов и суеты 🫖',
+          'Готовить новое необычное блюдо каждые выходные 👨‍🍳',
+          'Гулять вдвоём перед сном в любую погоду 🌙',
+          'Устраивать тематические киновечера с вкусняшками 🍿'
+        ]
+      },
+      {
+        tplId: 'q_cozy_4', type: 'question', category: 'cozy',
+        prompt: 'Что создаёт самый главный уют, когда мы проводим время вдвоём?',
+        options: [
+          'Приглушённый тёплый свет, плед и горячий чай 🍵',
+          'Приятная музыка на фоне или интересный фильм 🎶',
+          'Вкусная домашняя еда и ощущение полного спокойствия 🍲',
+          'Просто присутствие друг друга рядом — остальное детали ❤️'
+        ]
+      },
+      {
+        tplId: 'q_cozy_5', type: 'question', category: 'cozy',
+        prompt: 'Как мы распределим роли, если решим вместе приготовить ужин?',
+        options: [
+          'Готовим синхронно в четыре руки и дегустируем по ходу 👩‍❤️‍👨',
+          'Один — шеф по горячему, второй отвечает за атмосферу и чай 🍵',
+          'Включаем музыку, обнимаемся на кухне, а еда готовится сама 💃',
+          'Заказываем доставку, чтобы не тратить время на мытьё посуды 🍱'
+        ]
+      },
+      {
+        tplId: 'q_cozy_6', type: 'question', category: 'cozy',
+        prompt: 'Какая деталь обязательно должна быть в нашей идеальной общей комнате?',
+        options: [
+          'Большой мягкий диван с кучей подушек и тёплым пледом 🛋️',
+          'Отдельный уютный уголок для чайных церемоний и бесед 🍵',
+          'Мягкая гирлянда, свечи или тёплый торшер для вечеров ✨',
+          'Большой экран или проектор для совместных фильмов 📽️'
+        ]
+      },
+      {
+        tplId: 'q_cozy_7', type: 'question', category: 'cozy',
+        prompt: 'Если за окном весь день льёт дождь или метёт снег, чем займёмся вдвоём?',
+        options: [
+          'Устроим марафон фильмов или любимого сериала под одеялом 🍿',
+          'Заварим крепкий согревающий чай и будем говорить по душам 🫖',
+          'Испечём или приготовим что-нибудь вкусное и домашнее 🥧',
+          'Поиграем вместе в игры или устроим день полного релакса 🎮'
+        ]
+      },
+      {
+        tplId: 'q_cozy_8', type: 'question', category: 'cozy',
+        prompt: 'Какой напиток больше всего ассоциируется с нашими тёплыми вечерами?',
+        options: [
+          'Насыщенный выдержанный пуэр или улун по всем правилам 🍵',
+          'Душистый травяной или ягодный чай с мёдом 🍯',
+          'Горячее какао или кофе с воздушной пенкой ☕',
+          'Любой напиток, главное — чтобы кружки стояли рядом ❤️'
+        ]
+      },
+
+      // --- 3. МЕЧТЫ И ПЛАНЫ: ВОПРОСЫ (8 шт.) ---
+      {
         tplId: 'q_drm_1', type: 'question', category: 'dreams',
         prompt: 'В какое путешествие нам больше всего хочется отправиться вдвоём?',
         options: [
-          'Уединённый домик с панорамными окнами на природе 🏔️',
+          'Уединённый домик с панорамными окнами на природе или севере 🏔️',
           'Атмосферный город с историей, уютными улочками и чайными 🏮',
           'К тёплому морю, где можно встречать закаты на берегу 🌊',
           'Большое автопутешествие вдвоём под наш общий плейлист 🚗'
         ]
       },
       {
+        tplId: 'q_drm_2', type: 'question', category: 'dreams',
+        prompt: 'Что мы обязательно должны попробовать сделать вместе хотя бы раз в жизни?',
+        options: [
+          'Увидеть северное сияние или звёздное небо вдали от городов 🌌',
+          'Сорваться в спонтанную поездку на выходные без долгих сборов 🎒',
+          'Побывать на настоящей чайной дегустации и собрать свою коллекцию 🍵',
+          'Снять уютный домик в горах или лесу только для нас двоих 🏡'
+        ]
+      },
+      {
+        tplId: 'q_drm_3', type: 'question', category: 'dreams',
+        prompt: 'Какой сувенир из наших будущих совместных поездок мы будем привозить домой?',
+        options: [
+          'Красивую керамику, пиалы или редкие сорта чая 🍵',
+          'Распечатанные живые фотографии для нашего альбома 📸',
+          'Необычные предметы интерьера и свечи для уюта 🕯️',
+          'Билеты, открытки и памятные мелочи в общую шкатулку 🎟️'
+        ]
+      },
+      {
+        tplId: 'q_drm_4', type: 'question', category: 'dreams',
+        prompt: 'Через несколько лет наш идеальный вечер пятницы — это:',
+        options: [
+          'Возвращаться в наш общий уютный дом, где всё устроено по любви 🏠',
+          'Собирать один чемодан на двоих для выезда на выходные ✈️',
+          'Сидеть вместе на балконе или террасе с горячим чаем 🍵',
+          'Смотреть кино в обнимку и радоваться тому, что мы рядом ❤️'
+        ]
+      },
+      {
+        tplId: 'q_drm_5', type: 'question', category: 'dreams',
+        prompt: 'Какой формат отдыха в отпуске подходит нашей паре идеально?',
+        options: [
+          'Баланс: днём гулять и смотреть новое, вечером — уют в номере ✨',
+          'Активный: объехать на машине максимум красивых локаций 🚗',
+          'Полный релакс: природа, тишина, спа и никакого расписания 🌿',
+          'Гастро- и эстетичный тур по самым атмосферным местам 🍵'
+        ]
+      },
+      {
+        tplId: 'q_drm_6', type: 'question', category: 'dreams',
+        prompt: 'Какое общее хобби или занятие нам было бы интересно освоить вдвоём?',
+        options: [
+          'Чайная культура: разбираться в сортах и устраивать церемонии 🫖',
+          'Совместная фотография или съёмка атмосферных видео в поездках 📷',
+          'Кулинарные эксперименты с кухнями разных стран 🍜',
+          'Настольные или кооперативные игры на двоих по вечерам 🎲'
+        ]
+      },
+      {
+        tplId: 'q_drm_7', type: 'question', category: 'dreams',
+        prompt: 'Как мы проведём первые 24 часа, когда не нужно будет думать об обратных билетах?',
+        options: [
+          'Выспимся в обнимку, отключим будильники и никуда не побежим 😴',
+          'Пойдём гулять по городу, держась за руки и празднуя этот день 🥂',
+          'Обустроим наше общее пространство красивыми мелочами 🏠',
+          'Устроим большой уютный вечер только для нас двоих ❤️'
+        ]
+      },
+      {
+        tplId: 'q_drm_8', type: 'question', category: 'dreams',
+        prompt: 'Какое время года лучше всего подходит для нашего следующего совместного приключения?',
+        options: [
+          'Снежная зима с огоньками, глинтвейном/чаем и тёплыми свитерами ❄️',
+          'Тёплая весна, когда всё расцветает и можно гулять до ночи 🌸',
+          'Солнечное лето с закатами у воды и ночными разговорами ☀️',
+          'Золотая уютная осень с шарфами, шуршащей листвой и кофейнями 🍂'
+        ]
+      },
+
+      // --- 4. ГЛУБОКОЕ: ВОПРОСЫ (8 шт.) ---
+      {
         tplId: 'q_deep_1', type: 'question', category: 'deep',
         prompt: 'Что в наших отношениях даёт тебе больше всего внутренней опоры и спокойствия?',
         options: [
           'Уверенность, что мы всегда на стороне друг друга 🤝',
-          'Искренность: с тобой можно быть собой настоящим 💫',
+          'Искренность: с тобой можно быть собой настоящим без масок 💫',
           'То, как бережно мы относимся к чувствам друг друга ❤️',
-          'Наше умение разговаривать, слышать и поддерживать 🌿'
+          'Наше умение разговаривать, слышать и поддерживать в любой день 🌿'
         ]
       },
+      {
+        tplId: 'q_deep_2', type: 'question', category: 'deep',
+        prompt: 'Какая главная суперсила есть у нашей пары?',
+        options: [
+          'Сохранять тепло, близость и нежность даже через сотни километров 📍',
+          'Чувствовать настроение друг друга буквально с полуслова 🔮',
+          'Умение рассмешить и поддержать даже после самого трудного дня 🔥',
+          'Смотреть в одну сторону и разделять общие ценности ✨'
+        ]
+      },
+      {
+        tplId: 'q_deep_3', type: 'question', category: 'deep',
+        prompt: 'За что тебе больше всего хочется сказать «спасибо» партнёру на этой неделе?',
+        options: [
+          'За ежедневное внимание, заботу и ощущение «мы рядом» 🥰',
+          'За терпение, понимание и веру в нас двоих 💪',
+          'За то, как легко и светло становится на душе после наших созвонов ☀️',
+          'За вдохновение становиться лучше каждый день ❤️'
+        ]
+      },
+      {
+        tplId: 'q_deep_4', type: 'question', category: 'deep',
+        prompt: 'Что для тебя является самым главным показателем настоящей близости в паре?',
+        options: [
+          'Когда вместе комфортно даже просто молчать обнявшись 🌙',
+          'Когда можно поделиться любой тревогой и получить поддержку 🤲',
+          'Когда радуешься успехам партнёра так же сильно, как своим 🎉',
+          'Когда даже на расстоянии чувствуешь незримую связь 24/7 ❤️'
+        ]
+      },
+      {
+        tplId: 'q_deep_5', type: 'question', category: 'deep',
+        prompt: 'Как лучше всего поддержать тебя, если выдался очень сложный и напряжённый день?',
+        options: [
+          'Просто выслушать, обнять словами и сказать: «Я с тобой» ❤️',
+          'Отвлечь чем-то весёлым, лёгким разговором или смешной историей 😊',
+          'Пожелать спокойного отдыха и дать немного времени перезагрузиться 🍵',
+          'Помочь разложить мысли по полочкам и найти решение 🤝'
+        ]
+      },
+      {
+        tplId: 'q_deep_6', type: 'question', category: 'deep',
+        prompt: 'Чему самому важному нас научило время, когда мы общаемся на расстоянии?',
+        options: [
+          'Ценить каждую минуту вместе и не тратить время на пустяки ⏳',
+          'Выражать чувства словами, голосом и вниманием к деталям 💬',
+          'Доверять друг другу на 100% и строить крепкий фундамент 🏰',
+          'Понимать, насколько сильно и глубоко мы дорожим друг другом ❤️'
+        ]
+      },
+      {
+        tplId: 'q_deep_7', type: 'question', category: 'deep',
+        prompt: 'Какой комплимент от любимого человека попадает тебе в самое сердце?',
+        options: [
+          'Когда замечают мои старания, характер и внутренние качества ✨',
+          'Искреннее восхищение внешностью, стилем и красотой 😍',
+          'Фраза «С тобой мне так спокойно, хорошо и надёжно» 🏡',
+          'Когда говорят, как сильно мной гордятся 🔥'
+        ]
+      },
+      {
+        tplId: 'q_deep_8', type: 'question', category: 'deep',
+        prompt: 'Какое воспоминание о начале нашего общения вызывает у тебя самые тёплые чувства?',
+        options: [
+          'То, как быстро и легко мы нашли общий язык с первых разговоров 💬',
+          'Приятное волнение перед каждым новым сообщением и звонком 💓',
+          'Момент, когда стало понятно: это человек по-настоящему родной ✨',
+          'Наши первые совместные шутки и ночные переписки 🌙'
+        ]
+      },
+
+      // --- 5. ВЕСЁЛОЕ: ВОПРОСЫ (8 шт.) ---
       {
         tplId: 'q_fun_1', type: 'question', category: 'fun',
         prompt: 'Если бы про нас двоих сегодня снимали кино, какой это был бы жанр?',
@@ -1962,18 +2381,85 @@
           'Тёплая романтическая комедия с фирменными шутками 🎬',
           'Красивое атмосферное роуд-муви про любовь и дороги 🚗',
           'Уютный фильм с эстетичными кадрами и классным саундтреком 🎧',
-          'Приключенческий фильм, где герои справляются со всем вместе 🔥'
+          'Приключенческий блокбастер, где герои справляются со всем вместе 🔥'
         ]
       },
       {
-        tplId: 't_cozy_1', type: 'task', category: 'cozy',
-        prompt: '🎯 Задание: Сделайте прямо сейчас фото того, что перед вами, и загрузите его через кнопку «📸 Фото-отметка» на главном экране!',
+        tplId: 'q_fun_2', type: 'question', category: 'fun',
+        prompt: 'Как мы будем выбирать фильм на вечер, если вкусы вдруг разойдутся?',
         options: [
-          '📸 Фото-отметка уже загружена на главный экран!',
-          '🍵 Сейчас заварю чай и сфоткаю момент',
-          '✅ Обменялись живыми кадрами!'
+          'Тянем жребий или кидаем монетку — всё по-честному 🪙',
+          'Сегодня выбирает один, а завтра — второй 🔄',
+          'Выбираем полчаса, а потом просто болтаем и пьём чай 😂',
+          'Смотрим оба фильма подряд — ночь длинная! 🍿'
         ]
       },
+      {
+        tplId: 'q_fun_3', type: 'question', category: 'fun',
+        prompt: 'Кто в нашей паре главный генератор спонтанных идей и приключений?',
+        options: [
+          'Матвей подаёт идею, Полина добавляет атмосферы и магии ✨',
+          'Полина вдохновляет, а Матвей продумывает, как всё реализовать 🚀',
+          'Оба хороши: стоит одному намекнуть, второй уже собирается! 🔥',
+          'Чередуем роль главного авантюриста по настроению 😎'
+        ]
+      },
+      {
+        tplId: 'q_fun_4', type: 'question', category: 'fun',
+        prompt: 'Что произойдёт в первые 10 минут, если мы пойдём вместе в большой супермаркет?',
+        options: [
+          'Наберём тележку вкусняшек, которые вообще не планировали покупать 🍫',
+          'Зависнем в отделе чая, сладостей или необычных соусов 🍵',
+          'Будем чётко идти по списку как идеальная команда 📋',
+          'Устроим дегустацию и обсуждение каждого продукта 😂'
+        ]
+      },
+      {
+        tplId: 'q_fun_5', type: 'question', category: 'fun',
+        prompt: 'Кто из нас дольше собирается перед выходом из дома?',
+        options: [
+          'Полина создаёт идеальный образ, а Матвей терпеливо любуется 😍',
+          'Матвей тщательно укладывает причёску и проверяет все детали 🕶️',
+          'Собираемся синхронно в последнюю минуту, но везде успеваем ⚡',
+          'Никто не спешит — мы сами задаём своё время! 😎'
+        ]
+      },
+      {
+        tplId: 'q_fun_6', type: 'question', category: 'fun',
+        prompt: 'Если мы решим сыграть друг против друга в настольную или компьютерную игру:',
+        options: [
+          'Будет жаркая битва без поддавков до самого финала 🎮',
+          'Начнём играть всерьёз, но быстро скатимся в смех и шутки 😂',
+          'Сразу выберем кооперативный режим, чтобы играть за одну команду 🤝',
+          'Победитель получает массаж или заваривание вкусного чая 🍵'
+        ]
+      },
+      {
+        tplId: 'q_fun_7', type: 'question', category: 'fun',
+        prompt: 'Какая ситуация в поездке точно про нас двоих?',
+        options: [
+          'Взять кучу вещей, но ходить в самой любимой удобной одежде 🧳',
+          'Искать то самое идеальное место для фото или чаепития 📸',
+          'Свернуть не туда, но найти локацию ещё круче запланированной 🗺️',
+          'Обсуждать впечатления от поездки ещё полночи в номере 🌙'
+        ]
+      },
+      {
+        tplId: 'q_fun_8', type: 'question', category: 'fun',
+        prompt: 'Какое тотемное животное лучше всего описывает нашу пару в выходной день?',
+        options: [
+          'Два уютных котика, которые греются рядышком на солнце 🐱',
+          'Любопытные лисички, которым нужно разведать всё новое 🦊',
+          'Панды, которые никуда не спешат и наслаждаются вкусной едой 🐼',
+          'Перелётные птицы, которые всегда стремятся навстречу друг другу 🕊️'
+        ]
+      },
+
+      // =========================================================================
+      // ПАРНЫЕ ЗАДАНИЯ ПО КАТЕГОРИЯМ (30 ШТ.)
+      // =========================================================================
+
+      // --- РОМАНТИКА: ЗАДАНИЯ (6 шт.) ---
       {
         tplId: 't_rom_1', type: 'task', category: 'romance',
         prompt: '🎯 Задание: Добавьте ваше любимое совместное фото или картинку мечты в главную фото-карусель через кнопку «📷 + Наше фото»!',
@@ -1984,6 +2470,221 @@
         ]
       },
       {
+        tplId: 't_rom_2', type: 'task', category: 'romance',
+        prompt: '🎯 Задание: Запишите друг другу голосовое или кружочек и назовите 3 вещи, которые особенно восхищают вас в партнёре.',
+        options: [
+          '🎙️ Уже записал(а) и отправил(а)!',
+          '⏳ Запишу в ближайшее время!',
+          '🥰 Прослушали и улыбнулись оба!'
+        ]
+      },
+      {
+        tplId: 't_rom_3', type: 'task', category: 'romance',
+        prompt: '🎯 Задание: Напишите через кнопку «✍️ Свой ответ» ниже один самый нежный и необычный комплимент для второй половинки.',
+        options: [
+          '💖 Написал(а) комплимент через «Свой ответ»!',
+          '🥰 Сказал(а) лично / в голосовом!',
+          '✨ Комплимент доставлен!'
+        ]
+      },
+      {
+        tplId: 't_rom_4', type: 'task', category: 'romance',
+        prompt: '🎯 Задание: Вспомните и напишите друг другу момент, когда вы впервые поняли, насколько сильно привязались друг к другу.',
+        options: [
+          '💌 Написал(а) в личку / в своём ответе!',
+          '💭 Вспоминаю этот тёплый момент прямо сейчас',
+          '❤️ Поделились воспоминаниями!'
+        ]
+      },
+      {
+        tplId: 't_rom_5', type: 'task', category: 'romance',
+        prompt: '🎯 Задание: Поставьте себе новую красивую аватарку в левом верхнем углу приложения, чтобы порадовать партнёра свежим фото!',
+        options: [
+          '📸 Аватарка в шапке обновлена!',
+          '✨ Сейчас выберу классный портрет',
+          '😍 Оценили новые аватарки друг друга!'
+        ]
+      },
+      {
+        tplId: 't_rom_6', type: 'task', category: 'romance',
+        prompt: '🎯 Задание: Напишите партнёру короткое сообщение, начинающееся со слов: «Я так жду нашей встречи, чтобы...»',
+        options: [
+          '💌 Сообщение уже улетело!',
+          '✍️ Написал(а) прямо здесь через «Свой ответ»',
+          '❤️ Прочитали и согрелись!'
+        ]
+      },
+
+      // --- УЮТ И БЫТ: ЗАДАНИЯ (6 шт.) ---
+      {
+        tplId: 't_cozy_1', type: 'task', category: 'cozy',
+        prompt: '🎯 Задание: Сделайте прямо сейчас фото того, что перед вами, и загрузите его через кнопку «📸 + Фото-отметка» на главном экране!',
+        options: [
+          '📸 Фото-отметка уже на главном экране!',
+          '🍵 Сейчас налью чай и сфоткаю момент',
+          '✅ Обменялись живыми кадрами!'
+        ]
+      },
+      {
+        tplId: 't_cozy_2', type: 'task', category: 'cozy',
+        prompt: '🎯 Задание: Устройте сегодня синхронное чаепитие! Заварите себе вкусный чай или пуэр в одно время и поболтайте хотя бы 10 минут.',
+        options: [
+          '🍵 Чай уже заварен, я в деле!',
+          '⏳ Договорились на вечернее чаепитие',
+          '✅ Попили чай синхронно — 10/10 к уюту!'
+        ]
+      },
+      {
+        tplId: 't_cozy_3', type: 'task', category: 'cozy',
+        prompt: '🎯 Задание: Обновите свой статус в разделе «Отметка» на главном экране и напишите там тёплое пожелание на остаток дня.',
+        options: [
+          '✅ Отметка обновлена на главном экране!',
+          '🌟 Сейчас напишу новое сообщение в статус',
+          '❤️ Сделано с теплом!'
+        ]
+      },
+      {
+        tplId: 't_cozy_4', type: 'task', category: 'cozy',
+        prompt: '🎯 Задание: Покажите или расскажите партнёру, какой напиток или вкусняшка сегодня поднимает вам настроение.',
+        options: [
+          '🍵 Рассказал(а) и показал(а)!',
+          '🍫 Делюсь своим вкусным моментом',
+          '😋 Обсудили и захотели чаю!'
+        ]
+      },
+      {
+        tplId: 't_cozy_5', type: 'task', category: 'cozy',
+        prompt: '🎯 Задание: Напишите в «✍️ Свой ответ», какое блюдо вы бы хотели приготовить или заказать вместе в первый же вечер встречи.',
+        options: [
+          '🍽️ Написал(а) блюдо в «Свой ответ»!',
+          '🍕 Выбрали наше идеальное меню на вечер',
+          '✅ Договорились!'
+        ]
+      },
+      {
+        tplId: 't_cozy_6', type: 'task', category: 'cozy',
+        prompt: '🎯 Задание: Перед сном сегодня пожелайте друг другу спокойной ночи голосовым сообщением, чтобы уснуть с улыбкой.',
+        options: [
+          '🌙 Обязательно запишу перед сном!',
+          '🎙️ Голосовое уже записано!',
+          '🥰 Самая уютная традиция выполнена!'
+        ]
+      },
+
+      // --- МЕЧТЫ И ПЛАНЫ: ЗАДАНИЯ (6 шт.) ---
+      {
+        tplId: 't_drm_1', type: 'task', category: 'dreams',
+        prompt: '🎯 Задание: Зайдите во вкладку «Мечты ✨» в нашем приложении и добавьте по одному новому желанию для вашей пары.',
+        options: [
+          '✨ Новая мечта уже добавлена в список!',
+          '💭 Уже придумал(а), иду записывать',
+          '✅ Пополнили нашу копилку планов!'
+        ]
+      },
+      {
+        tplId: 't_drm_2', type: 'task', category: 'dreams',
+        prompt: '🎯 Задание: Придумайте одну деталь для вашего первого дня после встречи (место, прогулка или ритуал) и запишите её во вкладку «Заметки 📝».',
+        options: [
+          '📝 Записал(а) идею в общие заметки!',
+          '💡 Написал(а) идею прямо здесь в «Свой ответ»',
+          '👩‍❤️‍👨 Обсудили и запланировали!'
+        ]
+      },
+      {
+        tplId: 't_drm_3', type: 'task', category: 'dreams',
+        prompt: '🎯 Задание: Выберите один фильм или сериал для совместного просмотра и добавьте его во вкладку «Заметки 📝».',
+        options: [
+          '🎬 Фильм выбран и записан в заметки!',
+          '🍿 Написал(а) название через «Свой ответ»',
+          '✅ Список к просмотру готов!'
+        ]
+      },
+      {
+        tplId: 't_drm_4', type: 'task', category: 'dreams',
+        prompt: '🎯 Задание: Проверьте раздел «Наши события ⏳» на главном экране и при желании добавьте ещё одну важную дату для вашей пары.',
+        options: [
+          '⏳ Событие проверено / добавлено!',
+          '📅 Добавил(а) новую важную дату',
+          '❤️ Ждём наши дни вместе!'
+        ]
+      },
+      {
+        tplId: 't_drm_5', type: 'task', category: 'dreams',
+        prompt: '🎯 Задание: Напишите через «✍️ Свой ответ» название одного города или места на карте, куда бы вы хотели отправиться вдвоём.',
+        options: [
+          '🗺️ Написал(а) место в «Свой ответ»!',
+          '✈️ Добавил(а) сразу во вкладку «Мечты»',
+          '🌍 Маршрут мечты намечен!'
+        ]
+      },
+      {
+        tplId: 't_drm_6', type: 'task', category: 'dreams',
+        prompt: '🎯 Задание: Придумайте идею для необычного свидания в будущем (например, чайная церемония, поездка за город или фотосессия в стиле Old Money).',
+        options: [
+          '✨ Идея свидания готова и написана!',
+          '📸 Записал(а) в наши «Мечты»!',
+          '❤️ Обязательно воплотим в жизнь!'
+        ]
+      },
+
+      // --- ГЛУБОКОЕ: ЗАДАНИЯ (6 шт.) ---
+      {
+        tplId: 't_deep_1', type: 'task', category: 'deep',
+        prompt: '🎯 Задание: Отправьте друг другу песню, которая сегодня лучше всего передаёт ваше настроение или напоминает о любимом человеке.',
+        options: [
+          '🎧 Трек уже летит в личку!',
+          '🎵 Написал(а) название трека в «Свой ответ»',
+          '🔥 Послушали треки друг друга!'
+        ]
+      },
+      {
+        tplId: 't_deep_2', type: 'task', category: 'deep',
+        prompt: '🎯 Задание: Напишите через кнопку «✍️ Свой ответ» одно качество партнёра, которым вы по-настоящему гордитесь.',
+        options: [
+          '✍️ Написал(а) через кнопку своего ответа!',
+          '💬 Сказал(а) лично / голосом',
+          '❤️ Поделились самым важным!'
+        ]
+      },
+      {
+        tplId: 't_deep_3', type: 'task', category: 'deep',
+        prompt: '🎯 Задание: Поделитесь друг с другом одной маленькой победой или поводом для радости, который случился у вас за последние дни.',
+        options: [
+          '🌟 Поделился(ась) своей маленькой победой!',
+          '✍️ Написал(а) в «Свой ответ» ниже',
+          '🙌 Порадовались друг за друга!'
+        ]
+      },
+      {
+        tplId: 't_deep_4', type: 'task', category: 'deep',
+        prompt: '🎯 Задание: Спросите партнёра «Как я могу порадовать или поддержать тебя на этой неделе?» и обменяйтесь честными ответами.',
+        options: [
+          '🤝 Написал(а) свой ответ через «Свой ответ»!',
+          '💬 Обсудили это в личке / на созвоне',
+          '❤️ Забота на максимум!'
+        ]
+      },
+      {
+        tplId: 't_deep_5', type: 'task', category: 'deep',
+        prompt: '🎯 Задание: Загляните во вкладку «📚 Архив» челленджей и посмотрите ответы друг друга на прошлые вопросы.',
+        options: [
+          '📚 Заглянул(а) в наш Архив — так тепло!',
+          '🥰 Перечитал(а) наши ответы',
+          '✅ Архив проверен!'
+        ]
+      },
+      {
+        tplId: 't_deep_6', type: 'task', category: 'deep',
+        prompt: '🎯 Задание: Напишите партнёру 3 слова, которые первыми приходят в голову, когда вы думаете о вашем будущем.',
+        options: [
+          '✨ Написал(а) 3 слова в «Свой ответ»!',
+          '💌 Отправил(а) в сообщении',
+          '❤️ Наши слова совпали по духу!'
+        ]
+      },
+
+      // --- ВЕСЁЛОЕ: ЗАДАНИЯ (6 шт.) ---
+      {
         tplId: 't_fun_1', type: 'task', category: 'fun',
         prompt: '🎯 Задание: Перейдите во вкладку «Дудлы 🎨» и нажмите «♡ Добавь штрих» на рисунке партнёра или создайте новый холст!',
         options: [
@@ -1991,12 +2692,59 @@
           '♡ Добавил(а) свой штрих к рисунку партнёра!',
           '😂 Картина готова!'
         ]
+      },
+      {
+        tplId: 't_fun_2', type: 'task', category: 'fun',
+        prompt: '🎯 Задание: Опишите свой сегодняшний день только тремя эмодзи (нажмите «✍️ Свой ответ» и отправьте 3 смайлика, а партнёр угадает!).',
+        options: [
+          '😎 Отправил(а) 3 эмодзи в «Свой ответ»!',
+          '😂 Разгадал(а) шифр партнёра!',
+          '🔥 Выполнено!'
+        ]
+      },
+      {
+        tplId: 't_fun_3', type: 'task', category: 'fun',
+        prompt: '🎯 Задание: Нарисуйте во вкладке «Дудлы 🎨» портрет второй половинки по памяти за 30 секунд и подпишите его!',
+        options: [
+          '🖼️ Портрет шедеврально нарисован в Дудлах!',
+          '✏️ Бегу открывать новый холст!',
+          '😂 Посмеялись и оценили художества!'
+        ]
+      },
+      {
+        tplId: 't_fun_4', type: 'task', category: 'fun',
+        prompt: '🎯 Задание: Придумайте смешное кодовое слово нашей пары на эту неделю и напишите его в «✍️ Свой ответ».',
+        options: [
+          '🕵️ Кодовое слово вписано в «Свой ответ»!',
+          '😂 Выбрали наш секретный пароль!',
+          '🔥 Готово!'
+        ]
+      },
+      {
+        tplId: 't_fun_5', type: 'task', category: 'fun',
+        prompt: '🎯 Задание: Поставьте реакцию (😍, ❤️ или 🔥) на все рисунки во вкладке «Дудлы 🎨», которые вам особенно нравятся!',
+        options: [
+          '😍 Реакции на Дудлы проставлены!',
+          '🎨 Сейчас зайду и оценю все холсты',
+          '❤️ Сделано!'
+        ]
+      },
+      {
+        tplId: 't_fun_6', type: 'task', category: 'fun',
+        prompt: '🎯 Задание: Отправьте партнёру смешной мем, рилс или забавную картинку, которая идеально описывает ваше настроение сейчас.',
+        options: [
+          '😂 Мем уже отправлен в личку!',
+          '📱 Ищу самую смешную картинку',
+          '🔥 Посмеялись вместе!'
+        ]
       }
     ];
 
-    function getCurrentHourKey() {
+    // КЛЮЧ СЛОТА НА КАЖДЫЕ 3 ЧАСА (8 слотов в сутки: 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00)
+    function getCurrent3HourSlotKey() {
       const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-${String(d.getHours()).padStart(2, '0')}`;
+      const slot = Math.floor(d.getHours() / 3);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}-S${slot}`;
     }
 
     function formatTimeTag(dateObj = new Date()) {
@@ -2033,7 +2781,8 @@
     const defaultState = {
       streakDays: 24,
       manualDistanceKm: 640,
-      lastGeneratedHourKey: getCurrentHourKey(),
+      lastGeneratedSlotKey: getCurrent3HourSlotKey(),
+      usedChallengeTplIds: ['q_cozy_1', 't_fun_1', 'q_rom_1'],
       users: {
         user1: {
           name: 'Матвей',
@@ -2106,6 +2855,24 @@
     let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || JSON.parse(JSON.stringify(defaultState));
     ensureStateShape(state);
 
+    // Очищает дубликаты вопросов/заданий по тексту, сохраняя ответы, если они были даны
+    function deduplicateChallengesByPrompt(list = []) {
+      const byPrompt = new Map();
+      list.forEach(item => {
+        if (!item || !item.prompt) return;
+        const key = item.prompt.trim();
+        if (!byPrompt.has(key)) {
+          byPrompt.set(key, item);
+        } else {
+          const existing = byPrompt.get(key);
+          if (item.user1Answer && !existing.user1Answer) existing.user1Answer = item.user1Answer;
+          if (item.user2Answer && !existing.user2Answer) existing.user2Answer = item.user2Answer;
+          if (item.archived) existing.archived = true;
+        }
+      });
+      return Array.from(byPrompt.values());
+    }
+
     function ensureStateShape(obj) {
       if (!obj.users) obj.users = JSON.parse(JSON.stringify(defaultState.users));
       if (!obj.users.user1) obj.users.user1 = JSON.parse(JSON.stringify(defaultState.users.user1));
@@ -2136,7 +2903,19 @@
       if (!Array.isArray(obj.challenges) || obj.challenges.length === 0) {
         obj.challenges = buildInitialChallenges();
       }
-      if (!obj.lastGeneratedHourKey) obj.lastGeneratedHourKey = getCurrentHourKey();
+      // Автоматически убираем старые дубликаты, если они накопились
+      obj.challenges = deduplicateChallengesByPrompt(obj.challenges);
+
+      if (!Array.isArray(obj.usedChallengeTplIds)) {
+        obj.usedChallengeTplIds = [];
+      }
+      obj.challenges.forEach(c => {
+        if (c.tplId && !obj.usedChallengeTplIds.includes(c.tplId)) {
+          obj.usedChallengeTplIds.push(c.tplId);
+        }
+      });
+
+      if (!obj.lastGeneratedSlotKey) obj.lastGeneratedSlotKey = getCurrent3HourSlotKey();
       if (!Array.isArray(obj.boards)) obj.boards = JSON.parse(JSON.stringify(defaultState.boards));
       if (!obj.activeBoardId) obj.activeBoardId = 'b_trips';
       if (!Array.isArray(obj.wishes)) obj.wishes = [];
@@ -2154,7 +2933,6 @@
       return 'Доброй ночи';
     }
 
-    // ЖИВОЙ ТАЙМЕР
     function updateLiveCountdownClock() {
       const countdowns = state.countdowns || [];
       const cd = countdowns.find(c => c.pinned) || countdowns[0] || { title: 'Встреча', days: 14, targetTs: Date.now() + 14 * 86400000 };
@@ -2183,7 +2961,6 @@
     }
     setInterval(updateLiveCountdownClock, 1000);
 
-    // АВАТАРКА
     function triggerAvatarUpload() {
       document.getElementById('avatarFileInput').click();
     }
@@ -2201,7 +2978,6 @@
       }
     }
 
-    // ФОТО-КАРУСЕЛЬ
     function prevPhotoSlide() {
       const slides = state.photoSlides || [];
       if (slides.length <= 1) return;
@@ -2303,7 +3079,6 @@
       `).join('');
     }
 
-    // ФОТО-ОТМЕТКА
     function openCheckinModal() {
       const me = state.users[getMyKey()];
       tempCheckinDataUrl = me.checkinPhoto || null;
@@ -2392,21 +3167,11 @@
       document.getElementById('historyModal').classList.add('open');
     }
 
-    // =====================================================
-    // НОВАЯ ГАЛЕРЕЯ ДУДЛОВ И СТУДИЯ ОТДЕЛЬНЫХ ХОЛСТОВ
-    // =====================================================
+    // ГАЛЕРЕЯ ДУДЛОВ
     const studioCanvas = document.getElementById('studioEditorCanvas');
     const studioCtx = studioCanvas.getContext('2d');
     const studioPaletteColors = [
-      '#111111', // Чёрный маркер (как у человечка Flork)
-      '#ee3e6a', // Ярко-розовый
-      '#ee8578', // Румяные щёчки Flork
-      '#ff9f43', // Оранжевый
-      '#facc15', // Солнечно-жёлтый
-      '#16a34a', // Зелёный
-      '#3b82f6', // Голубой
-      '#9333ea', // Фиолетовый
-      '#ffffff'  // Ластик (белый)
+      '#111111', '#ee3e6a', '#ee8578', '#ff9f43', '#facc15', '#16a34a', '#3b82f6', '#9333ea', '#ffffff'
     ];
 
     let studioCurrentColor = '#111111';
@@ -2477,9 +3242,7 @@
 
     function renderStudioPalette() {
       document.getElementById('studioPaletteRow').innerHTML = studioPaletteColors.map(c => `
-        <div class="studio-color-dot ${c === studioCurrentColor ? 'active' : ''}"
-             style="background:${c}"
-             onclick="selectStudioColor('${c}')"></div>
+        <div class="studio-color-dot ${c === studioCurrentColor ? 'active' : ''}" style="background:${c}" onclick="selectStudioColor('${c}')"></div>
       `).join('');
     }
 
@@ -2592,7 +3355,7 @@
           item.strokes = studioStrokes;
           item.caption = caption;
           item.reaction = studioReaction;
-          item.authorRole = myKey; // Показывает, кто последний добавил штрих
+          item.authorRole = myKey;
           item.updatedAtTs = now;
         }
         selectedDoodleId = studioEditingId;
@@ -2611,7 +3374,6 @@
         selectedDoodleId = newId;
       }
 
-      // Храним до 15 отдельных холстов для быстрой синхронизации
       if (state.doodles.length > 15) {
         state.doodles = state.doodles.slice(0, 15);
       }
@@ -2643,7 +3405,6 @@
         renderDoodleObjectToCanvas(document.getElementById('featuredDoodleCanvas'), feat);
       }
 
-      // Рендерим мини-превью на Главном экране (Вкладка 0)
       const latestDoodle = doodles[0] || feat;
       if (latestDoodle) {
         renderDoodleObjectToCanvas(document.getElementById('widgetDoodleCanvas'), latestDoodle);
@@ -2654,7 +3415,6 @@
         }
       }
 
-      // Рендерим сетку всех сохранённых холстов по 3 в ряд (как на референсе)
       const grid = document.getElementById('doodleGalleryGrid');
       grid.innerHTML = doodles.map(d => {
         const isMe = d.authorRole === myKey;
@@ -2676,14 +3436,12 @@
         `;
       }).join('');
 
-      // Отрисовываем каждый мини-холст в сетке
       doodles.forEach(d => {
         const cEl = document.getElementById(`thumb_canvas_${d.id}`);
         if (cEl) renderDoodleObjectToCanvas(cEl, d);
       });
     }
 
-    // УМНОЕ СЛИЯНИЕ СПИСКА ДУДЛОВ МЕЖДУ ДВУМЯ ТЕЛЕФОНАМИ
     function mergeDoodlesLists(cloudList = [], localList = []) {
       const map = new Map();
       cloudList.forEach(item => {
@@ -2719,7 +3477,7 @@
           if (localItem.archived) merged.archived = true;
         }
       });
-      return Array.from(map.values());
+      return deduplicateChallengesByPrompt(Array.from(map.values()));
     }
 
     function hashString(str) {
@@ -2730,70 +3488,96 @@
       return h;
     }
 
-    function pickNextPairFromBank(seedStr, existingChallenges) {
-      const usedTplIds = new Set((existingChallenges || []).map(c => c.tplId).filter(Boolean));
-      const questions = AI_CHALLENGE_BANK.filter(x => x.type === 'question');
-      const tasks = AI_CHALLENGE_BANK.filter(x => x.type === 'task');
+    // ГАРАНТИРОВАННЫЙ ВЫБОР БЕЗ ПОВТОРЕНИЙ ИЗ БАНКА НА 70 ЭЛЕМЕНТОВ
+    function pickUniqueNextPair(seedStr) {
+      if (!Array.isArray(state.usedChallengeTplIds)) state.usedChallengeTplIds = [];
+      const usedSet = new Set(state.usedChallengeTplIds);
+      const existingPrompts = new Set((state.challenges || []).map(c => (c.prompt || '').trim()));
 
-      let availQ = questions.filter(q => !usedTplIds.has(q.tplId));
-      if (availQ.length === 0) availQ = questions;
+      (state.challenges || []).forEach(c => {
+        if (c.tplId) usedSet.add(c.tplId);
+      });
 
-      let availT = tasks.filter(t => !usedTplIds.has(t.tplId));
-      if (availT.length === 0) availT = tasks;
+      const allQuestions = AI_CHALLENGE_BANK.filter(x => x.type === 'question');
+      const allTasks = AI_CHALLENGE_BANK.filter(x => x.type === 'task');
+
+      let availQ = allQuestions.filter(q => !usedSet.has(q.tplId) && !existingPrompts.has(q.prompt.trim()));
+      let availT = allTasks.filter(t => !usedSet.has(t.tplId) && !existingPrompts.has(t.prompt.trim()));
+
+      // Если когда-нибудь все 40 вопросов или 30 заданий будут пройдены — сбрасываем историю только тех, что уже давно не на экране
+      if (availQ.length === 0) {
+        availQ = allQuestions.filter(q => !existingPrompts.has(q.prompt.trim()));
+        if (availQ.length === 0) availQ = allQuestions;
+      }
+      if (availT.length === 0) {
+        availT = allTasks.filter(t => !existingPrompts.has(t.prompt.trim()));
+        if (availT.length === 0) availT = allTasks;
+      }
 
       const h = hashString(seedStr);
       const qTpl = availQ[h % availQ.length];
-      const tTpl = availT[(h >> 3) % availT.length];
+      const tTpl = availT[(h >>> 4) % availT.length];
+
+      if (qTpl && !state.usedChallengeTplIds.includes(qTpl.tplId)) {
+        state.usedChallengeTplIds.push(qTpl.tplId);
+      }
+      if (tTpl && !state.usedChallengeTplIds.includes(tTpl.tplId)) {
+        state.usedChallengeTplIds.push(tTpl.tplId);
+      }
+
       return { qTpl, tTpl };
     }
 
-    function checkHourlyChallengeGeneration() {
-      const currentHourKey = getCurrentHourKey();
-      if (state.lastGeneratedHourKey === currentHourKey) return;
+    // ГЕНЕРАЦИЯ КАЖДЫЕ 3 ЧАСА БЕЗ ПОВТОРОВ
+    function check3HourChallengeGeneration() {
+      const currentSlotKey = getCurrent3HourSlotKey();
+      if (state.lastGeneratedSlotKey === currentSlotKey) return;
 
+      // Все вопросы и задания, на которые уже ответили оба партнёра, переносим в Архив
       (state.challenges || []).forEach(ch => {
         if (ch.user1Answer && ch.user2Answer) ch.archived = true;
       });
 
-      const qHourId = `ch_q_${currentHourKey}`;
-      const tHourId = `ch_t_${currentHourKey}`;
-      const { qTpl, tTpl } = pickNextPairFromBank(currentHourKey, state.challenges);
+      const qSlotId = `ch_q_${currentSlotKey}`;
+      const tSlotId = `ch_t_${currentSlotKey}`;
+      const { qTpl, tTpl } = pickUniqueNextPair(currentSlotKey);
       const timeLabel = formatTimeTag();
 
-      if (!state.challenges.some(c => c.id === tHourId) && tTpl) {
+      if (!state.challenges.some(c => c.id === tSlotId || c.prompt === tTpl?.prompt) && tTpl) {
         state.challenges.unshift({
-          id: tHourId, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
+          id: tSlotId, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
           prompt: tTpl.prompt, options: tTpl.options,
           user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
         });
       }
-      if (!state.challenges.some(c => c.id === qHourId) && qTpl) {
+      if (!state.challenges.some(c => c.id === qSlotId || c.prompt === qTpl?.prompt) && qTpl) {
         state.challenges.unshift({
-          id: qHourId, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
+          id: qSlotId, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
           prompt: qTpl.prompt, options: qTpl.options,
           user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
         });
       }
 
-      state.lastGeneratedHourKey = currentHourKey;
+      state.lastGeneratedSlotKey = currentSlotKey;
       syncSection('challenges', state.challenges);
-      syncSection('lastGeneratedHourKey', state.lastGeneratedHourKey);
+      syncSection('usedChallengeTplIds', state.usedChallengeTplIds);
+      syncSection('lastGeneratedSlotKey', state.lastGeneratedSlotKey);
     }
 
     function generateExtraPairNow() {
-      const seed = 'manual_' + Date.now();
-      const { qTpl, tTpl } = pickNextPairFromBank(seed, state.challenges);
+      const seed = 'manual_unique_' + Date.now() + '_' + Math.random();
+      const { qTpl, tTpl } = pickUniqueNextPair(seed);
       const timeLabel = formatTimeTag();
       const stamp = Date.now();
 
-      if (tTpl) {
+      if (tTpl && !state.challenges.some(c => c.prompt === tTpl.prompt)) {
         state.challenges.unshift({
           id: `ch_t_${stamp}`, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
           prompt: tTpl.prompt, options: tTpl.options,
           user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
         });
       }
-      if (qTpl) {
+      if (qTpl && !state.challenges.some(c => c.prompt === qTpl.prompt)) {
         state.challenges.unshift({
           id: `ch_q_${stamp}`, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
           prompt: qTpl.prompt, options: qTpl.options,
@@ -2802,19 +3586,35 @@
       }
       chViewMode = 'active';
       syncSection('challenges', state.challenges);
+      syncSection('usedChallengeTplIds', state.usedChallengeTplIds);
     }
 
-    function updateHourlyCountdownUI() {
+    // Таймер обратного отсчёта до следующего 3-часового окна (ЧЧ:ММ:СС)
+    function update3HourCountdownUI() {
       const now = new Date();
-      const minsLeft = 59 - now.getMinutes();
-      const secsLeft = 59 - now.getSeconds();
+      const nextSlotHour = (Math.floor(now.getHours() / 3) + 1) * 3;
+      const nextTarget = new Date(now.getFullYear(), now.getMonth(), now.getDate(), nextSlotHour, 0, 0, 0);
+      const diffSec = Math.max(0, Math.floor((nextTarget.getTime() - now.getTime()) / 1000));
+
+      const hh = Math.floor(diffSec / 3600);
+      const mm = Math.floor((diffSec % 3600) / 60);
+      const ss = diffSec % 60;
+
       const el = document.getElementById('nextHourCountdown');
       if (el) {
-        el.textContent = `${String(minsLeft).padStart(2, '0')}:${String(secsLeft).padStart(2, '0')}`;
+        el.textContent = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
       }
-      checkHourlyChallengeGeneration();
+
+      const poolBadge = document.getElementById('uniquePoolBadge');
+      if (poolBadge) {
+        const usedCount = (state.usedChallengeTplIds || []).length;
+        const leftCount = Math.max(0, AI_CHALLENGE_BANK.length - usedCount);
+        poolBadge.textContent = `Новых в базе: ${leftCount}/${AI_CHALLENGE_BANK.length}`;
+      }
+
+      check3HourChallengeGeneration();
     }
-    setInterval(updateHourlyCountdownUI, 1000);
+    setInterval(update3HourCountdownUI, 1000);
 
     // ДВИЖОК СИНХРОНИЗАЦИИ NPOINT.IO
     let isSaving = false;
@@ -2864,6 +3664,8 @@
           else if (key === 'user2') baseData.users.user2 = val;
           else if (key === 'challenges') {
             baseData.challenges = mergeChallengesLists(baseData.challenges || [], val || []);
+          } else if (key === 'usedChallengeTplIds') {
+            baseData.usedChallengeTplIds = Array.from(new Set([...(baseData.usedChallengeTplIds || []), ...(val || [])]));
           } else if (key === 'doodles') {
             baseData.doodles = mergeDoodlesLists(baseData.doodles || [], val || []);
           } else {
@@ -2917,7 +3719,7 @@
             }
             const nowTime = new Date().toTimeString().slice(0, 8);
             setSyncIndicator('online', `🟢 <b>Npoint.io работает в реальном времени</b><br>Проверка: ${nowTime}`);
-            checkHourlyChallengeGeneration();
+            check3HourChallengeGeneration();
           }
         }
       } catch (err) {
@@ -3115,7 +3917,6 @@
       syncSection('countdowns', state.countdowns);
     }
 
-    // ФУНКЦИИ ЧЕЛЛЕНДЖЕЙ
     function setChallengeView(mode) { chViewMode = mode; renderAll(); }
     function setChallengeTypeFilter(type) { chTypeFilter = type; renderAll(); }
     function setChallengeCatFilter(cat) { chCatFilter = cat; renderAll(); }
@@ -3187,7 +3988,7 @@
             : ['Конечно да! ❤️', 'Обсудим вечером ✨', 'Напишу свой вариант ✍️']);
 
       state.challenges.unshift({
-        id: 'ch_custom_' + Date.now(), tplId: 'custom', type, category,
+        id: 'ch_custom_' + Date.now(), tplId: 'custom_' + Date.now(), type, category,
         prompt: type === 'task' && !prompt.startsWith('🎯') ? '🎯 Задание: ' + prompt : prompt,
         options, user1Answer: null, user2Answer: null, createdAtLabel: formatTimeTag(), archived: false
       });
@@ -3500,8 +4301,9 @@
     }
 
     // Старт
+    initIosAppIconAndStandalone();
     renderAll();
-    updateHourlyCountdownUI();
+    update3HourCountdownUI();
     pollCloudData();
     setInterval(pollCloudData, 1800);
     window.addEventListener('focus', pollCloudData);
@@ -3511,4 +4313,4 @@
     startAutoGpsTracking();
   </script>
 </body>
-  </html>
+</html>
