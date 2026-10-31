@@ -2,22 +2,9 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#faf7f5" id="metaThemeColor" />
-
-  <!-- Настройки нативного полноэкранного приложения для iOS и Android -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
-  <meta name="format-detection" content="telephone=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#faf7f5" />
   <title>Мы Рядом ❤️</title>
-
-  <!-- Автоматическая генерация фирменной иконки для экрана «Домой» на iPhone -->
-  <link rel="apple-touch-icon" id="appleTouchIconLink" href="" />
-  <link rel="icon" type="image/png" id="faviconLink" href="" />
-
-  <link rel="manifest" href='data:application/manifest+json,{"name":"Мы Рядом ❤️","short_name":"Мы Рядом","start_url":".","display":"standalone","background_color":"#faf7f5","theme_color":"#ee3e6a","orientation":"portrait"}' />
 
   <style>
     :root {
@@ -37,7 +24,7 @@
       --text: #19171c;
       --muted: #867f8e;
       --colon: #dfd9dd;
-      --nav-bg: rgba(255, 255, 255, 0.94);
+      --nav-bg: rgba(255, 255, 255, 0.95);
     }
 
     body.dark-mode {
@@ -51,33 +38,28 @@
       --text: #ffffff;
       --muted: #9b95b0;
       --colon: #3a344c;
-      --nav-bg: rgba(18, 15, 28, 0.94);
+      --nav-bg: rgba(18, 15, 28, 0.95);
     }
 
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
       user-select: none;
     }
 
     input, textarea, select {
       user-select: text;
-      -webkit-user-select: text;
     }
 
-    html, body {
+    body {
       margin: 0;
       padding: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding-bottom: 98px;
       overflow-x: hidden;
       transition: background 0.25s ease, color 0.25s ease;
-    }
-
-    body {
-      padding-bottom: calc(96px + env(safe-area-inset-bottom));
     }
 
     .container {
@@ -86,20 +68,15 @@
       margin: 0 auto;
     }
 
-    /* ВЕРХНЯЯ ПАНЕЛЬ С УЧЁТОМ ВЫРЕЗА IPHONE */
+    /* ВЕРХНЯЯ ПАНЕЛЬ */
     .ref-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: calc(14px + env(safe-area-inset-top)) 18px 10px;
+      padding: 16px 18px 10px;
       max-width: 500px;
       margin: 0 auto;
-      gap: 10px;
-      position: sticky;
-      top: 0;
-      z-index: 60;
-      background: var(--bg);
-      transition: background 0.25s ease;
+      gap: 12px;
     }
 
     .ref-user-left {
@@ -158,7 +135,7 @@
     }
 
     .greeting-title {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 800;
       letter-spacing: -0.3px;
       white-space: nowrap;
@@ -180,12 +157,12 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
     }
 
     .circle-icon-btn {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: var(--card);
       border: 1px solid var(--border);
@@ -194,24 +171,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 17px;
+      font-size: 18px;
       cursor: pointer;
       transition: transform 0.12s ease;
     }
     .circle-icon-btn:active {
       transform: scale(0.94);
-    }
-    .circle-icon-btn.ios-install-btn {
-      background: var(--pink-soft);
-      color: var(--pink);
-      border-color: rgba(238, 62, 106, 0.25);
-    }
-
-    /* Скрываем кнопку установки на шапке, когда приложение уже запущено с рабочего стола */
-    @media all and (display-mode: standalone) {
-      .ios-install-btn {
-        display: none !important;
-      }
     }
 
     /* БЫСТРЫЙ ПЕРЕКЛЮЧАТЕЛЬ РОЛИ */
@@ -249,6 +214,58 @@
     .r-pill-btn.active {
       background: var(--pink);
       color: #fff;
+    }
+
+    /* ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" НА ГЛАВНОЙ */
+    .interactive-nudge-widget {
+      background: linear-gradient(135deg, #1b162a, #13101d);
+      border: 1px solid rgba(255, 59, 127, 0.3);
+      border-radius: 24px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      color: #fff;
+    }
+
+    .nudge-left {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .nudge-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+
+    .nudge-sub {
+      font-size: 12px;
+      color: #b5afc9;
+      font-weight: 600;
+    }
+
+    .nudge-btn {
+      background: var(--pink);
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(255,59,127,0.4);
+      flex-shrink: 0;
+      transition: transform 0.12s ease;
+    }
+    .nudge-btn:active {
+      transform: scale(0.94);
     }
 
     /* ПЛАШКИ НАД ТАЙМЕРОМ */
@@ -1166,6 +1183,18 @@
         </div>
       </div>
 
+      <!-- ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" КАК НА ПРИМЕРЕ -->
+      <div class="interactive-nudge-widget">
+        <div class="nudge-left">
+          <div class="nudge-title">👋 Напомнить о себе</div>
+          <div class="nudge-sub">Отправить сигнал и поцелуй партнёру</div>
+        </div>
+        <button class="nudge-btn" onclick="sendNudgeSignal()">
+          <span>❤️</span>
+          <span>Подтолкнуть</span>
+        </button>
+      </div>
+
       <div class="cd-pills-row">
         <div class="pill-status-white" onclick="cyclePinnedCountdown()" title="Нажмите, чтобы переключить событие">
           <span style="color:var(--pink)">❤️</span>
@@ -1664,6 +1693,20 @@
       localStorage.setItem(THEME_KEY, currentTheme);
       const btn = document.getElementById('themeToggleBtn');
       if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+    }
+
+    // ИНТЕРАКТИВНАЯ КНОПКА "ПОДТОЛКНУТЬ"
+    function sendNudgeSignal() {
+      const me = state.users[getMyKey()];
+      const partnerKey = getPartnerKey();
+      const partner = state.users[partnerKey];
+      
+      me.moodHeadline = 'отправил(а) поцелуй 👋';
+      me.moodText = 'Матвей подтолкнул тебя! ❤️';
+      me.updatedAt = new Date().toTimeString().slice(0, 5);
+      
+      syncSection(getMyKey(), me);
+      alert(`❤️ Сигнал успешно отправлен для ${partner.name}!`);
     }
 
     function compressImageFile(file, maxWidth = 680, quality = 0.68) {
@@ -3560,4 +3603,4 @@
     startAutoGpsTracking();
   </script>
 </body>
-        </html>
+</html>
