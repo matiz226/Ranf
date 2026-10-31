@@ -70,7 +70,7 @@
       margin: 0 auto;
     }
 
-    /* ВЕРХНЯЯ ПАНЕЛЬ КАК НА РЕФЕРЕНСЕ */
+    /* ВЕРХНЯЯ ПАНЕЛЬ */
     .ref-header {
       display: flex;
       align-items: center;
@@ -218,7 +218,7 @@
       color: #fff;
     }
 
-    /* ПЛАШКИ НАД ТАЙМЕРОМ ("ИДЁТ ОТСЧЁТ" и "+ Добавить") */
+    /* ПЛАШКИ НАД ТАЙМЕРОМ */
     .cd-pills-row {
       display: flex;
       align-items: center;
@@ -258,7 +258,7 @@
       transform: scale(0.95);
     }
 
-    /* БОЛЬШОЙ ЖИВОЙ ТАЙМЕР 17 : 23 : 54 : 24 */
+    /* БОЛЬШОЙ ЖИВОЙ ТАЙМЕР */
     .big-timer-wrap {
       display: flex;
       align-items: flex-start;
@@ -303,7 +303,7 @@
       padding: 0 1px;
     }
 
-    /* ГЛАВНАЯ ФОТО-КАРТОЧКА (КАРУСЕЛЬ ФОТО ПАРЫ) */
+    /* ГЛАВНАЯ ФОТО-КАРТОЧКА */
     .photo-hero-card {
       position: relative;
       width: 100%;
@@ -401,7 +401,6 @@
     .photo-nav-Zone.left { left: 0; }
     .photo-nav-Zone.right { right: 0; }
 
-    /* ТОЧКИ ПАГИНАЦИИ ПОД ФОТО */
     .carousel-dots {
       display: flex;
       align-items: center;
@@ -424,7 +423,6 @@
       background: var(--pink);
     }
 
-    /* ПЛАШКА "ЗАДАНИЕ ДНЯ" КАК НА СКРИНШОТЕ */
     .daily-task-banner {
       background: var(--card);
       border: 1px solid var(--border);
@@ -602,7 +600,7 @@
       display: block;
     }
 
-    /* КАСТОМНЫЙ ХОЛСТ МИНИ-ПРЕВЬЮ */
+    /* МИНИ-ПРЕВЬЮ ДУДЛА НА ГЛАВНОЙ */
     .mini-doodle-bar {
       background: var(--card);
       border: 1px solid var(--border);
@@ -619,8 +617,9 @@
 
     .mini-doodle-canvas-box {
       width: 96px;
-      height: 72px;
-      background: #14111f;
+      height: 76px;
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.08);
       border-radius: 14px;
       overflow: hidden;
       flex-shrink: 0;
@@ -629,6 +628,301 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
+    }
+
+    /* =====================================================
+       НОВЫЙ ДИЗАЙН ВКЛАДКИ "ДУДЛЫ" КАК НА СКРИНШОТЕ
+       ===================================================== */
+    .doodles-top-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 18px;
+    }
+
+    .doodles-main-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin: 0;
+    }
+
+    .doodles-new-btn {
+      position: absolute;
+      right: 0;
+      top: 4px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--pink-soft);
+      color: var(--pink);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(238, 62, 106, 0.15);
+      transition: transform 0.14s ease;
+    }
+    .doodles-new-btn:active {
+      transform: scale(0.92);
+    }
+
+    .doodle-featured-card {
+      background: #ffffff;
+      color: #19171c;
+      border-radius: 28px;
+      padding: 14px 20px 20px;
+      box-shadow: 0 12px 34px rgba(28, 20, 35, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .doodle-featured-canvas-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 0.92;
+      background: #ffffff;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .doodle-featured-canvas-wrap canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .doodle-featured-react-pill {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(243, 238, 240, 0.9);
+      border: none;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .doodle-featured-meta-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-top: 8px;
+      gap: 12px;
+    }
+
+    .doodle-author-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--pink);
+      line-height: 1.2;
+    }
+    .doodle-author-name.is-self {
+      color: #19171c;
+    }
+
+    .doodle-time-ago {
+      font-size: 14px;
+      font-weight: 600;
+      color: #867f8e;
+      margin-top: 2px;
+    }
+
+    .doodle-add-stroke-btn {
+      background: none;
+      border: none;
+      color: var(--pink);
+      font-size: 16px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 6px 4px;
+      transition: transform 0.12s ease;
+    }
+    .doodle-add-stroke-btn:active {
+      transform: scale(0.95);
+    }
+
+    .doodle-caption-quote {
+      margin-top: 12px;
+      font-size: 16px;
+      color: #575260;
+      font-weight: 500;
+    }
+
+    /* КАЛЕНДАРНАЯ СЕКЦИЯ И СЕТКА СОХРАНЕННЫХ ХОЛСТОВ */
+    .doodle-month-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 8px 0 14px;
+    }
+
+    .doodle-month-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      color: var(--pink);
+      text-transform: uppercase;
+    }
+
+    .doodle-month-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--pink-soft);
+      color: var(--pink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .doodle-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+      margin-bottom: 24px;
+    }
+
+    .doodle-grid-card {
+      background: #ffffff;
+      color: #19171c;
+      border-radius: 22px;
+      padding: 10px 10px 12px;
+      box-shadow: 0 6px 18px rgba(28, 20, 35, 0.06);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.14s ease, border-color 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .doodle-grid-card:active {
+      transform: scale(0.96);
+    }
+    .doodle-grid-card.selected-card {
+      border-color: var(--pink);
+    }
+
+    .doodle-grid-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1.15;
+      background: #ffffff;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .doodle-grid-thumb canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .doodle-mini-react-badge {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(120, 116, 126, 0.85);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .doodle-grid-author {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--pink);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .doodle-grid-author.is-self {
+      color: #19171c;
+    }
+
+    .doodle-grid-time {
+      font-size: 12px;
+      font-weight: 600;
+      color: #867f8e;
+      margin-top: 2px;
+    }
+
+    /* МОДАЛЬНОЕ ОКНО РИСОВАНИЯ НА ХОЛСТЕ */
+    .studio-canvas-box {
+      width: 100%;
+      aspect-ratio: 1 / 0.92;
+      background: #ffffff;
+      border: 2px solid rgba(238, 62, 106, 0.28);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      touch-action: none;
+      margin: 10px 0 12px;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    .studio-canvas-box canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .studio-palette-scroll {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 6px 2px 10px;
+      scrollbar-width: none;
+    }
+    .studio-palette-scroll::-webkit-scrollbar { display: none; }
+
+    .studio-color-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      cursor: pointer;
+      border: 3px solid rgba(0,0,0,0.1);
+      transition: transform 0.14s ease;
+    }
+    .studio-color-dot.active {
+      border-color: var(--pink);
+      transform: scale(1.16);
+    }
+
+    .studio-size-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
     /* ОБЩИЕ СТИЛИ ВКЛАДОК */
@@ -747,18 +1041,6 @@
       background: var(--card-2); font-size: 13px; line-height: 1.45;
     }
 
-    .canvas-wrap {
-      background: #14111f; border: 2px solid rgba(238, 62, 106, 0.35); border-radius: 26px;
-      height: 320px; position: relative; overflow: hidden; margin: 12px 0; touch-action: none;
-    }
-    .canvas-wrap canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-    .palette-row {
-      display: flex; justify-content: center; gap: 12px; background: var(--card); padding: 12px; border-radius: 99px; border: 1px solid var(--border); box-shadow: var(--shadow);
-    }
-    .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
-    .color-dot.active { border-color: var(--pink); transform: scale(1.12); }
-
     /* НИЖНЯЯ НАВИГАЦИЯ */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
@@ -780,16 +1062,16 @@
     .modal-overlay.open { display: flex; }
 
     .modal-box {
-      background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 26px; width: 100%; max-width: 420px; padding: 22px; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 26px; width: 100%; max-width: 430px; padding: 20px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
-    .modal-title { font-size: 19px; font-weight: 800; margin: 0 0 14px; }
+    .modal-title { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
     .field-group { margin-bottom: 12px; }
     .field-label { display: block; font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
     .field-input {
-      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 12px 14px; border-radius: 14px; font-size: 14px; outline: none; font-family: inherit;
+      width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 14px; font-size: 14px; outline: none; font-family: inherit;
     }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 14px; }
     .btn-primary, .btn-secondary {
       flex: 1; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 14px; border: none; cursor: pointer;
     }
@@ -803,7 +1085,7 @@
       background: var(--card-2);
       border: 2px dashed var(--border);
       display: flex;
-       flex-direction: column;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow: hidden;
@@ -823,7 +1105,7 @@
   <!-- Скрытый input для быстрой смены аватарки -->
   <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarSelected(event)" />
 
-  <!-- ШАПКА В СТИЛЕ РЕФЕРЕНСА -->
+  <!-- ШАПКА -->
   <header class="ref-header">
     <div class="ref-user-left">
       <div class="avatar-wrap" onclick="triggerAvatarUpload()" title="Нажмите, чтобы загрузить своё фото профиля">
@@ -844,10 +1126,9 @@
   </header>
 
   <main class="container">
-    <!-- ВКЛАДКА 0: ГЛАВНЫЙ ЭКРАН (НОВЫЙ ДИЗАЙН) -->
+    <!-- ВКЛАДКА 0: ГЛАВНЫЙ ЭКРАН -->
     <section class="tab-page active" id="tab0">
 
-      <!-- Полоска быстрого переключения роли и принудительного обновления -->
       <div class="role-strip">
         <span onclick="forceSyncNow()" style="cursor:pointer">🔄 <span id="topGpsStatus">Онлайн</span> • 📍 <b id="smDistTag">640 км</b></span>
         <div class="role-strip-btns">
@@ -856,7 +1137,6 @@
         </div>
       </div>
 
-      <!-- Плашки: ИДЁТ ОТСЧЁТ и + Добавить -->
       <div class="cd-pills-row">
         <div class="pill-status-white" onclick="cyclePinnedCountdown()" title="Нажмите, чтобы переключить событие">
           <span style="color:var(--pink)">❤️</span>
@@ -865,7 +1145,6 @@
         <button class="pill-add-pink" onclick="openAddMenuModal()">+ Добавить</button>
       </div>
 
-      <!-- Живой посекундный таймер (ДН. : ЧАС. : МИН. : СЕК.) -->
       <div class="big-timer-wrap" onclick="openCountdownModal()">
         <div class="timer-col">
           <div class="timer-num accent" id="tDays">14</div>
@@ -888,7 +1167,6 @@
         </div>
       </div>
 
-      <!-- Главная Фото-карточка пары с каруселью и загрузкой фоток -->
       <div class="photo-hero-card">
         <img id="heroSlideImg" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=80" alt="Наше фото" />
         <div class="photo-nav-Zone left" onclick="prevPhotoSlide()"></div>
@@ -910,10 +1188,8 @@
         </div>
       </div>
 
-      <!-- Точки переключения фото-слайдов -->
       <div class="carousel-dots" id="heroCarouselDots"></div>
 
-      <!-- Плашка "Задание дня" (как на референсе) -->
       <div class="daily-task-banner" onclick="switchTab(2)">
         <div class="dt-left">
           <div class="dt-sparkle">✨</div>
@@ -928,7 +1204,6 @@
         </div>
       </div>
 
-      <!-- РАЗДЕЛ "ОТМЕТКА" И "ИСТОРИЯ" (С ФОТО-ОТМЕТКАМИ И НАСТРОЕНИЕМ) -->
       <div class="checkin-header">
         <div class="checkin-title">Отметка</div>
         <div class="checkin-links">
@@ -937,24 +1212,21 @@
         </div>
       </div>
 
-      <!-- Быстрые чипсы смены настроения -->
       <div class="chips-scroll" id="moodBox" style="margin-bottom:14px"></div>
 
-      <!-- Карточки Отметки Партнёра и Моя -->
       <div id="checkinsCardsBox"></div>
 
-      <!-- Компактный виджет совместного рисунка (Дудла) -->
+      <!-- Компактный виджет последнего Дудла -->
       <div class="mini-doodle-bar" onclick="switchTab(1)">
         <div>
-          <div style="font-weight:800; font-size:15px; margin-bottom:4px">🎨 Общий рисунок на холсте</div>
-          <div style="font-size:12px; color:var(--muted)">Обновлено в <span id="widgetDoodleTime">18:45</span> • Реакция: <span id="widgetReactionBtn">❤️</span></div>
+          <div style="font-weight:800; font-size:15px; margin-bottom:4px">🎨 Наши Дудлы и холсты</div>
+          <div style="font-size:12px; color:var(--muted)" id="homeDoodleSubText">Нажмите, чтобы открыть галерею или дорисовать</div>
         </div>
         <div class="mini-doodle-canvas-box">
-          <canvas id="widgetDoodleCanvas" width="240" height="180"></canvas>
+          <canvas id="widgetDoodleCanvas" width="240" height="200"></canvas>
         </div>
       </div>
 
-      <!-- Все события обратного отсчёта -->
       <div class="section-head" id="countdownsSection">
         <div class="section-title">Наши события ⏳</div>
         <button class="btn-small pink" onclick="openCountdownModal()">+ Событие</button>
@@ -962,21 +1234,45 @@
       <div id="countdownsList"></div>
     </section>
 
-    <!-- ВКЛАДКА 1: ДУДЛЫ -->
+    <!-- ВКЛАДКА 1: ДУДЛЫ (НОВЫЙ ДИЗАЙН С ОТДЕЛЬНЫМИ ХОЛСТАМИ И ГАЛЕРЕЕЙ) -->
     <section class="tab-page" id="tab1">
-      <div class="section-head">
-        <div class="section-title">Живой холст (рисуйте вместе) 🎨</div>
-        <div style="display:flex; gap:6px">
-          <button class="btn-small" onclick="undoStroke()">↩️ Назад</button>
-          <button class="btn-small" onclick="clearMyDoodle()">🗑️ Очистить</button>
+      <div class="doodles-top-header">
+        <h2 class="doodles-main-title">Дудлы</h2>
+        <button class="doodles-new-btn" onclick="openDoodleStudioModal(null)" title="Создать новый отдельный холст">✏️</button>
+      </div>
+
+      <!-- ГЛАВНАЯ КАРТОЧКА ВЫБРАННОГО ХОЛСТА -->
+      <div class="doodle-featured-card">
+        <div class="doodle-featured-canvas-wrap" onclick="openFeaturedDoodleInStudio()">
+          <canvas id="featuredDoodleCanvas" width="380" height="350"></canvas>
+          <button class="doodle-featured-react-pill" id="featuredDoodleReactBtn" onclick="event.stopPropagation(); cycleFeaturedDoodleReaction()" title="Поставить реакцию на этот дудл">😍</button>
         </div>
+
+        <div class="doodle-featured-meta-row">
+          <div>
+            <div class="doodle-author-name" id="featuredDoodleAuthor">Полина</div>
+            <div class="doodle-time-ago" id="featuredDoodleTime">1h</div>
+          </div>
+
+          <button class="doodle-add-stroke-btn" onclick="openFeaturedDoodleInStudio()">
+            <span>♡</span>
+            <span>Добавь штрих</span>
+          </button>
+        </div>
+
+        <div class="doodle-caption-quote" id="featuredDoodleCaption">"думаю о тебе"</div>
       </div>
-      <div class="chips-scroll" id="doodleReactionsRow"></div>
-      <div class="canvas-wrap">
-        <canvas id="partnerCanvas" width="360" height="320"></canvas>
-        <canvas id="myCanvas" width="360" height="320"></canvas>
+
+      <!-- АРХИВ / ГАЛЕРЕЯ СОХРАНЁННЫХ ХОЛСТОВ -->
+      <div class="doodle-month-header">
+        <div class="doodle-month-left">
+          <span class="doodle-month-icon">📅</span>
+          <span id="doodleMonthTitle">ОКТЯБРЯ 2026</span>
+        </div>
+        <button class="btn-small pink" onclick="openDoodleStudioModal(null)">+ Новый холст</button>
       </div>
-      <div class="palette-row" id="colorPaletteRow"></div>
+
+      <div class="doodle-gallery-grid" id="doodleGalleryGrid"></div>
     </section>
 
     <!-- ВКЛАДКА 2: ЧЕЛЛЕНДЖИ И ВОПРОСЫ С АРХИВОМ -->
@@ -1049,12 +1345,55 @@
     </button>
   </nav>
 
+  <!-- МОДАЛЬНОЕ ОКНО: СТУДИЯ РИСОВАНИЯ ДУДЛА (НОВЫЙ ХОЛСТ ИЛИ ДОРИСОВАТЬ ШТРИХ) -->
+  <div class="modal-overlay" id="doodleStudioModal">
+    <div class="modal-box">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px">
+        <h3 class="modal-title" id="studioModalTitle" style="margin:0">🎨 Новый холст</h3>
+        <div style="display:flex; gap:6px">
+          <button class="btn-small" onclick="studioUndoStroke()">↩️ Шаг</button>
+          <button class="btn-small" onclick="studioClearCanvas()">🗑️ Очистить</button>
+          <button class="btn-small" id="studioDeleteBtn" style="display:none; color:#e74c3c" onclick="deleteEditingDoodle()">✖</button>
+        </div>
+      </div>
+
+      <!-- Белое полотно для рисования -->
+      <div class="studio-canvas-box">
+        <canvas id="studioEditorCanvas" width="380" height="350"></canvas>
+      </div>
+
+      <!-- Палитра цветов (включая чёрный контур и нежно-розовые щёчки Flork) -->
+      <div class="studio-palette-scroll" id="studioPaletteRow"></div>
+
+      <!-- Выбор толщины кисти и реакции -->
+      <div class="studio-size-row">
+        <div style="display:flex; gap:6px">
+          <button class="btn-small" id="sizeBtn4" onclick="setStudioBrushSize(4)">Тонкая</button>
+          <button class="btn-small pink" id="sizeBtn7" onclick="setStudioBrushSize(7)">Маркер</button>
+          <button class="btn-small" id="sizeBtn14" onclick="setStudioBrushSize(14)">Щёчки / Заливка</button>
+        </div>
+        <button class="btn-small" id="studioReactionBtn" onclick="cycleStudioReaction()">😍</button>
+      </div>
+
+      <div class="field-group" style="margin-bottom:8px">
+        <label class="field-label">Подпись под рисунком (будет в кавычках)</label>
+        <input class="field-input" id="inpStudioCaption" type="text" placeholder="думаю о тебе" />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('doodleStudioModal')">Отмена</button>
+        <button class="btn-primary" onclick="saveStudioDoodle()">💾 Сохранить у двоих</button>
+      </div>
+    </div>
+  </div>
+
   <!-- МОДАЛЬНОЕ ОКНО: МЕНЮ "+ ДОБАВИТЬ" -->
   <div class="modal-overlay" id="addMenuModal">
     <div class="modal-box">
       <h3 class="modal-title">✨ Что добавим?</h3>
       <div style="display:flex; flex-direction:column; gap:10px">
         <button class="btn-primary" onclick="closeModal('addMenuModal'); openPhotoSlideModal()">📷 Добавить общее фото на главный экран</button>
+        <button class="btn-secondary" onclick="closeModal('addMenuModal'); switchTab(1); openDoodleStudioModal(null)">🎨 Нарисовать новый Дудл на отдельном холсте</button>
         <button class="btn-secondary" onclick="closeModal('addMenuModal'); openCheckinModal()">📸 Отправить фото-отметку и настроение</button>
         <button class="btn-secondary" onclick="closeModal('addMenuModal'); openCountdownModal()">⏳ Добавить новое событие отсчёта</button>
         <button class="btn-secondary" onclick="closeModal('addMenuModal')">Отмена</button>
@@ -1073,7 +1412,7 @@
       </div>
       <div class="field-group">
         <label class="field-label">Подпись / Название момента</label>
-        <input class="field-input" id="inpSlideTitle" type="text" placeholder="Например: Выходные в Париже ❤️" />
+        <input class="field-input" id="inpSlideTitle" type="text" placeholder="Например: Выходные вместе ❤️" />
       </div>
       <div class="field-group">
         <label class="field-label">Место или комментарий (📍)</label>
@@ -1277,10 +1616,10 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'couple_npoint_state_v13';
-    const ROLE_KEY = 'couple_device_role_v13';
-    const NPOINT_URL_KEY = 'couple_npoint_url_v13';
-    const THEME_KEY = 'couple_ui_theme_v13';
+    const STORAGE_KEY = 'couple_npoint_state_v14';
+    const ROLE_KEY = 'couple_device_role_v14';
+    const NPOINT_URL_KEY = 'couple_npoint_url_v14';
+    const THEME_KEY = 'couple_ui_theme_v14';
 
     const DEFAULT_NPOINT_URL = 'https://api.npoint.io/b93a24be9137c8a0c3d9';
 
@@ -1293,6 +1632,7 @@
     let npointUrl = normalizeUrl(localStorage.getItem(NPOINT_URL_KEY) || DEFAULT_NPOINT_URL);
     let currentTheme = localStorage.getItem(THEME_KEY) || 'light';
     let activeSlideIndex = 0;
+    let selectedDoodleId = null;
 
     let tempSlideDataUrl = null;
     let tempCheckinDataUrl = null;
@@ -1309,7 +1649,6 @@
       if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
     }
 
-    // УМНЫЙ КОМПРЕССОР ФОТОГРАФИЙ (Ужимает любое фото с iPhone/Android до ~45 КБ для мгновенной пересылки через Npoint)
     function compressImageFile(file, maxWidth = 680, quality = 0.68) {
       return new Promise((resolve, reject) => {
         if (!file) return reject(new Error('Файл не выбран'));
@@ -1328,8 +1667,7 @@
             canvas.height = h;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
-            const dataUrl = canvas.toDataURL('image/jpeg', quality);
-            resolve(dataUrl);
+            resolve(canvas.toDataURL('image/jpeg', quality));
           };
           img.onerror = reject;
           img.src = ev.target.result;
@@ -1337,6 +1675,214 @@
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
+    }
+
+    // СТАРТОВЫЕ АВТОРСКИЕ ДУДЛЫ (КАК НА СКРИНШОТЕ-РЕФЕРЕНСЕ: FLORK, БУКЕТ ЦВЕТОВ И СЕРДЦЕ)
+    function buildStarterDoodles() {
+      const now = Date.now();
+      return [
+        {
+          id: 'd_starter_flork',
+          authorRole: 'user2',
+          caption: 'думаю о тебе',
+          reaction: '😍',
+          createdAtTs: now - 3600 * 1000,
+          updatedAtTs: now - 3600 * 1000,
+          presetArt: 'flork',
+          strokes: []
+        },
+        {
+          id: 'd_starter_heart',
+          authorRole: 'user1',
+          caption: 'обнимаю крепко ❤️',
+          reaction: '😍',
+          createdAtTs: now - 8 * 3600 * 1000,
+          updatedAtTs: now - 8 * 3600 * 1000,
+          presetArt: 'heart_sketch',
+          strokes: []
+        },
+        {
+          id: 'd_starter_flowers',
+          authorRole: 'user2',
+          caption: 'для настроения 🌸',
+          reaction: '🥰',
+          createdAtTs: now - 48 * 3600 * 1000,
+          updatedAtTs: now - 48 * 3600 * 1000,
+          presetArt: 'bouquet',
+          strokes: []
+        }
+      ];
+    }
+
+    // Отрисовка стартовых векторных иллюстраций (чтобы сразу выглядело 10/10 как на референсе)
+    function drawPresetArtOnCanvas(ctx, presetName) {
+      if (!presetName) return;
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (presetName === 'flork') {
+        // Милый персонаж Flork с румяными щёчками как на фото-примере
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 9;
+
+        // Контур головы и спины
+        ctx.beginPath();
+        ctx.moveTo(135, 18);
+        ctx.bezierCurveTo(105, 65, 125, 118, 185, 112);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(240, 15);
+        ctx.bezierCurveTo(268, 85, 278, 195, 290, 290);
+        ctx.stroke();
+
+        // Тело
+        ctx.beginPath();
+        ctx.moveTo(152, 112);
+        ctx.lineTo(146, 300);
+        ctx.stroke();
+
+        // Ручки сложенные в милую позу
+        ctx.beginPath();
+        ctx.moveTo(150, 145);
+        ctx.lineTo(95, 255);
+        ctx.lineTo(220, 185);
+        ctx.stroke();
+
+        // Розовые румяные щёчки
+        ctx.fillStyle = '#ee8578';
+        ctx.beginPath();
+        ctx.arc(122, 46, 15, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(188, 96, 15, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Блестящие глазки
+        ctx.fillStyle = '#111111';
+        ctx.beginPath(); ctx.arc(142, 26, 11, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(189, 68, 11, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(140, 23, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(145, 29, 2.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(187, 65, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(192, 71, 2.5, 0, Math.PI * 2); ctx.fill();
+
+        // Розовое сердечко сверху
+        ctx.fillStyle = '#ee3e6a';
+        ctx.beginPath();
+        ctx.arc(72, 18, 12, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (presetName === 'bouquet') {
+        // Красочный букет цветов с сердечками как на средней карточке примера
+        ctx.strokeStyle = '#16a34a';
+        ctx.lineWidth = 7;
+        [[190, 295, 155, 165], [190, 295, 190, 140], [190, 295, 225, 170]].forEach(([x1, y1, x2, y2]) => {
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        });
+
+        // Тюльпан и цветы
+        ctx.fillStyle = '#fb7185';
+        ctx.beginPath(); ctx.arc(165, 130, 32, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = '#e11d48';
+        ctx.beginPath(); ctx.arc(215, 145, 28, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = '#9333ea';
+        ctx.beginPath(); ctx.ellipse(195, 195, 20, 36, 0.15, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = '#f472b6';
+        ctx.beginPath(); ctx.arc(145, 195, 24, 0, Math.PI * 2); ctx.fill();
+
+        // Маленькие сердечки и искорки вокруг букета
+        ctx.fillStyle = '#facc15';
+        [[110, 95], [135, 65], [245, 85], [270, 125], [260, 185], [115, 150]].forEach(([cx, cy]) => {
+          ctx.beginPath(); ctx.arc(cx, cy, 4.5, 0, Math.PI * 2); ctx.fill();
+        });
+      } else if (presetName === 'heart_sketch') {
+        // Нежное двойное сердце
+        ctx.strokeStyle = '#ee3e6a';
+        ctx.lineWidth = 9;
+        ctx.beginPath();
+        ctx.moveTo(190, 125);
+        ctx.bezierCurveTo(130, 60, 55, 140, 190, 255);
+        ctx.bezierCurveTo(325, 140, 250, 60, 190, 125);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function renderDoodleObjectToCanvas(canvasEl, doodleObj) {
+      if (!canvasEl || !doodleObj) return;
+      const ctx = canvasEl.getContext('2d');
+      const w = canvasEl.width;
+      const h = canvasEl.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Заливаем чистым белым фоном как на референсе
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      const scaleX = w / 380;
+      const scaleY = h / 350;
+      ctx.scale(scaleX, scaleY);
+
+      if (doodleObj.presetArt) {
+        drawPresetArtOnCanvas(ctx, doodleObj.presetArt);
+      }
+
+      (doodleObj.strokes || []).forEach(s => {
+        drawSingleStroke(ctx, s.color, s.width || 7, s.points);
+      });
+      ctx.restore();
+    }
+
+    function drawSingleStroke(ctx, color, width, pts) {
+      if (!pts || pts.length === 0) return;
+      ctx.save();
+      ctx.strokeStyle = color || '#19171c';
+      ctx.fillStyle = color || '#19171c';
+      ctx.lineWidth = width || 7;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      if (pts.length === 1) {
+        ctx.beginPath();
+        ctx.arc(pts[0].x, pts[0].y, (width || 7) / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          ctx.lineTo(pts[i].x, pts[i].y);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function formatRelativeAgo(ts) {
+      if (!ts) return '1h';
+      const diffSec = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+      if (diffSec < 90) return 'только что';
+      const mins = Math.floor(diffSec / 60);
+      if (mins < 60) return `${mins}m`;
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return `${hours}h`;
+      const days = Math.floor(hours / 24);
+      return `${days}d`;
+    }
+
+    function getCurrentRussianMonthYear() {
+      const months = [
+        'ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МАЯ', 'ИЮНЯ',
+        'ИЮЛЯ', 'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ', 'НОЯБРЯ', 'ДЕКАБРЯ'
+      ];
+      const d = new Date();
+      return `${months[d.getMonth()]} ${d.getFullYear()}`;
     }
 
     // Фильтры на вкладке Челленджей
@@ -1439,10 +1985,10 @@
       },
       {
         tplId: 't_fun_1', type: 'task', category: 'fun',
-        prompt: '🎯 Задание: Перейдите во вкладку «Дудлы 🎨» и нарисуйте на общем холсте смешной смайлик, сердечко или дополните рисунок партнёра!',
+        prompt: '🎯 Задание: Перейдите во вкладку «Дудлы 🎨» и нажмите «♡ Добавь штрих» на рисунке партнёра или создайте новый холст!',
         options: [
-          '🎨 Уже нарисовал(а) на общем холсте!',
-          '🖌️ Бегу рисовать свой шедевр!',
+          '🎨 Уже нарисовал(а) новый Дудл!',
+          '♡ Добавил(а) свой штрих к рисунку партнёра!',
           '😂 Картина готова!'
         ]
       }
@@ -1471,9 +2017,9 @@
           user1Answer: null, user2Answer: null, createdAtLabel: nowLabel, archived: false
         },
         {
-          id: 'ch_init_t_photo', tplId: 't_cozy_1', type: 'task', category: 'cozy',
-          prompt: AI_CHALLENGE_BANK.find(x => x.tplId === 't_cozy_1').prompt,
-          options: AI_CHALLENGE_BANK.find(x => x.tplId === 't_cozy_1').options,
+          id: 'ch_init_t_doodle', tplId: 't_fun_1', type: 'task', category: 'fun',
+          prompt: AI_CHALLENGE_BANK.find(x => x.tplId === 't_fun_1').prompt,
+          options: AI_CHALLENGE_BANK.find(x => x.tplId === 't_fun_1').options,
           user1Answer: null, user2Answer: null, createdAtLabel: nowLabel, archived: false
         },
         {
@@ -1487,8 +2033,6 @@
     const defaultState = {
       streakDays: 24,
       manualDistanceKm: 640,
-      doodleTime: '18:45',
-      doodleReaction: '❤️',
       lastGeneratedHourKey: getCurrentHourKey(),
       users: {
         user1: {
@@ -1501,8 +2045,7 @@
           battery: 92,
           lat: null,
           lng: null,
-          updatedAt: '12:30',
-          strokes: []
+          updatedAt: '12:30'
         },
         user2: {
           name: 'Полина',
@@ -1514,10 +2057,10 @@
           battery: 84,
           lat: null,
           lng: null,
-          updatedAt: '12:45',
-          strokes: []
+          updatedAt: '12:45'
         }
       },
+      doodles: buildStarterDoodles(),
       photoSlides: [
         {
           id: 's_default_1',
@@ -1569,8 +2112,15 @@
       if (!obj.users.user2) obj.users.user2 = JSON.parse(JSON.stringify(defaultState.users.user2));
       if (!obj.users.user1.moodHeadline) obj.users.user1.moodHeadline = 'хорошее настроение';
       if (!obj.users.user2.moodHeadline) obj.users.user2.moodHeadline = 'хорошее настроение';
-      if (!Array.isArray(obj.users.user1.strokes)) obj.users.user1.strokes = [];
-      if (!Array.isArray(obj.users.user2.strokes)) obj.users.user2.strokes = [];
+
+      if (!Array.isArray(obj.doodles) || obj.doodles.length === 0) {
+        obj.doodles = buildStarterDoodles();
+      }
+      obj.doodles.forEach(d => {
+        if (!Array.isArray(d.strokes)) d.strokes = [];
+        if (!d.reaction) d.reaction = '😍';
+        if (!d.caption) d.caption = 'думаю о тебе';
+      });
 
       if (!Array.isArray(obj.photoSlides) || obj.photoSlides.length === 0) {
         obj.photoSlides = JSON.parse(JSON.stringify(defaultState.photoSlides));
@@ -1580,9 +2130,7 @@
         obj.countdowns = JSON.parse(JSON.stringify(defaultState.countdowns));
       }
       obj.countdowns.forEach(cd => {
-        if (!cd.targetTs) {
-          cd.targetTs = Date.now() + (Number(cd.days) || 14) * 86400000;
-        }
+        if (!cd.targetTs) cd.targetTs = Date.now() + (Number(cd.days) || 14) * 86400000;
       });
 
       if (!Array.isArray(obj.challenges) || obj.challenges.length === 0) {
@@ -1606,7 +2154,7 @@
       return 'Доброй ночи';
     }
 
-    // ЖИВОЙ ПОСЕКУНДНЫЙ ОТСЧЁТ ВРЕМЕНИ (17 : 23 : 54 : 24)
+    // ЖИВОЙ ТАЙМЕР
     function updateLiveCountdownClock() {
       const countdowns = state.countdowns || [];
       const cd = countdowns.find(c => c.pinned) || countdowns[0] || { title: 'Встреча', days: 14, targetTs: Date.now() + 14 * 86400000 };
@@ -1631,13 +2179,11 @@
       if (elS) elS.textContent = String(secs).padStart(2, '0');
 
       const subEl = document.getElementById('greetingSub');
-      if (subEl) {
-        subEl.textContent = `Всего ${days} дн. до ${cd.title}!`;
-      }
+      if (subEl) subEl.textContent = `Всего ${days} дн. до ${cd.title}!`;
     }
     setInterval(updateLiveCountdownClock, 1000);
 
-    // ЗАГРУЗКА АВАТАРКИ ПРОФИЛЯ
+    // АВАТАРКА
     function triggerAvatarUpload() {
       document.getElementById('avatarFileInput').click();
     }
@@ -1655,7 +2201,7 @@
       }
     }
 
-    // ФОТО-КАРУСЕЛЬ И ДОБАВЛЕНИЕ НОВЫХ ФОТОГРАФИЙ НА ГЛАВНЫЙ ЭКРАН
+    // ФОТО-КАРУСЕЛЬ
     function prevPhotoSlide() {
       const slides = state.photoSlides || [];
       if (slides.length <= 1) return;
@@ -1721,7 +2267,6 @@
         author: `${me.name} • ${formatTimeTag()}`
       });
 
-      // Храним до 8 лучших фото в карусели, чтобы облако работало мгновенно
       if (state.photoSlides.length > 8) {
         state.photoSlides = state.photoSlides.slice(0, 8);
       }
@@ -1758,7 +2303,7 @@
       `).join('');
     }
 
-    // РАЗДЕЛ "ОТМЕТКА" (СТАТУС НАСТРОЕНИЯ + ПРИКРЕПЛЕНИЕ ЖИВОГО ФОТО)
+    // ФОТО-ОТМЕТКА
     function openCheckinModal() {
       const me = state.users[getMyKey()];
       tempCheckinDataUrl = me.checkinPhoto || null;
@@ -1847,7 +2392,317 @@
       document.getElementById('historyModal').classList.add('open');
     }
 
-    // УМНОЕ СЛИЯНИЕ МАССИВА ЧЕЛЛЕНДЖЕЙ
+    // =====================================================
+    // НОВАЯ ГАЛЕРЕЯ ДУДЛОВ И СТУДИЯ ОТДЕЛЬНЫХ ХОЛСТОВ
+    // =====================================================
+    const studioCanvas = document.getElementById('studioEditorCanvas');
+    const studioCtx = studioCanvas.getContext('2d');
+    const studioPaletteColors = [
+      '#111111', // Чёрный маркер (как у человечка Flork)
+      '#ee3e6a', // Ярко-розовый
+      '#ee8578', // Румяные щёчки Flork
+      '#ff9f43', // Оранжевый
+      '#facc15', // Солнечно-жёлтый
+      '#16a34a', // Зелёный
+      '#3b82f6', // Голубой
+      '#9333ea', // Фиолетовый
+      '#ffffff'  // Ластик (белый)
+    ];
+
+    let studioCurrentColor = '#111111';
+    let studioBrushWidth = 7;
+    let studioEditingId = null;
+    let studioPresetArt = null;
+    let studioStrokes = [];
+    let studioActivePoints = [];
+    let studioReaction = '😍';
+    let isStudioDrawing = false;
+
+    function getFeaturedDoodle() {
+      const list = state.doodles || [];
+      if (list.length === 0) return null;
+      if (selectedDoodleId) {
+        const found = list.find(d => d.id === selectedDoodleId);
+        if (found) return found;
+      }
+      selectedDoodleId = list[0].id;
+      return list[0];
+    }
+
+    function selectDoodleFromGallery(doodleId) {
+      selectedDoodleId = doodleId;
+      renderDoodlesTab();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cycleFeaturedDoodleReaction() {
+      const feat = getFeaturedDoodle();
+      if (!feat) return;
+      const list = ['😍', '❤️', '🥰', '🔥', '😂', '💋'];
+      feat.reaction = list[(list.indexOf(feat.reaction || '😍') + 1) % list.length];
+      feat.updatedAtTs = Date.now();
+      syncSection('doodles', state.doodles);
+    }
+
+    function openFeaturedDoodleInStudio() {
+      const feat = getFeaturedDoodle();
+      openDoodleStudioModal(feat ? feat.id : null);
+    }
+
+    function openDoodleStudioModal(doodleId = null) {
+      studioEditingId = doodleId;
+      const existing = doodleId ? (state.doodles || []).find(d => d.id === doodleId) : null;
+
+      if (existing) {
+        document.getElementById('studioModalTitle').textContent = '♡ Добавь штрих к дудлу';
+        studioPresetArt = existing.presetArt || null;
+        studioStrokes = JSON.parse(JSON.stringify(existing.strokes || []));
+        studioReaction = existing.reaction || '😍';
+        document.getElementById('inpStudioCaption').value = existing.caption || '';
+        document.getElementById('studioDeleteBtn').style.display = (state.doodles.length > 1) ? 'inline-block' : 'none';
+      } else {
+        document.getElementById('studioModalTitle').textContent = '🎨 Новый отдельный холст';
+        studioPresetArt = null;
+        studioStrokes = [];
+        studioReaction = '😍';
+        document.getElementById('inpStudioCaption').value = '';
+        document.getElementById('studioDeleteBtn').style.display = 'none';
+      }
+
+      document.getElementById('studioReactionBtn').textContent = studioReaction;
+      renderStudioPalette();
+      redrawStudioEditorCanvas();
+      document.getElementById('doodleStudioModal').classList.add('open');
+    }
+
+    function renderStudioPalette() {
+      document.getElementById('studioPaletteRow').innerHTML = studioPaletteColors.map(c => `
+        <div class="studio-color-dot ${c === studioCurrentColor ? 'active' : ''}"
+             style="background:${c}"
+             onclick="selectStudioColor('${c}')"></div>
+      `).join('');
+    }
+
+    function selectStudioColor(c) {
+      studioCurrentColor = c;
+      renderStudioPalette();
+    }
+
+    function setStudioBrushSize(w) {
+      studioBrushWidth = w;
+      document.getElementById('sizeBtn4').classList.toggle('pink', w === 4);
+      document.getElementById('sizeBtn7').classList.toggle('pink', w === 7);
+      document.getElementById('sizeBtn14').classList.toggle('pink', w === 14);
+    }
+
+    function cycleStudioReaction() {
+      const list = ['😍', '❤️', '🥰', '🔥', '😂', '💋'];
+      studioReaction = list[(list.indexOf(studioReaction) + 1) % list.length];
+      document.getElementById('studioReactionBtn').textContent = studioReaction;
+    }
+
+    function redrawStudioEditorCanvas() {
+      studioCtx.clearRect(0, 0, studioCanvas.width, studioCanvas.height);
+      studioCtx.fillStyle = '#ffffff';
+      studioCtx.fillRect(0, 0, studioCanvas.width, studioCanvas.height);
+
+      if (studioPresetArt) {
+        drawPresetArtOnCanvas(studioCtx, studioPresetArt);
+      }
+
+      studioStrokes.forEach(s => {
+        drawSingleStroke(studioCtx, s.color, s.width || 7, s.points);
+      });
+
+      if (studioActivePoints.length > 0) {
+        drawSingleStroke(studioCtx, studioCurrentColor, studioBrushWidth, studioActivePoints);
+      }
+    }
+
+    function getStudioPointerPos(e) {
+      const r = studioCanvas.getBoundingClientRect();
+      const t = e.touches ? e.touches[0] : e;
+      return {
+        x: Math.round((t.clientX - r.left) * (studioCanvas.width / r.width)),
+        y: Math.round((t.clientY - r.top) * (studioCanvas.height / r.height))
+      };
+    }
+
+    studioCanvas.addEventListener('pointerdown', e => {
+      isStudioDrawing = true;
+      studioActivePoints = [getStudioPointerPos(e)];
+      redrawStudioEditorCanvas();
+    });
+
+    studioCanvas.addEventListener('pointermove', e => {
+      if (!isStudioDrawing) return;
+      studioActivePoints.push(getStudioPointerPos(e));
+      redrawStudioEditorCanvas();
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (!isStudioDrawing) return;
+      isStudioDrawing = false;
+      if (studioActivePoints.length > 0) {
+        studioStrokes.push({
+          color: studioCurrentColor,
+          width: studioBrushWidth,
+          points: studioActivePoints
+        });
+      }
+      studioActivePoints = [];
+      redrawStudioEditorCanvas();
+    });
+
+    function studioUndoStroke() {
+      if (studioStrokes.length > 0) {
+        studioStrokes.pop();
+      } else if (studioPresetArt) {
+        studioPresetArt = null;
+      }
+      redrawStudioEditorCanvas();
+    }
+
+    function studioClearCanvas() {
+      studioStrokes = [];
+      studioPresetArt = null;
+      redrawStudioEditorCanvas();
+    }
+
+    function deleteEditingDoodle() {
+      if (!studioEditingId) return;
+      if (!confirm('Удалить этот холст из общей галереи?')) return;
+      state.doodles = (state.doodles || []).filter(d => d.id !== studioEditingId);
+      selectedDoodleId = state.doodles[0] ? state.doodles[0].id : null;
+      closeModal('doodleStudioModal');
+      syncSection('doodles', state.doodles);
+    }
+
+    function saveStudioDoodle() {
+      const myKey = getMyKey();
+      const caption = document.getElementById('inpStudioCaption').value.trim() || 'думаю о тебе';
+      const now = Date.now();
+
+      if (!Array.isArray(state.doodles)) state.doodles = [];
+
+      if (studioEditingId) {
+        const item = state.doodles.find(d => d.id === studioEditingId);
+        if (item) {
+          item.presetArt = studioPresetArt;
+          item.strokes = studioStrokes;
+          item.caption = caption;
+          item.reaction = studioReaction;
+          item.authorRole = myKey; // Показывает, кто последний добавил штрих
+          item.updatedAtTs = now;
+        }
+        selectedDoodleId = studioEditingId;
+      } else {
+        const newId = 'd_' + now;
+        state.doodles.unshift({
+          id: newId,
+          authorRole: myKey,
+          caption,
+          reaction: studioReaction,
+          createdAtTs: now,
+          updatedAtTs: now,
+          presetArt: studioPresetArt,
+          strokes: studioStrokes
+        });
+        selectedDoodleId = newId;
+      }
+
+      // Храним до 15 отдельных холстов для быстрой синхронизации
+      if (state.doodles.length > 15) {
+        state.doodles = state.doodles.slice(0, 15);
+      }
+
+      closeModal('doodleStudioModal');
+      syncSection('doodles', state.doodles);
+    }
+
+    function renderDoodlesTab() {
+      const doodles = state.doodles || [];
+      const myKey = getMyKey();
+      const feat = getFeaturedDoodle();
+
+      document.getElementById('doodleMonthTitle').textContent = getCurrentRussianMonthYear();
+
+      if (feat) {
+        const isMe = feat.authorRole === myKey;
+        const authorUser = state.users[feat.authorRole] || state.users.user2;
+        const authorLabel = isMe ? 'Ты' : (authorUser.name || 'Партнёр');
+
+        const authEl = document.getElementById('featuredDoodleAuthor');
+        authEl.textContent = authorLabel;
+        authEl.classList.toggle('is-self', isMe);
+
+        document.getElementById('featuredDoodleTime').textContent = formatRelativeAgo(feat.updatedAtTs || feat.createdAtTs);
+        document.getElementById('featuredDoodleCaption').textContent = `"${feat.caption || 'думаю о тебе'}"`;
+        document.getElementById('featuredDoodleReactBtn').textContent = feat.reaction || '😍';
+
+        renderDoodleObjectToCanvas(document.getElementById('featuredDoodleCanvas'), feat);
+      }
+
+      // Рендерим мини-превью на Главном экране (Вкладка 0)
+      const latestDoodle = doodles[0] || feat;
+      if (latestDoodle) {
+        renderDoodleObjectToCanvas(document.getElementById('widgetDoodleCanvas'), latestDoodle);
+        const subEl = document.getElementById('homeDoodleSubText');
+        if (subEl) {
+          const who = latestDoodle.authorRole === myKey ? 'Ты' : (state.users[latestDoodle.authorRole]?.name || 'Партнёр');
+          subEl.textContent = `${who} (${formatRelativeAgo(latestDoodle.updatedAtTs)}): "${latestDoodle.caption || 'думаю о тебе'}"`;
+        }
+      }
+
+      // Рендерим сетку всех сохранённых холстов по 3 в ряд (как на референсе)
+      const grid = document.getElementById('doodleGalleryGrid');
+      grid.innerHTML = doodles.map(d => {
+        const isMe = d.authorRole === myKey;
+        const authorUser = state.users[d.authorRole] || state.users.user2;
+        const authorLabel = isMe ? 'Ты' : (authorUser.name || 'Партнёр');
+        const isSelected = feat && feat.id === d.id;
+
+        return `
+          <div class="doodle-grid-card ${isSelected ? 'selected-card' : ''}" onclick="selectDoodleFromGallery('${d.id}')">
+            <div class="doodle-grid-thumb">
+              <canvas id="thumb_canvas_${d.id}" width="180" height="200"></canvas>
+              <div class="doodle-mini-react-badge">${d.reaction || '😍'}</div>
+            </div>
+            <div>
+              <div class="doodle-grid-author ${isMe ? 'is-self' : ''}">${authorLabel}</div>
+              <div class="doodle-grid-time">${formatRelativeAgo(d.updatedAtTs || d.createdAtTs)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Отрисовываем каждый мини-холст в сетке
+      doodles.forEach(d => {
+        const cEl = document.getElementById(`thumb_canvas_${d.id}`);
+        if (cEl) renderDoodleObjectToCanvas(cEl, d);
+      });
+    }
+
+    // УМНОЕ СЛИЯНИЕ СПИСКА ДУДЛОВ МЕЖДУ ДВУМЯ ТЕЛЕФОНАМИ
+    function mergeDoodlesLists(cloudList = [], localList = []) {
+      const map = new Map();
+      cloudList.forEach(item => {
+        if (item && item.id) map.set(item.id, JSON.parse(JSON.stringify(item)));
+      });
+      localList.forEach(localItem => {
+        if (!localItem || !localItem.id) return;
+        if (!map.has(localItem.id)) {
+          map.set(localItem.id, JSON.parse(JSON.stringify(localItem)));
+        } else {
+          const existing = map.get(localItem.id);
+          if ((localItem.updatedAtTs || 0) >= (existing.updatedAtTs || 0)) {
+            map.set(localItem.id, JSON.parse(JSON.stringify(localItem)));
+          }
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => (b.updatedAtTs || 0) - (a.updatedAtTs || 0));
+    }
+
     function mergeChallengesLists(cloudList = [], localList = []) {
       const map = new Map();
       cloudList.forEach(item => {
@@ -2009,6 +2864,8 @@
           else if (key === 'user2') baseData.users.user2 = val;
           else if (key === 'challenges') {
             baseData.challenges = mergeChallengesLists(baseData.challenges || [], val || []);
+          } else if (key === 'doodles') {
+            baseData.doodles = mergeDoodlesLists(baseData.doodles || [], val || []);
           } else {
             baseData[key] = val;
           }
@@ -2026,7 +2883,6 @@
           state.activeBoardId = activeBoard;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
           renderAll();
-          redrawBothLayers();
           const nowTime = new Date().toTimeString().slice(0, 8);
           setSyncIndicator('online', `🟢 <b>Синхронизировано с Npoint.io!</b><br>Отправлено: ${nowTime}`);
         } else {
@@ -2043,7 +2899,7 @@
     }
 
     async function pollCloudData() {
-      if (isSaving || isPolling || Object.keys(pendingPatches).length > 0) return;
+      if (isSaving || isPolling || isStudioDrawing || Object.keys(pendingPatches).length > 0) return;
       isPolling = true;
       try {
         const res = await fetch(npointUrl, { cache: 'no-store' });
@@ -2058,7 +2914,6 @@
               state = cloudData;
               localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
               renderAll();
-              redrawBothLayers();
             }
             const nowTime = new Date().toTimeString().slice(0, 8);
             setSyncIndicator('online', `🟢 <b>Npoint.io работает в реальном времени</b><br>Проверка: ${nowTime}`);
@@ -2160,7 +3015,7 @@
       document.querySelectorAll('.tab-page').forEach((el, i) => el.classList.toggle('active', i === idx));
       document.querySelectorAll('.nav-item').forEach((el, i) => el.classList.toggle('active', i === idx));
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      if (idx === 1) exportCompositeToWidgets();
+      if (idx === 1) renderDoodlesTab();
     }
 
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -2169,7 +3024,6 @@
       myRole = role;
       localStorage.setItem(ROLE_KEY, myRole);
       renderAll();
-      redrawBothLayers();
       startAutoGpsTracking();
     }
 
@@ -2418,7 +3272,6 @@
     function renderChallengesTab() {
       const u1 = state.users.user1;
       const u2 = state.users.user2;
-      const me = state.users[getMyKey()];
       const partner = state.users[getPartnerKey()];
       const allCh = state.challenges || [];
 
@@ -2437,7 +3290,6 @@
         btnArchAll.style.display = (chViewMode === 'active' && completedInActive > 0) ? 'inline-block' : 'none';
       }
 
-      // Обновляем баннер "Задание дня" на главном экране
       const featuredCh = activeList[0] || allCh[0];
       if (featuredCh) {
         document.getElementById('bannerChallengeLabel').textContent = featuredCh.type === 'task' ? 'Задание дня' : 'Вопрос дня';
@@ -2527,13 +3379,10 @@
     }
 
     function renderAll() {
-      const u1 = state.users.user1;
-      const u2 = state.users.user2;
       const me = state.users[getMyKey()];
       const partner = state.users[getPartnerKey()];
       const distStr = formatDistanceText();
 
-      // Шапка с приветствием и аватаркой
       document.getElementById('greetingTitle').textContent = `${getGreetingByHour()}, ${me.name}`;
       const avatarImg = document.getElementById('headerAvatarImg');
       const avatarFallback = document.getElementById('headerAvatarFallback');
@@ -2551,22 +3400,18 @@
       document.getElementById('qRoleU2').classList.toggle('active', myRole === 'user2');
       document.getElementById('smDistTag').textContent = distStr;
 
-      // Таймер и название события
       const countdowns = state.countdowns || [];
       const cd = countdowns.find(c => c.pinned) || countdowns[0] || { emoji: '✈️', title: 'Встреча', days: 14 };
       document.getElementById('activeCdBadgeText').textContent = `ИДЁТ ОТСЧЁТ • ${cd.emoji}`;
       updateLiveCountdownClock();
 
-      // Главная фото-карусель
       renderHeroCarousel();
 
-      // Быстрые чипсы настроения
       document.getElementById('moodBox').innerHTML = moodPresets.map(([em, head, txt]) => {
         const act = (me.moodEmoji === em && me.moodText === txt) ? 'active' : '';
         return `<button class="chip ${act}" onclick="setQuickMood('${em}','${head}','${txt}')">${em} ${txt}</button>`;
       }).join('') + `<button class="chip" onclick="openCheckinModal()">📸 Своя отметка + Фото...</button>`;
 
-      // Карточки в разделе "Отметка" (Сначала партнёр, затем Вы — как в референсе!)
       const orderedUsers = [
         { key: getPartnerKey(), user: partner, isPartner: true },
         { key: getMyKey(), user: me, isPartner: false }
@@ -2596,9 +3441,6 @@
         `;
       }).join('');
 
-      document.getElementById('widgetDoodleTime').textContent = state.doodleTime || '18:45';
-      document.getElementById('widgetReactionBtn').textContent = state.doodleReaction || '❤️';
-
       document.getElementById('countdownsList').innerHTML = countdowns.map(item => `
         <div class="list-card ${item.pinned ? 'pinned' : ''}">
           <div class="list-left" onclick="pinCountdown('${item.id}')">
@@ -2616,6 +3458,7 @@
         </div>
       `).join('');
 
+      renderDoodlesTab();
       renderChallengesTab();
 
       document.getElementById('boardsRow').innerHTML = (state.boards || []).map(b => `
@@ -2656,137 +3499,9 @@
       `).join('');
     }
 
-    // ДУДЛ-СТУДИЯ
-    const partnerCanvas = document.getElementById('partnerCanvas');
-    const partnerCtx = partnerCanvas.getContext('2d');
-    const myCanvas = document.getElementById('myCanvas');
-    const myCtx = myCanvas.getContext('2d');
-    const paletteColors = ['#EE3E6A', '#FF9F43', '#FECA57', '#1DD1A1', '#54A0FF', '#A55EEA', '#FFFFFF'];
-    let currentColor = '#EE3E6A';
-    let activePoints = [];
-    let isDrawing = false;
-
-    function initDoodleStudio() {
-      document.getElementById('colorPaletteRow').innerHTML = paletteColors.map(c => `
-        <div class="color-dot ${c === currentColor ? 'active' : ''}" style="background:${c}" onclick="selectColor('${c}')"></div>
-      `).join('');
-
-      const emojis = ['❤️', '🥰', '😂', '🔥', '💋', '✨'];
-      document.getElementById('doodleReactionsRow').innerHTML = emojis.map(e => `
-        <button class="chip ${state.doodleReaction === e ? 'active' : ''}" onclick="state.doodleReaction='${e}'; syncSection('doodleReaction', '${e}')">${e}</button>
-      `).join('');
-
-      redrawBothLayers();
-    }
-
-    function selectColor(c) { currentColor = c; initDoodleStudio(); }
-
-    function drawPartnerBaseHeart() {
-      partnerCtx.save();
-      partnerCtx.strokeStyle = 'rgba(238, 62, 106, 0.32)';
-      partnerCtx.lineWidth = 10;
-      partnerCtx.lineCap = 'round';
-      partnerCtx.lineJoin = 'round';
-      partnerCtx.beginPath();
-      partnerCtx.moveTo(180, 115);
-      partnerCtx.bezierCurveTo(120, 55, 55, 130, 180, 235);
-      partnerCtx.bezierCurveTo(305, 130, 240, 55, 180, 115);
-      partnerCtx.stroke();
-      partnerCtx.restore();
-    }
-
-    function redrawBothLayers() {
-      const me = state.users[getMyKey()];
-      const partner = state.users[getPartnerKey()];
-
-      partnerCtx.clearRect(0, 0, 360, 320);
-      const pStrokes = partner.strokes || [];
-      if (pStrokes.length === 0 && (!me.strokes || me.strokes.length === 0)) {
-        drawPartnerBaseHeart();
-      } else {
-        pStrokes.forEach(s => drawStroke(partnerCtx, s.color, s.points));
-      }
-
-      myCtx.clearRect(0, 0, 360, 320);
-      (me.strokes || []).forEach(s => drawStroke(myCtx, s.color, s.points));
-      if (activePoints.length > 1) drawStroke(myCtx, currentColor, activePoints);
-
-      exportCompositeToWidgets();
-    }
-
-    function drawStroke(ctx, color, pts) {
-      if (!pts || pts.length < 2) return;
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 8;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function getPos(e) {
-      const r = myCanvas.getBoundingClientRect();
-      const t = e.touches ? e.touches[0] : e;
-      return {
-        x: Math.round((t.clientX - r.left) * (myCanvas.width / r.width)),
-        y: Math.round((t.clientY - r.top) * (myCanvas.height / r.height))
-      };
-    }
-
-    myCanvas.addEventListener('pointerdown', e => { isDrawing = true; activePoints = [getPos(e)]; });
-    myCanvas.addEventListener('pointermove', e => { if (!isDrawing) return; activePoints.push(getPos(e)); redrawBothLayers(); });
-    window.addEventListener('pointerup', () => {
-      if (!isDrawing) return;
-      isDrawing = false;
-      if (activePoints.length > 1) {
-        const myKey = getMyKey();
-        const me = state.users[myKey];
-        if (!me.strokes) me.strokes = [];
-        me.strokes.push({ color: currentColor, points: activePoints });
-        const nowStr = new Date().toTimeString().slice(0, 5);
-        state.doodleTime = nowStr;
-
-        syncSection(myKey, me);
-        syncSection('doodleTime', nowStr);
-        exportCompositeToWidgets();
-      }
-      activePoints = [];
-    });
-
-    function undoStroke() {
-      const myKey = getMyKey();
-      const me = state.users[myKey];
-      if (me.strokes && me.strokes.length > 0) {
-        me.strokes.pop();
-        redrawBothLayers();
-        syncSection(myKey, me);
-      }
-    }
-
-    function clearMyDoodle() {
-      const myKey = getMyKey();
-      state.users[myKey].strokes = [];
-      redrawBothLayers();
-      syncSection(myKey, state.users[myKey]);
-    }
-
-    function exportCompositeToWidgets() {
-      const wCanvas = document.getElementById('widgetDoodleCanvas');
-      if (!wCanvas) return;
-      const wCtx = wCanvas.getContext('2d');
-      wCtx.clearRect(0, 0, wCanvas.width, wCanvas.height);
-      wCtx.drawImage(partnerCanvas, 0, 0, wCanvas.width, wCanvas.height);
-      wCtx.drawImage(myCanvas, 0, 0, wCanvas.width, wCanvas.height);
-    }
-
     // Старт
     renderAll();
     updateHourlyCountdownUI();
-    initDoodleStudio();
     pollCloudData();
     setInterval(pollCloudData, 1800);
     window.addEventListener('focus', pollCloudData);
