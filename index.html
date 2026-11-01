@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <!-- Запрет жесткого кэширования HTML-страницы на iOS -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
@@ -75,7 +74,6 @@
       margin: 0 auto;
     }
 
-    /* КАСТОМНЫЕ УВЕДОМЛЕНИЯ-КАПСУЛЫ (ВМЕСТО СИСТЕМНЫХ ALERT) */
     .toast-container {
       position: fixed;
       top: 16px;
@@ -124,7 +122,6 @@
       to { opacity: 0; transform: translateY(-18px) scale(0.92); }
     }
 
-    /* АНИМАЦИЯ САЛЮТА ИЗ СЕРДЕЧЕК */
     .floating-heart {
       position: fixed;
       z-index: 9998;
@@ -139,7 +136,6 @@
       100% { opacity: 0; transform: translate(calc(var(--tx) * 1.4), -280px) scale(0.85) rotate(calc(var(--rot) * 1.6)); }
     }
 
-    /* ВЕРХНЯЯ ПАНЕЛЬ */
     .ref-header {
       display: flex;
       align-items: center;
@@ -250,7 +246,6 @@
       transform: scale(0.94);
     }
 
-    /* БЫСТРЫЙ ПЕРЕКЛЮЧАТЕЛЬ РОЛИ */
     .role-strip {
       display: flex;
       align-items: center;
@@ -287,7 +282,6 @@
       color: #fff;
     }
 
-    /* ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" */
     .interactive-nudge-widget {
       background: linear-gradient(135deg, #1b162a, #13101d);
       border: 1px solid rgba(255, 59, 127, 0.3);
@@ -339,7 +333,6 @@
       transform: scale(0.94);
     }
 
-    /* ПЛАШКИ НАД ТАЙМЕРОМ */
     .cd-pills-row {
       display: flex;
       align-items: center;
@@ -379,7 +372,6 @@
       transform: scale(0.95);
     }
 
-    /* БОЛЬШОЙ ЖИВОЙ ТАЙМЕР */
     .big-timer-wrap {
       display: flex;
       align-items: flex-start;
@@ -424,7 +416,6 @@
       padding: 0 1px;
     }
 
-    /* ГЛАВНАЯ ФОТО-КАРТОЧКА */
     .photo-hero-card {
       position: relative;
       width: 100%;
@@ -605,7 +596,6 @@
       font-weight: 800;
     }
 
-    /* РАЗДЕЛ "ОТМЕТКА" И "ИСТОРИЯ" */
     .checkin-header {
       display: flex;
       align-items: baseline;
@@ -726,7 +716,6 @@
       display: block;
     }
 
-    /* МИНИ-ПРЕВЬЮ ДУДЛА НА ГЛАВНОЙ */
     .mini-doodle-bar {
       background: var(--card);
       border: 1px solid var(--border);
@@ -756,7 +745,6 @@
       object-fit: contain;
     }
 
-    /* ВКЛАДКА "ДУДЛЫ" */
     .doodles-top-header {
       position: relative;
       display: flex;
@@ -887,7 +875,6 @@
       font-weight: 500;
     }
 
-    /* КАЛЕНДАРНАЯ СЕКЦИЯ И СЕТКА ХОЛСТОВ */
     .doodle-month-header {
       display: flex;
       align-items: center;
@@ -997,7 +984,6 @@
       margin-top: 2px;
     }
 
-    /* МОДАЛЬНОЕ ОКНО РИСОВАНИЯ */
     .studio-canvas-box {
       width: 100%;
       aspect-ratio: 1 / 0.92;
@@ -1049,7 +1035,6 @@
       margin-bottom: 12px;
     }
 
-    /* ОБЩИЕ СТИЛИ ВКЛАДОК */
     .tab-page {
       display: none;
       animation: fadeIn 0.2s ease;
@@ -1115,7 +1100,6 @@
       width: 32px; height: 32px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;
     }
 
-    /* КАРТОЧКИ ЧЕЛЛЕНДЖЕЙ */
     .hourly-banner {
       background: var(--card);
       border: 1px solid var(--border);
@@ -1165,7 +1149,6 @@
       background: var(--card-2); font-size: 13px; line-height: 1.45;
     }
 
-    /* НИЖНЯЯ НАВИГАЦИЯ (5 ВКЛАДОК) */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: var(--nav-bg); backdrop-filter: blur(12px);
@@ -1178,7 +1161,6 @@
     .nav-item .nav-icon { font-size: 20px; }
     .nav-item.active { color: var(--pink); }
 
-    /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62);
       display: none; align-items: center; justify-content: center; padding: 16px; z-index: 200;
@@ -1226,7 +1208,6 @@
 </head>
 <body>
 
-  <!-- Контейнер для красивых кастомных уведомлений вместо системных окон -->
   <div class="toast-container" id="toastContainer"></div>
 
   <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarSelected(event)" />
@@ -1252,9 +1233,7 @@
   </header>
 
   <main class="container">
-    <!-- ВКЛАДКА 0: ГЛАВНЫЙ ЭКРАН -->
     <section class="tab-page active" id="tab0">
-
       <div class="role-strip">
         <span onclick="forceSyncNow()" style="cursor:pointer">⚡ <span id="topGpsStatus">Онлайн</span> • 📍 <b id="smDistTag">640 км</b></span>
         <div class="role-strip-btns">
@@ -1263,7 +1242,6 @@
         </div>
       </div>
 
-      <!-- ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" -->
       <div class="interactive-nudge-widget">
         <div class="nudge-left">
           <div class="nudge-title">👋 Напомнить о себе</div>
@@ -1371,7 +1349,6 @@
       <div id="countdownsList"></div>
     </section>
 
-    <!-- ВКЛАДКА 1: ДУДЛЫ -->
     <section class="tab-page" id="tab1">
       <div class="doodles-top-header">
         <h2 class="doodles-main-title">Дудлы</h2>
@@ -1410,7 +1387,6 @@
       <div class="doodle-gallery-grid" id="doodleGalleryGrid"></div>
     </section>
 
-    <!-- ВКЛАДКА 2: ЧЕЛЛЕНДЖ -->
     <section class="tab-page" id="tab2">
       <div class="section-head">
         <div class="section-title">Вопросы и Задания пары 🔐</div>
@@ -1445,7 +1421,6 @@
       <div id="challengesListBox"></div>
     </section>
 
-    <!-- ВКЛАДКА 3: МЕЧТЫ -->
     <section class="tab-page" id="tab3">
       <div class="section-head">
         <div class="section-title">Наши мечты и планы ✨</div>
@@ -1455,7 +1430,6 @@
       <div id="wishesList"></div>
     </section>
 
-    <!-- ВКЛАДКА 4: ЗАМЕТКИ -->
     <section class="tab-page" id="tab4">
       <div class="section-head">
         <div class="section-title">Общие заметки 📝</div>
@@ -1483,7 +1457,6 @@
     </button>
   </nav>
 
-  <!-- КАСТОМНОЕ МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ -->
   <div class="modal-overlay" id="customConfirmModal">
     <div class="modal-box" style="max-width:340px; text-align:center">
       <div style="font-size:34px; margin-bottom:8px">🗑️</div>
@@ -1495,7 +1468,6 @@
     </div>
   </div>
 
-  <!-- МОДАЛЬНЫЕ ОКНА -->
   <div class="modal-overlay" id="doodleStudioModal">
     <div class="modal-box">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px">
@@ -1761,8 +1733,9 @@
         <button class="btn-primary" onclick="saveItemModal()">Сохранить</button>
       </div>
     </div>
-            </div>
-            <script>
+  </div>
+
+  <script>
     const STORAGE_KEY = 'couple_npoint_state_v14';
     const ROLE_KEY = 'couple_device_role_v14';
     const NPOINT_URL_KEY = 'couple_npoint_url_v14';
@@ -1770,14 +1743,12 @@
 
     const DEFAULT_NPOINT_URL = 'https://api.npoint.io/b93a24be9137c8a0c3d9';
 
-    // Telegram Bot константы
     const TELEGRAM_BOT_TOKEN = '9126764838:AAH4XDfDlHS3bJE7IL8juJRFkxXRFLjpR9U';
     const TELEGRAM_IDS = {
-      user1: '749452668', // Матвей
-      user2: '465329516'  // Полина
+      user1: '749452668',
+      user2: '465329516'
     };
 
-    // ФУНКЦИИ КАСТОМНЫХ TOAST И САЛЮТА ИЗ СЕРДЕЧЕК
     function showToast(text, icon = '✨') {
       const container = document.getElementById('toastContainer');
       if (!container) return;
@@ -1830,7 +1801,6 @@
       }
     }
 
-    // ОТПРАВКА ТЕКСТА И САМИХ КАРТИНОК В TELEGRAM
     async function sendTelegramNotification(recipientRole, messageText) {
       const targetChatId = TELEGRAM_IDS[recipientRole];
       if (!targetChatId || !TELEGRAM_BOT_TOKEN) return { ok: false, error: 'Нет chat_id или токена' };
@@ -1904,7 +1874,6 @@
       }
     }
 
-    // Принудительный сброс кэша приложения для iOS
     function forceReloadAppCode() {
       if (confirm('Обновить приложение до последней версии с GitHub?')) {
         window.location.href = window.location.pathname + '?v=' + Date.now();
@@ -2664,7 +2633,6 @@
       }
     }
 
-    // Моментальная проверка при возвращении на вкладку (актуально для iOS)
     window.addEventListener('pageshow', () => pollCloudData());
     window.addEventListener('focus', () => pollCloudData());
     document.addEventListener('visibilitychange', () => {
@@ -3303,7 +3271,6 @@
       `).join('');
     }
 
-    // Старт
     renderAll();
     update3HourCountdownUI();
     pollCloudData().then(() => refreshBothUsersWeather());
@@ -3316,4 +3283,4 @@
     startAutoGpsTracking();
   </script>
 </body>
-</html>
+        </html>
