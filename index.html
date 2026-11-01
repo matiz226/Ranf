@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" content="#faf7f5" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -1207,30 +1210,7 @@
 
   <div class="toast-container" id="toastContainer"></div>
 
-async function handleAvatarSelected(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      
-      showToast('⏳ Сжимаем и сохраняем аватарку...', '📷');
-      try {
-        // Сжимаем аватар до компактного размера, чтобы он без проблем летел в облако
-        const compressed = await compressImageFile(file, 220, 0.7);
-        const myKey = getMyKey();
-        const me = state.users[myKey];
-        const partnerKey = getPartnerKey();
-
-        // Обновляем аватар в локальном стейте
-        me.avatar = compressed;
-        
-        // Синхронизируем с облаком npoint.io и отправляем уведомление партнеру
-        syncSection(myKey, me);
-        sendTelegramPhoto(partnerKey, compressed, `📸 <b>${me.name}</b> обновил(а) аватарку профиля! ❤️`);
-        
-        showToast('Аватарка успешно обновлена!', '✅');
-      } catch (e) {
-        showToast('Не удалось обработать фото', '⚠️');
-      }
-    }
+  <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarSelected(event)" />
 
   <header class="ref-header">
     <div class="ref-user-left">
@@ -1961,6 +1941,32 @@ async function handleAvatarSelected(event) {
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
+    }
+
+    function triggerAvatarUpload() {
+      document.getElementById('avatarFileInput').click();
+    }
+
+    async function handleAvatarSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      
+      showToast('⏳ Сжимаем и сохраняем аватарку...', '📷');
+      try {
+        const compressed = await compressImageFile(file, 220, 0.7);
+        const myKey = getMyKey();
+        const me = state.users[myKey];
+        const partnerKey = getPartnerKey();
+
+        me.avatar = compressed;
+        
+        syncSection(myKey, me);
+        sendTelegramPhoto(partnerKey, compressed, `📸 <b>${me.name}</b> обновил(а) аватарку профиля! ❤️`);
+        
+        showToast('Аватарка успешно обновлена!', '✅');
+      } catch (e) {
+        showToast('Не удалось обработать фото', '⚠️');
+      }
     }
 
     function buildStarterDoodles() {
@@ -3283,4 +3289,4 @@ async function handleAvatarSelected(event) {
     startAutoGpsTracking();
   </script>
 </body>
-  </html>
+</html>
