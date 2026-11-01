@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!-- Запрет жесткого кэширования HTML-страницы на iOS -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" content="#faf7f5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Мы Рядом" />
   <title>Мы Рядом ❤️</title>
 
   <style>
@@ -66,6 +73,70 @@
       padding: 0 18px;
       max-width: 500px;
       margin: 0 auto;
+    }
+
+    /* КАСТОМНЫЕ УВЕДОМЛЕНИЯ-КАПСУЛЫ (ВМЕСТО СИСТЕМНЫХ ALERT) */
+    .toast-container {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: calc(100% - 32px);
+      max-width: 420px;
+      pointer-events: none;
+    }
+
+    .custom-toast {
+      background: rgba(25, 22, 34, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: 999px;
+      box-shadow: 0 12px 32px rgba(238, 62, 106, 0.28), 0 4px 12px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.3;
+      animation: toastSlideIn 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.1) forwards;
+      max-width: 100%;
+    }
+
+    .custom-toast.hide {
+      animation: toastSlideOut 0.25s ease forwards;
+    }
+
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateY(-24px) scale(0.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastSlideOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-18px) scale(0.92); }
+    }
+
+    /* АНИМАЦИЯ САЛЮТА ИЗ СЕРДЕЧЕК */
+    .floating-heart {
+      position: fixed;
+      z-index: 9998;
+      pointer-events: none;
+      font-size: 24px;
+      animation: floatUpHeart 1.8s cubic-bezier(0.15, 0.8, 0.3, 1) forwards;
+    }
+
+    @keyframes floatUpHeart {
+      0% { opacity: 1; transform: translate(0, 0) scale(0.5) rotate(0deg); }
+      40% { opacity: 1; transform: translate(var(--tx), -120px) scale(1.25) rotate(var(--rot)); }
+      100% { opacity: 0; transform: translate(calc(var(--tx) * 1.4), -280px) scale(0.85) rotate(calc(var(--rot) * 1.6)); }
     }
 
     /* ВЕРХНЯЯ ПАНЕЛЬ */
@@ -635,6 +706,11 @@
       border-radius: 99px;
     }
 
+    .meta-mini-tag.weather-tag {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
     .checkin-photo-box {
       margin-top: 14px;
       border-radius: 20px;
@@ -1150,6 +1226,9 @@
 </head>
 <body>
 
+  <!-- Контейнер для красивых кастомных уведомлений вместо системных окон -->
+  <div class="toast-container" id="toastContainer"></div>
+
   <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarSelected(event)" />
 
   <header class="ref-header">
@@ -1166,6 +1245,7 @@
     </div>
 
     <div class="header-actions">
+      <button class="circle-icon-btn" onclick="forceReloadAppCode()" title="Обновить версию приложения и сбросить кэш iOS">🔄</button>
       <button class="circle-icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Светлая / Тёмная тема">☀️</button>
       <button class="circle-icon-btn" onclick="openSettingsModal()" title="Настройки и синхронизация">⚙️</button>
     </div>
@@ -1176,20 +1256,20 @@
     <section class="tab-page active" id="tab0">
 
       <div class="role-strip">
-        <span onclick="forceSyncNow()" style="cursor:pointer">🔄 <span id="topGpsStatus">Онлайн</span> • 📍 <b id="smDistTag">640 км</b></span>
+        <span onclick="forceSyncNow()" style="cursor:pointer">⚡ <span id="topGpsStatus">Онлайн</span> • 📍 <b id="smDistTag">640 км</b></span>
         <div class="role-strip-btns">
           <button class="r-pill-btn" id="qRoleU1" onclick="selectRole('user1')">👦 Матвей</button>
           <button class="r-pill-btn" id="qRoleU2" onclick="selectRole('user2')">👧 Полина</button>
         </div>
       </div>
 
-      <!-- ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" (С ПРАВИЛЬНЫМИ ИМЕНАМИ) -->
+      <!-- ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" -->
       <div class="interactive-nudge-widget">
         <div class="nudge-left">
           <div class="nudge-title">👋 Напомнить о себе</div>
-          <div class="nudge-sub">Отправить сигнал и поцелуй партнёру</div>
+          <div class="nudge-sub">Отправить сигнал и салют из сердечек</div>
         </div>
-        <button class="nudge-btn" onclick="sendNudgeSignal()">
+        <button class="nudge-btn" onclick="sendNudgeSignal(event)">
           <span>❤️</span>
           <span>Подтолкнуть</span>
         </button>
@@ -1225,7 +1305,7 @@
         </div>
       </div>
 
-      <div class="photo-hero-card">
+      <div class="photo-hero-card" id="heroPhotoCard">
         <img id="heroSlideImg" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=80" alt="Наше фото" />
         <div class="photo-nav-Zone left" onclick="prevPhotoSlide()"></div>
         <div class="photo-nav-Zone right" onclick="nextPhotoSlide()"></div>
@@ -1403,6 +1483,18 @@
     </button>
   </nav>
 
+  <!-- КАСТОМНОЕ МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ -->
+  <div class="modal-overlay" id="customConfirmModal">
+    <div class="modal-box" style="max-width:340px; text-align:center">
+      <div style="font-size:34px; margin-bottom:8px">🗑️</div>
+      <h3 class="modal-title" id="confirmModalText" style="font-size:17px; margin-bottom:18px">Удалить этот элемент?</h3>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="resolveCustomConfirm(false)">Отмена</button>
+        <button class="btn-primary" onclick="resolveCustomConfirm(true)">Да, удалить</button>
+      </div>
+    </div>
+  </div>
+
   <!-- МОДАЛЬНЫЕ ОКНА -->
   <div class="modal-overlay" id="doodleStudioModal">
     <div class="modal-box">
@@ -1528,6 +1620,16 @@
 
       <div style="font-size:12px; padding:10px 12px; border-radius:12px; background:var(--card-2); margin-bottom:12px" id="cloudDiagBox">
         🟢 Облако Npoint.io подключено
+      </div>
+
+      <div style="margin-bottom:14px; display:flex; flex-direction:column; gap:8px">
+        <button class="btn-secondary" style="width:100%; border-color:var(--pink); color:var(--pink); font-weight:800" onclick="testTelegramConnection()">
+          🔔 Проверить связь с Telegram-ботом
+        </button>
+        <button class="btn-secondary" style="width:100%; font-size:12px" onclick="forceReloadAppCode()">
+          🔄 Принудительно обновить версию сайта (для iOS)
+        </button>
+        <div id="tgTestResultBox" style="font-size:11px; margin-top:2px; text-align:center; color:var(--muted)"></div>
       </div>
 
       <div class="field-row">
@@ -1659,9 +1761,8 @@
         <button class="btn-primary" onclick="saveItemModal()">Сохранить</button>
       </div>
     </div>
-  </div>
-
-  <script>
+            </div>
+            <script>
     const STORAGE_KEY = 'couple_npoint_state_v14';
     const ROLE_KEY = 'couple_device_role_v14';
     const NPOINT_URL_KEY = 'couple_npoint_url_v14';
@@ -1676,19 +1777,138 @@
       user2: '465329516'  // Полина
     };
 
-    function sendTelegramNotification(recipientRole, messageText) {
+    // ФУНКЦИИ КАСТОМНЫХ TOAST И САЛЮТА ИЗ СЕРДЕЧЕК
+    function showToast(text, icon = '✨') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = 'custom-toast';
+      el.innerHTML = `<span style="font-size:18px">${icon}</span><span>${text}</span>`;
+      container.appendChild(el);
+
+      setTimeout(() => {
+        el.classList.add('hide');
+        setTimeout(() => el.remove(), 260);
+      }, 2900);
+    }
+
+    function launchHeartsBurst(originX, originY) {
+      const emojis = ['❤️', '🥰', '✨', '💖', '💋', '🔥'];
+      const startX = originX || window.innerWidth / 2;
+      const startY = originY || window.innerHeight / 2;
+
+      for (let i = 0; i < 14; i++) {
+        const span = document.createElement('span');
+        span.className = 'floating-heart';
+        span.textContent = emojis[i % emojis.length];
+        const tx = Math.round((Math.random() - 0.5) * 220) + 'px';
+        const rot = Math.round((Math.random() - 0.5) * 70) + 'deg';
+        span.style.left = `${startX - 12}px`;
+        span.style.top = `${startY - 12}px`;
+        span.style.setProperty('--tx', tx);
+        span.style.setProperty('--rot', rot);
+        span.style.animationDelay = `${Math.random() * 0.18}s`;
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 1950);
+      }
+    }
+
+    let confirmResolver = null;
+    function showCustomConfirm(questionText) {
+      return new Promise((resolve) => {
+        confirmResolver = resolve;
+        document.getElementById('confirmModalText').textContent = questionText;
+        document.getElementById('customConfirmModal').classList.add('open');
+      });
+    }
+
+    function resolveCustomConfirm(answer) {
+      document.getElementById('customConfirmModal').classList.remove('open');
+      if (confirmResolver) {
+        confirmResolver(answer);
+        confirmResolver = null;
+      }
+    }
+
+    // ОТПРАВКА ТЕКСТА И САМИХ КАРТИНОК В TELEGRAM
+    async function sendTelegramNotification(recipientRole, messageText) {
       const targetChatId = TELEGRAM_IDS[recipientRole];
-      if (!targetChatId || !TELEGRAM_BOT_TOKEN) return;
+      if (!targetChatId || !TELEGRAM_BOT_TOKEN) return { ok: false, error: 'Нет chat_id или токена' };
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: targetChatId,
-          text: messageText,
-          parse_mode: 'HTML'
-        })
-      }).catch(() => {});
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: targetChatId,
+            text: messageText,
+            parse_mode: 'HTML'
+          })
+        });
+        return await res.json();
+      } catch (err) {
+        return { ok: false, error: err.message };
+      }
+    }
+
+    function dataUrlToBlob(dataUrl) {
+      const parts = dataUrl.split(',');
+      const mime = parts[0].match(/:(.*?);/)[1] || 'image/jpeg';
+      const bstr = atob(parts[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    }
+
+    async function sendTelegramPhoto(recipientRole, dataUrl, captionText) {
+      const targetChatId = TELEGRAM_IDS[recipientRole];
+      if (!targetChatId || !TELEGRAM_BOT_TOKEN || !dataUrl) return;
+      try {
+        const blob = dataUrlToBlob(dataUrl);
+        const form = new FormData();
+        form.append('chat_id', targetChatId);
+        form.append('photo', blob, 'moment.jpg');
+        if (captionText) {
+          form.append('caption', captionText);
+          form.append('parse_mode', 'HTML');
+        }
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+        const res = await fetch(url, { method: 'POST', body: form });
+        const json = await res.json();
+        if (!json.ok) {
+          sendTelegramNotification(recipientRole, captionText);
+        }
+      } catch (e) {
+        sendTelegramNotification(recipientRole, captionText);
+      }
+    }
+
+    async function testTelegramConnection() {
+      const myKey = getMyKey();
+      const me = state.users[myKey];
+      const box = document.getElementById('tgTestResultBox');
+      if (box) box.innerHTML = '⏳ Отправляем тестовое сообщение...';
+
+      const res = await sendTelegramNotification(myKey, `🔔 <b>Тест связи «Мы Рядом»</b>\n\nПривет, ${me.name}! Связь с ботом и отправка картинок работают отлично! 🎉`);
+
+      if (res && res.ok) {
+        if (box) box.innerHTML = '<span style="color:var(--green)">✅ Бот работает! Сообщение доставлено вам в Telegram.</span>';
+        showToast('Тестовое сообщение отправлено в Telegram!', '✅');
+      } else {
+        const desc = res?.description || res?.error || 'Неизвестная ошибка';
+        if (box) box.innerHTML = `<span style="color:#e74c3c">❌ Ошибка: ${desc}<br>Убедитесь, что вы нажали <b>/start</b> в чате бота в Telegram!</span>`;
+        showToast('Нажмите /start в вашем боте в Telegram', '⚠️');
+      }
+    }
+
+    // Принудительный сброс кэша приложения для iOS
+    function forceReloadAppCode() {
+      if (confirm('Обновить приложение до последней версии с GitHub?')) {
+        window.location.href = window.location.pathname + '?v=' + Date.now();
+      }
     }
 
     function normalizeUrl(u) {
@@ -1717,20 +1937,23 @@
       if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
     }
 
-    // ИСПРАВЛЕННАЯ КНОПКА "ПОДТОЛКНУТЬ" С ИМЕНАМИ
-    function sendNudgeSignal() {
+    function sendNudgeSignal(ev) {
       const myKey = getMyKey();
       const me = state.users[myKey];
       const partnerKey = getPartnerKey();
       const partner = state.users[partnerKey];
-      
+
       me.moodHeadline = 'отправил(а) поцелуй 👋';
       me.moodText = `${me.name} подтолкнул(а) тебя! ❤️`;
       me.updatedAt = new Date().toTimeString().slice(0, 5);
-      
+
       syncSection(myKey, me);
-      sendTelegramNotification(partnerKey, `👋 <b>${me.name}</b> подтолкнул(а) тебя в приложении! ❤️`);
-      alert(`❤️ Сигнал успешно отправлен для ${partner.name}!`);
+      sendTelegramNotification(partnerKey, `👋 <b>${me.name}</b> подтолкнул(а) тебя в приложении! ❤️\n«Посылаю крепкие объятия!»`);
+
+      const x = ev?.clientX || window.innerWidth / 2;
+      const y = ev?.clientY || 140;
+      launchHeartsBurst(x, y);
+      showToast(`Сигнал и поцелуй отправлены для ${partner.name}!`, '❤️');
     }
 
     function compressImageFile(file, maxWidth = 680, quality = 0.68) {
@@ -2116,6 +2339,7 @@
           battery: 92,
           lat: null,
           lng: null,
+          weather: null,
           updatedAt: '12:30'
         },
         user2: {
@@ -2128,6 +2352,7 @@
           battery: 84,
           lat: null,
           lng: null,
+          weather: null,
           updatedAt: '12:45'
         }
       },
@@ -2281,660 +2506,52 @@
     }
     setInterval(updateLiveCountdownClock, 1000);
 
-    function triggerAvatarUpload() {
-      document.getElementById('avatarFileInput').click();
+    // ПОГОДА ЧЕРЕЗ OPEN-METEO
+    function weatherCodeToEmoji(code) {
+      if (code === 0) return '☀️';
+      if (code === 1 || code === 2) return '🌤️';
+      if (code === 3) return '☁️';
+      if (code === 45 || code === 48) return '🌫️';
+      if (code >= 51 && code <= 67) return '🌧️';
+      if (code >= 71 && code <= 77) return '❄️';
+      if (code >= 80 && code <= 82) return '🌦️';
+      if (code >= 85 && code <= 86) return '🌨️';
+      if (code >= 95) return '⛈️';
+      return '🌡️';
     }
 
-    async function handleAvatarSelected(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
+    async function updateWeatherForUser(roleKey, lat, lng) {
+      if (lat == null || lng == null) return;
       try {
-        const compressed = await compressImageFile(file, 260, 0.72);
-        const myKey = getMyKey();
-        state.users[myKey].avatar = compressed;
-        syncSection(myKey, state.users[myKey]);
-      } catch (e) {
-        alert('Не удалось обработать фото');
-      }
-    }
-
-    function prevPhotoSlide() {
-      const slides = state.photoSlides || [];
-      if (slides.length <= 1) return;
-      activeSlideIndex = (activeSlideIndex - 1 + slides.length) % slides.length;
-      renderHeroCarousel();
-    }
-
-    function nextPhotoSlide() {
-      const slides = state.photoSlides || [];
-      if (slides.length <= 1) return;
-      activeSlideIndex = (activeSlideIndex + 1) % slides.length;
-      renderHeroCarousel();
-    }
-
-    function selectPhotoSlide(idx) {
-      activeSlideIndex = idx;
-      renderHeroCarousel();
-    }
-
-    function openAddMenuModal() {
-      document.getElementById('addMenuModal').classList.add('open');
-    }
-
-    function openPhotoSlideModal() {
-      tempSlideDataUrl = null;
-      document.getElementById('slidePreviewImg').style.display = 'none';
-      document.getElementById('slideUploadHint').style.display = 'block';
-      document.getElementById('inpSlideTitle').value = '';
-      document.getElementById('inpSlideLocation').value = '';
-      document.getElementById('photoSlideModal').classList.add('open');
-    }
-
-    async function handleSlideFileChosen(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      document.getElementById('slideUploadHint').textContent = '⏳ Сжимаем фото...';
-      try {
-        tempSlideDataUrl = await compressImageFile(file, 720, 0.68);
-        const img = document.getElementById('slidePreviewImg');
-        img.src = tempSlideDataUrl;
-        img.style.display = 'block';
-        document.getElementById('slideUploadHint').style.display = 'none';
-      } catch (e) {
-        document.getElementById('slideUploadHint').textContent = '⚠️ Ошибка выбора фото';
-      }
-    }
-
-    function savePhotoSlide() {
-      if (!tempSlideDataUrl) {
-        alert('Пожалуйста, выберите фотографию из галереи!');
-        return;
-      }
-      const me = state.users[getMyKey()];
-      const title = document.getElementById('inpSlideTitle').value.trim() || 'Наш момент ❤️';
-      const location = document.getElementById('inpSlideLocation').value.trim() || `От: ${me.name}`;
-
-      if (!Array.isArray(state.photoSlides)) state.photoSlides = [];
-      state.photoSlides.unshift({
-        id: 'slide_' + Date.now(),
-        imgUrl: tempSlideDataUrl,
-        title,
-        location,
-        author: `${me.name} • ${formatTimeTag()}`
-      });
-
-      if (state.photoSlides.length > 8) {
-        state.photoSlides = state.photoSlides.slice(0, 8);
-      }
-
-      activeSlideIndex = 0;
-      closeModal('photoSlideModal');
-      syncSection('photoSlides', state.photoSlides);
-    }
-
-    function deleteCurrentSlide() {
-      const slides = state.photoSlides || [];
-      if (slides.length <= 1) {
-        openPhotoSlideModal();
-        return;
-      }
-      if (!confirm('Удалить текущий слайд?')) return;
-      slides.splice(activeSlideIndex, 1);
-      activeSlideIndex = 0;
-      syncSection('photoSlides', state.photoSlides);
-    }
-
-    function renderHeroCarousel() {
-      const slides = state.photoSlides || defaultState.photoSlides;
-      if (activeSlideIndex >= slides.length) activeSlideIndex = 0;
-      const cur = slides[activeSlideIndex] || slides[0];
-
-      document.getElementById('heroSlideImg').src = cur.imgUrl;
-      document.getElementById('heroSlideTitle').textContent = cur.title || 'Мы Рядом ❤️';
-      document.getElementById('heroSlideSub').textContent = `📍 ${cur.location || 'Наше место'}`;
-      document.getElementById('heroSlideAuthor').textContent = `${cur.author || ''} (${activeSlideIndex + 1}/${slides.length})`;
-
-      document.getElementById('heroCarouselDots').innerHTML = slides.map((s, idx) => `
-        <div class="c-dot ${idx === activeSlideIndex ? 'active' : ''}" onclick="selectPhotoSlide(${idx})"></div>
-      `).join('');
-    }
-
-    function openCheckinModal() {
-      const me = state.users[getMyKey()];
-      tempCheckinDataUrl = me.checkinPhoto || null;
-      const prevImg = document.getElementById('checkinPreviewImg');
-      const hint = document.getElementById('checkinUploadHint');
-      if (tempCheckinDataUrl) {
-        prevImg.src = tempCheckinDataUrl;
-        prevImg.style.display = 'block';
-        hint.style.display = 'none';
-      } else {
-        prevImg.style.display = 'none';
-        hint.style.display = 'block';
-        hint.textContent = '📷 Прикрепить фото момента (необязательно)';
-      }
-      document.getElementById('inpCheckinEmoji').value = me.moodEmoji || '🥰';
-      document.getElementById('inpCheckinHeadline').value = me.moodHeadline || 'хорошее настроение';
-      document.getElementById('inpCheckinText').value = me.moodText || '';
-      document.getElementById('checkinModal').classList.add('open');
-    }
-
-    async function handleCheckinFileChosen(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      document.getElementById('checkinUploadHint').textContent = '⏳ Сжимаем фото...';
-      try {
-        tempCheckinDataUrl = await compressImageFile(file, 640, 0.66);
-        const img = document.getElementById('checkinPreviewImg');
-        img.src = tempCheckinDataUrl;
-        img.style.display = 'block';
-        document.getElementById('checkinUploadHint').style.display = 'none';
-      } catch (e) {
-        document.getElementById('checkinUploadHint').textContent = '⚠️ Ошибка загрузки';
-      }
-    }
-
-    function saveCheckinModal() {
-      const myKey = getMyKey();
-      const me = state.users[myKey];
-      const emoji = document.getElementById('inpCheckinEmoji').value.trim() || '🥰';
-      const headline = document.getElementById('inpCheckinHeadline').value.trim() || 'хорошее настроение';
-      const text = document.getElementById('inpCheckinText').value.trim() || 'Думаю о тебе ❤️';
-      const nowTime = new Date().toTimeString().slice(0, 5);
-
-      me.moodEmoji = emoji;
-      me.moodHeadline = headline;
-      me.moodText = text;
-      me.checkinPhoto = tempCheckinDataUrl;
-      me.updatedAt = nowTime;
-
-      if (!Array.isArray(state.checkinHistory)) state.checkinHistory = [];
-      state.checkinHistory.unshift({
-        id: 'chk_' + Date.now(),
-        userName: me.name,
-        emoji,
-        headline,
-        text,
-        photo: tempCheckinDataUrl,
-        timeLabel: formatTimeTag()
-      });
-      if (state.checkinHistory.length > 10) {
-        state.checkinHistory = state.checkinHistory.slice(0, 10);
-      }
-
-      closeModal('checkinModal');
-      syncSection(myKey, me);
-      syncSection('checkinHistory', state.checkinHistory);
-    }
-
-    function openHistoryModal() {
-      const hist = state.checkinHistory || [];
-      const box = document.getElementById('checkinHistoryList');
-      if (hist.length === 0) {
-        box.innerHTML = `<div style="text-align:center; color:var(--muted); padding:20px">История отметок пока пуста. Нажмите «📸 + Фото-отметка», чтобы поделиться моментом!</div>`;
-      } else {
-        box.innerHTML = hist.map(item => `
-          <div style="background:var(--card-2); padding:12px; border-radius:16px">
-            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:4px">
-              <b>${item.emoji} ${item.userName}: ${item.headline}</b>
-              <span>${item.timeLabel}</span>
-            </div>
-            <div style="font-size:14px; font-weight:600">${item.text}</div>
-            ${item.photo ? `<img src="${item.photo}" style="width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-top:8px" />` : ''}
-          </div>
-        `).join('');
-      }
-      document.getElementById('historyModal').classList.add('open');
-    }
-
-    // ГАЛЕРЕЯ ДУДЛОВ
-    const studioCanvas = document.getElementById('studioEditorCanvas');
-    const studioCtx = studioCanvas.getContext('2d');
-    const studioPaletteColors = [
-      '#111111', '#ee3e6a', '#ee8578', '#ff9f43', '#facc15', '#16a34a', '#3b82f6', '#9333ea', '#ffffff'
-    ];
-
-    let studioCurrentColor = '#111111';
-    let studioBrushWidth = 7;
-    let studioEditingId = null;
-    let studioPresetArt = null;
-    let studioStrokes = [];
-    let studioActivePoints = [];
-    let studioReaction = '😍';
-    let isStudioDrawing = false;
-
-    function getFeaturedDoodle() {
-      const list = state.doodles || [];
-      if (list.length === 0) return null;
-      if (selectedDoodleId) {
-        const found = list.find(d => d.id === selectedDoodleId);
-        if (found) return found;
-      }
-      selectedDoodleId = list[0].id;
-      return list[0];
-    }
-
-    function selectDoodleFromGallery(doodleId) {
-      selectedDoodleId = doodleId;
-      renderDoodlesTab();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cycleFeaturedDoodleReaction() {
-      const feat = getFeaturedDoodle();
-      if (!feat) return;
-      const list = ['😍', '❤️', '🥰', '🔥', '😂', '💋'];
-      feat.reaction = list[(list.indexOf(feat.reaction || '😍') + 1) % list.length];
-      feat.updatedAtTs = Date.now();
-      syncSection('doodles', state.doodles);
-    }
-
-    function openFeaturedDoodleInStudio() {
-      const feat = getFeaturedDoodle();
-      openDoodleStudioModal(feat ? feat.id : null);
-    }
-
-    function openDoodleStudioModal(doodleId = null) {
-      studioEditingId = doodleId;
-      const existing = doodleId ? (state.doodles || []).find(d => d.id === doodleId) : null;
-
-      if (existing) {
-        document.getElementById('studioModalTitle').textContent = '♡ Добавь штрих к дудлу';
-        studioPresetArt = existing.presetArt || null;
-        studioStrokes = JSON.parse(JSON.stringify(existing.strokes || []));
-        studioReaction = existing.reaction || '😍';
-        document.getElementById('inpStudioCaption').value = existing.caption || '';
-        document.getElementById('studioDeleteBtn').style.display = (state.doodles.length > 1) ? 'inline-block' : 'none';
-      } else {
-        document.getElementById('studioModalTitle').textContent = '🎨 Новый отдельный холст';
-        studioPresetArt = null;
-        studioStrokes = [];
-        studioReaction = '😍';
-        document.getElementById('inpStudioCaption').value = '';
-        document.getElementById('studioDeleteBtn').style.display = 'none';
-      }
-
-      document.getElementById('studioReactionBtn').textContent = studioReaction;
-      renderStudioPalette();
-      redrawStudioEditorCanvas();
-      document.getElementById('doodleStudioModal').classList.add('open');
-    }
-
-    function renderStudioPalette() {
-      document.getElementById('studioPaletteRow').innerHTML = studioPaletteColors.map(c => `
-        <div class="studio-color-dot ${c === studioCurrentColor ? 'active' : ''}" style="background:${c}" onclick="selectStudioColor('${c}')"></div>
-      `).join('');
-    }
-
-    function selectStudioColor(c) {
-      studioCurrentColor = c;
-      renderStudioPalette();
-    }
-
-    function setStudioBrushSize(w) {
-      studioBrushWidth = w;
-      document.getElementById('sizeBtn4').classList.toggle('pink', w === 4);
-      document.getElementById('sizeBtn7').classList.toggle('pink', w === 7);
-      document.getElementById('sizeBtn14').classList.toggle('pink', w === 14);
-    }
-
-    function cycleStudioReaction() {
-      const list = ['😍', '❤️', '🥰', '🔥', '😂', '💋'];
-      studioReaction = list[(list.indexOf(studioReaction) + 1) % list.length];
-      document.getElementById('studioReactionBtn').textContent = studioReaction;
-    }
-
-    function redrawStudioEditorCanvas() {
-      studioCtx.clearRect(0, 0, studioCanvas.width, studioCanvas.height);
-      studioCtx.fillStyle = '#ffffff';
-      studioCtx.fillRect(0, 0, studioCanvas.width, studioCanvas.height);
-
-      if (studioPresetArt) {
-        drawPresetArtOnCanvas(studioCtx, studioPresetArt);
-      }
-
-      studioStrokes.forEach(s => {
-        drawSingleStroke(studioCtx, s.color, s.width || 7, s.points);
-      });
-
-      if (studioActivePoints.length > 0) {
-        drawSingleStroke(studioCtx, studioCurrentColor, studioBrushWidth, studioActivePoints);
-      }
-    }
-
-    function getStudioPointerPos(e) {
-      const r = studioCanvas.getBoundingClientRect();
-      const t = e.touches ? e.touches[0] : e;
-      return {
-        x: Math.round((t.clientX - r.left) * (studioCanvas.width / r.width)),
-        y: Math.round((t.clientY - r.top) * (studioCanvas.height / r.height))
-      };
-    }
-
-    studioCanvas.addEventListener('pointerdown', e => {
-      isStudioDrawing = true;
-      studioActivePoints = [getStudioPointerPos(e)];
-      redrawStudioEditorCanvas();
-    });
-
-    studioCanvas.addEventListener('pointermove', e => {
-      if (!isStudioDrawing) return;
-      studioActivePoints.push(getStudioPointerPos(e));
-      redrawStudioEditorCanvas();
-    });
-
-    window.addEventListener('pointerup', () => {
-      if (!isStudioDrawing) return;
-      isStudioDrawing = false;
-      if (studioActivePoints.length > 0) {
-        studioStrokes.push({
-          color: studioCurrentColor,
-          width: studioBrushWidth,
-          points: studioActivePoints
-        });
-      }
-      studioActivePoints = [];
-      redrawStudioEditorCanvas();
-    });
-
-    function studioUndoStroke() {
-      if (studioStrokes.length > 0) {
-        studioStrokes.pop();
-      } else if (studioPresetArt) {
-        studioPresetArt = null;
-      }
-      redrawStudioEditorCanvas();
-    }
-
-    function studioClearCanvas() {
-      studioStrokes = [];
-      studioPresetArt = null;
-      redrawStudioEditorCanvas();
-    }
-
-    function deleteEditingDoodle() {
-      if (!studioEditingId) return;
-      if (!confirm('Удалить этот холст из общей галереи?')) return;
-      state.doodles = (state.doodles || []).filter(d => d.id !== studioEditingId);
-      selectedDoodleId = state.doodles[0] ? state.doodles[0].id : null;
-      closeModal('doodleStudioModal');
-      syncSection('doodles', state.doodles);
-    }
-
-    function saveStudioDoodle() {
-      const myKey = getMyKey();
-      const caption = document.getElementById('inpStudioCaption').value.trim() || 'думаю о тебе';
-      const now = Date.now();
-
-      if (!Array.isArray(state.doodles)) state.doodles = [];
-
-      if (studioEditingId) {
-        const item = state.doodles.find(d => d.id === studioEditingId);
-        if (item) {
-          item.presetArt = studioPresetArt;
-          item.strokes = studioStrokes;
-          item.caption = caption;
-          item.reaction = studioReaction;
-          item.authorRole = myKey;
-          item.updatedAtTs = now;
-        }
-        selectedDoodleId = studioEditingId;
-      } else {
-        const newId = 'd_' + now;
-        state.doodles.unshift({
-          id: newId,
-          authorRole: myKey,
-          caption,
-          reaction: studioReaction,
-          createdAtTs: now,
-          updatedAtTs: now,
-          presetArt: studioPresetArt,
-          strokes: studioStrokes
-        });
-        selectedDoodleId = newId;
-      }
-
-      if (state.doodles.length > 15) {
-        state.doodles = state.doodles.slice(0, 15);
-      }
-
-      closeModal('doodleStudioModal');
-      syncSection('doodles', state.doodles);
-    }
-
-    function renderDoodlesTab() {
-      const doodles = state.doodles || [];
-      const myKey = getMyKey();
-      const feat = getFeaturedDoodle();
-
-      document.getElementById('doodleMonthTitle').textContent = getCurrentRussianMonthYear();
-
-      if (feat) {
-        const isMe = feat.authorRole === myKey;
-        const authorUser = state.users[feat.authorRole] || state.users.user2;
-        const authorLabel = isMe ? 'Ты' : (authorUser.name || 'Партнёр');
-
-        const authEl = document.getElementById('featuredDoodleAuthor');
-        authEl.textContent = authorLabel;
-        authEl.classList.toggle('is-self', isMe);
-
-        document.getElementById('featuredDoodleTime').textContent = formatRelativeAgo(feat.updatedAtTs || feat.createdAtTs);
-        document.getElementById('featuredDoodleCaption').textContent = `"${feat.caption || 'думаю о тебе'}"`;
-        document.getElementById('featuredDoodleReactBtn').textContent = feat.reaction || '😍';
-
-        renderDoodleObjectToCanvas(document.getElementById('featuredDoodleCanvas'), feat);
-      }
-
-      const latestDoodle = doodles[0] || feat;
-      if (latestDoodle) {
-        renderDoodleObjectToCanvas(document.getElementById('widgetDoodleCanvas'), latestDoodle);
-        const subEl = document.getElementById('homeDoodleSubText');
-        if (subEl) {
-          const who = latestDoodle.authorRole === myKey ? 'Ты' : (state.users[latestDoodle.authorRole]?.name || 'Партнёр');
-          subEl.textContent = `${who} (${formatRelativeAgo(latestDoodle.updatedAtTs)}): "${latestDoodle.caption || 'думаю о тебе'}"`;
-        }
-      }
-
-      const grid = document.getElementById('doodleGalleryGrid');
-      grid.innerHTML = doodles.map(d => {
-        const isMe = d.authorRole === myKey;
-        const authorUser = state.users[d.authorRole] || state.users.user2;
-        const authorLabel = isMe ? 'Ты' : (authorUser.name || 'Партнёр');
-        const isSelected = feat && feat.id === d.id;
-
-        return `
-          <div class="doodle-grid-card ${isSelected ? 'selected-card' : ''}" onclick="selectDoodleFromGallery('${d.id}')">
-            <div class="doodle-grid-thumb">
-              <canvas id="thumb_canvas_${d.id}" width="180" height="200"></canvas>
-              <div class="doodle-mini-react-badge">${d.reaction || '😍'}</div>
-            </div>
-            <div>
-              <div class="doodle-grid-author ${isMe ? 'is-self' : ''}">${authorLabel}</div>
-              <div class="doodle-grid-time">${formatRelativeAgo(d.updatedAtTs || d.createdAtTs)}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      doodles.forEach(d => {
-        const cEl = document.getElementById(`thumb_canvas_${d.id}`);
-        if (cEl) renderDoodleObjectToCanvas(cEl, d);
-      });
-    }
-
-    function mergeDoodlesLists(cloudList = [], localList = []) {
-      const map = new Map();
-      cloudList.forEach(item => {
-        if (item && item.id) map.set(item.id, JSON.parse(JSON.stringify(item)));
-      });
-      localList.forEach(localItem => {
-        if (!localItem || !localItem.id) return;
-        if (!map.has(localItem.id)) {
-          map.set(localItem.id, JSON.parse(JSON.stringify(localItem)));
-        } else {
-          const existing = map.get(localItem.id);
-          if ((localItem.updatedAtTs || 0) >= (existing.updatedAtTs || 0)) {
-            map.set(localItem.id, JSON.parse(JSON.stringify(localItem)));
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`;
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.current_weather) {
+          const temp = Math.round(data.current_weather.temperature);
+          const sign = temp > 0 ? '+' : '';
+          const icon = weatherCodeToEmoji(data.current_weather.weathercode);
+          const weatherLabel = `${icon} ${sign}${temp}°C`;
+          if (state.users[roleKey].weather !== weatherLabel) {
+            state.users[roleKey].weather = weatherLabel;
+            syncSection(roleKey, state.users[roleKey]);
           }
         }
-      });
-      return Array.from(map.values()).sort((a, b) => (b.updatedAtTs || 0) - (a.updatedAtTs || 0));
+      } catch (e) {}
     }
 
-    function mergeChallengesLists(cloudList = [], localList = []) {
-      const map = new Map();
-      cloudList.forEach(item => {
-        if (item && item.id) map.set(item.id, JSON.parse(JSON.stringify(item)));
-      });
-      localList.forEach(localItem => {
-        if (!localItem || !localItem.id) return;
-        if (!map.has(localItem.id)) {
-          map.set(localItem.id, JSON.parse(JSON.stringify(localItem)));
-        } else {
-          const merged = map.get(localItem.id);
-          if (localItem.user1Answer) merged.user1Answer = localItem.user1Answer;
-          if (localItem.user2Answer) merged.user2Answer = localItem.user2Answer;
-          if (localItem.archived) merged.archived = true;
-        }
-      });
-      return deduplicateChallengesByPrompt(Array.from(map.values()));
+    function refreshBothUsersWeather() {
+      const u1 = state.users.user1;
+      const u2 = state.users.user2;
+      if (u1.lat != null && u1.lng != null) updateWeatherForUser('user1', u1.lat, u1.lng);
+      if (u2.lat != null && u2.lng != null) updateWeatherForUser('user2', u2.lat, u2.lng);
     }
 
-    function hashString(str) {
-      let h = 0;
-      for (let i = 0; i < str.length; i++) {
-        h = (h * 31 + str.charCodeAt(i)) >>> 0;
-      }
-      return h;
-    }
-
-    function pickUniqueNextPair(seedStr) {
-      if (!Array.isArray(state.usedChallengeTplIds)) state.usedChallengeTplIds = [];
-      const usedSet = new Set(state.usedChallengeTplIds);
-      const existingPrompts = new Set((state.challenges || []).map(c => (c.prompt || '').trim()));
-
-      (state.challenges || []).forEach(c => {
-        if (c.tplId) usedSet.add(c.tplId);
-      });
-
-      const allQuestions = AI_CHALLENGE_BANK.filter(x => x.type === 'question');
-      const allTasks = AI_CHALLENGE_BANK.filter(x => x.type === 'task');
-
-      let availQ = allQuestions.filter(q => !usedSet.has(q.tplId) && !existingPrompts.has(q.prompt.trim()));
-      let availT = allTasks.filter(t => !usedSet.has(t.tplId) && !existingPrompts.has(t.prompt.trim()));
-
-      if (availQ.length === 0) {
-        availQ = allQuestions.filter(q => !existingPrompts.has(q.prompt.trim()));
-        if (availQ.length === 0) availQ = allQuestions;
-      }
-      if (availT.length === 0) {
-        availT = allTasks.filter(t => !existingPrompts.has(t.prompt.trim()));
-        if (availT.length === 0) availT = allTasks;
-      }
-
-      const h = hashString(seedStr);
-      const qTpl = availQ[h % availQ.length];
-      const tTpl = availT[(h >>> 4) % availT.length];
-
-      if (qTpl && !state.usedChallengeTplIds.includes(qTpl.tplId)) {
-        state.usedChallengeTplIds.push(qTpl.tplId);
-      }
-      if (tTpl && !state.usedChallengeTplIds.includes(tTpl.tplId)) {
-        state.usedChallengeTplIds.push(tTpl.tplId);
-      }
-
-      return { qTpl, tTpl };
-    }
-
-    function check3HourChallengeGeneration() {
-      const currentSlotKey = getCurrent3HourSlotKey();
-      if (state.lastGeneratedSlotKey === currentSlotKey) return;
-
-      (state.challenges || []).forEach(ch => {
-        if (ch.user1Answer && ch.user2Answer) ch.archived = true;
-      });
-
-      const qSlotId = `ch_q_${currentSlotKey}`;
-      const tSlotId = `ch_t_${currentSlotKey}`;
-      const { qTpl, tTpl } = pickUniqueNextPair(currentSlotKey);
-      const timeLabel = formatTimeTag();
-
-      if (!state.challenges.some(c => c.id === tSlotId || c.prompt === tTpl?.prompt) && tTpl) {
-        state.challenges.unshift({
-          id: tSlotId, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
-          prompt: tTpl.prompt, options: tTpl.options,
-          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
-        });
-      }
-      if (!state.challenges.some(c => c.id === qSlotId || c.prompt === qTpl?.prompt) && qTpl) {
-        state.challenges.unshift({
-          id: qSlotId, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
-          prompt: qTpl.prompt, options: qTpl.options,
-          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
-        });
-      }
-
-      state.lastGeneratedSlotKey = currentSlotKey;
-      syncSection('challenges', state.challenges);
-      syncSection('usedChallengeTplIds', state.usedChallengeTplIds);
-      syncSection('lastGeneratedSlotKey', state.lastGeneratedSlotKey);
-    }
-
-    function generateExtraPairNow() {
-      const seed = 'manual_unique_' + Date.now() + '_' + Math.random();
-      const { qTpl, tTpl } = pickUniqueNextPair(seed);
-      const timeLabel = formatTimeTag();
-      const stamp = Date.now();
-
-      if (tTpl && !state.challenges.some(c => c.prompt === tTpl.prompt)) {
-        state.challenges.unshift({
-          id: `ch_t_${stamp}`, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
-          prompt: tTpl.prompt, options: tTpl.options,
-          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
-        });
-      }
-      if (qTpl && !state.challenges.some(c => c.prompt === qTpl.prompt)) {
-        state.challenges.unshift({
-          id: `ch_q_${stamp}`, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
-          prompt: qTpl.prompt, options: qTpl.options,
-          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
-        });
-      }
-      chViewMode = 'active';
-      syncSection('challenges', state.challenges);
-      syncSection('usedChallengeTplIds', state.usedChallengeTplIds);
-    }
-
-    function update3HourCountdownUI() {
-      const now = new Date();
-      const nextSlotHour = (Math.floor(now.getHours() / 3) + 1) * 3;
-      const nextTarget = new Date(now.getFullYear(), now.getMonth(), now.getDate(), nextSlotHour, 0, 0, 0);
-      const diffSec = Math.max(0, Math.floor((nextTarget.getTime() - now.getTime()) / 1000));
-
-      const hh = Math.floor(diffSec / 3600);
-      const mm = Math.floor((diffSec % 3600) / 60);
-      const ss = diffSec % 60;
-
-      const el = document.getElementById('nextHourCountdown');
-      if (el) {
-        el.textContent = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
-      }
-
-      const poolBadge = document.getElementById('uniquePoolBadge');
-      if (poolBadge) {
-        const usedCount = (state.usedChallengeTplIds || []).length;
-        const leftCount = Math.max(0, AI_CHALLENGE_BANK.length - usedCount);
-        poolBadge.textContent = `Новых в базе: ${leftCount}/${AI_CHALLENGE_BANK.length}`;
-      }
-
-      check3HourChallengeGeneration();
-    }
-    setInterval(update3HourCountdownUI, 1000);
-
-    // ДВИЖОК СИНХРОНИЗАЦИИ NPOINT.IO
+    // ДВИЖОК СИНХРОНИЗАЦИИ С ЗАЩИТОЙ ОТ КЭША iOS
     let isSaving = false;
     let isPolling = false;
     let pendingPatches = {};
+    let lastCloudHash = '';
 
     function setSyncIndicator(status, message) {
       const dot = document.getElementById('syncDot');
@@ -2964,8 +2581,9 @@
       pendingPatches = {};
 
       try {
+        const antiCacheUrl = `${npointUrl}?_t=${Date.now()}`;
+        const getRes = await fetch(antiCacheUrl, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
         let baseData = JSON.parse(JSON.stringify(state));
-        const getRes = await fetch(npointUrl, { cache: 'no-store' });
         if (getRes.ok) {
           const cloudData = await getRes.json();
           if (cloudData && typeof cloudData === 'object') {
@@ -2990,7 +2608,7 @@
 
         const postRes = await fetch(npointUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
           body: JSON.stringify(baseData)
         });
 
@@ -2999,9 +2617,9 @@
           state = baseData;
           state.activeBoardId = activeBoard;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          lastCloudHash = JSON.stringify(state);
           renderAll();
-          const nowTime = new Date().toTimeString().slice(0, 8);
-          setSyncIndicator('online', `🟢 <b>Синхронизировано с Npoint.io!</b><br>Отправлено: ${nowTime}`);
+          setSyncIndicator('online', `🟢 <b>Синхронизировано с Npoint.io!</b>`);
         } else {
           setSyncIndicator('error', `🔴 <b>Ошибка записи:</b> HTTP ${postRes.status}`);
         }
@@ -3019,7 +2637,8 @@
       if (isSaving || isPolling || isStudioDrawing || Object.keys(pendingPatches).length > 0) return;
       isPolling = true;
       try {
-        const res = await fetch(npointUrl, { cache: 'no-store' });
+        const antiCacheUrl = `${npointUrl}?_t=${Date.now()}`;
+        const res = await fetch(antiCacheUrl, { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
         if (res.ok) {
           const cloudData = await res.json();
           if (cloudData && typeof cloudData === 'object') {
@@ -3027,28 +2646,38 @@
             const activeBoard = state.activeBoardId;
             cloudData.activeBoardId = activeBoard;
 
-            if (JSON.stringify(state) !== JSON.stringify(cloudData)) {
+            const newHash = JSON.stringify(cloudData);
+            if (newHash !== lastCloudHash) {
               state = cloudData;
+              lastCloudHash = newHash;
               localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
               renderAll();
             }
-            const nowTime = new Date().toTimeString().slice(0, 8);
-            setSyncIndicator('online', `🟢 <b>Npoint.io работает в реальном времени</b><br>Проверка: ${nowTime}`);
+            setSyncIndicator('online', `🟢 <b>Npoint.io онлайн</b>`);
             check3HourChallengeGeneration();
           }
         }
       } catch (err) {
-        setSyncIndicator('error', `🔴 Нет связи с Npoint.io`);
+        setSyncIndicator('error', `🔴 Нет связи с облаком`);
       } finally {
         isPolling = false;
       }
     }
 
+    // Моментальная проверка при возвращении на вкладку (актуально для iOS)
+    window.addEventListener('pageshow', () => pollCloudData());
+    window.addEventListener('focus', () => pollCloudData());
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) pollCloudData();
+    });
+    window.addEventListener('touchstart', () => {
+      if (Math.random() < 0.25) pollCloudData();
+    }, { passive: true });
+
     async function forceSyncNow() {
-      const btn = document.getElementById('topGpsStatus');
-      if (btn) btn.textContent = 'Синхр...';
       await pollCloudData();
-      if (btn) btn.textContent = 'Онлайн';
+      refreshBothUsersWeather();
+      showToast('Синхронизировано!', '⚡');
     }
 
     function calcDistanceKm(lat1, lon1, lat2, lon2) {
@@ -3083,16 +2712,20 @@
         const newLat = Number(pos.coords.latitude.toFixed(5));
         const newLng = Number(pos.coords.longitude.toFixed(5));
         const nowStr = new Date().toTimeString().slice(0, 5);
-        if (me.lat !== newLat || me.lng !== newLng) {
-          me.lat = newLat;
-          me.lng = newLng;
+        const coordsChanged = (me.lat !== newLat || me.lng !== newLng);
+        me.lat = newLat;
+        me.lng = newLng;
+        if (coordsChanged) {
           me.updatedAt = nowStr;
           syncSection(myKey, me);
+        }
+        if (coordsChanged || !me.weather) {
+          updateWeatherForUser(myKey, newLat, newLng);
         }
       };
       navigator.geolocation.getCurrentPosition(onPosSuccess, () => {}, { enableHighAccuracy: true });
       if (gpsWatchId !== null) navigator.geolocation.clearWatch(gpsWatchId);
-      gpsWatchId = navigator.geolocation.watchPosition(onPosSuccess, () => {}, { enableHighAccuracy: true, maximumAge: 20000 });
+      gpsWatchId = navigator.geolocation.watchPosition(onPosSuccess, () => {}, { enableHighAccuracy: true, maximumAge: 30000 });
     }
 
     if ('getBattery' in navigator) {
@@ -3121,11 +2754,15 @@
     function setQuickMood(em, headline, txt) {
       const myKey = getMyKey();
       const me = state.users[myKey];
+      const partnerKey = getPartnerKey();
       me.moodEmoji = em;
       me.moodHeadline = headline;
       me.moodText = txt;
       me.updatedAt = new Date().toTimeString().slice(0, 5);
       syncSection(myKey, me);
+
+      sendTelegramNotification(partnerKey, `${em} <b>${me.name}</b> выбрал(а) настроение:\n«${txt}»`);
+      showToast(`Статус обновлён: ${txt}`, em);
     }
 
     function switchTab(idx) {
@@ -3142,6 +2779,7 @@
       localStorage.setItem(ROLE_KEY, myRole);
       renderAll();
       startAutoGpsTracking();
+      showToast(`Выбрана роль: ${state.users[getMyKey()].name}`, myRole === 'user1' ? '👦' : '👧');
     }
 
     function openSettingsModal() {
@@ -3154,6 +2792,8 @@
       document.getElementById('inpStreak').value = state.streakDays;
       document.getElementById('inpManualDist').value = state.manualDistanceKm || 640;
       document.getElementById('inpDbUrl').value = npointUrl;
+      const box = document.getElementById('tgTestResultBox');
+      if (box) box.innerHTML = '';
       document.getElementById('settingsModal').classList.add('open');
     }
 
@@ -3177,6 +2817,7 @@
       syncSection('user2', state.users.user2);
       syncSection('streakDays', state.streakDays);
       syncSection('manualDistanceKm', state.manualDistanceKm);
+      showToast('Настройки сохранены!', '⚙️');
     }
 
     function cyclePinnedCountdown() {
@@ -3189,6 +2830,7 @@
       const nextIdx = (curIdx + 1) % list.length;
       list.forEach((c, i) => c.pinned = (i === nextIdx));
       syncSection('countdowns', state.countdowns);
+      showToast(`Главный отсчёт: ${list[nextIdx].title}`, list[nextIdx].emoji);
     }
 
     function pinCountdown(id) {
@@ -3219,9 +2861,12 @@
       } else {
         state.countdowns.forEach(c => c.pinned = false);
         state.countdowns.push({ id: 'c' + Date.now(), emoji, title, days, targetTs, pinned: true });
+        const me = state.users[getMyKey()];
+        sendTelegramNotification(getPartnerKey(), `⏳ <b>${me.name}</b> добавил(а) новое событие:\n${emoji} <b>${title}</b> (через ${days} дн.)`);
       }
       closeModal('countdownModal');
       syncSection('countdowns', state.countdowns);
+      showToast(`Событие «${title}» сохранено!`, emoji);
     }
 
     function deleteCountdown(id) {
@@ -3230,6 +2875,7 @@
         state.countdowns[0].pinned = true;
       }
       syncSection('countdowns', state.countdowns);
+      showToast('Событие удалено', '🗑️');
     }
 
     function setChallengeView(mode) { chViewMode = mode; renderAll(); }
@@ -3239,9 +2885,23 @@
     function answerChallengeItem(chId, answerText) {
       const item = (state.challenges || []).find(c => c.id === chId);
       if (!item) return;
+      const myKey = getMyKey();
+      const me = state.users[myKey];
+      const partnerKey = getPartnerKey();
+
       if (myRole === 'user2') item.user2Answer = answerText;
       else item.user1Answer = answerText;
       syncSection('challenges', state.challenges);
+
+      const bothDone = Boolean(item.user1Answer && item.user2Answer);
+      if (bothDone) {
+        sendTelegramNotification(partnerKey, `🔓 <b>Ответы открыты!</b>\n${item.prompt}\n👦 ${state.users.user1.name}: ${item.user1Answer}\n👧 ${state.users.user2.name}: ${item.user2Answer}`);
+        launchHeartsBurst();
+        showToast('Оба ответили! Ответы открыты!', '🔓');
+      } else {
+        sendTelegramNotification(partnerKey, `🔐 <b>${me.name}</b> ответил(а) на вопрос дня:\n«${item.prompt}»\nОтветь скорее в приложении, чтобы открыть ответы!`);
+        showToast('Ваш ответ сохранён!', '✅');
+      }
     }
 
     function openCustomAnswerModal(chId) {
@@ -3267,6 +2927,7 @@
       if (!item) return;
       item.archived = true;
       syncSection('challenges', state.challenges);
+      showToast('Перенесено в Архив', '📥');
     }
 
     function restoreChallengeFromArchive(chId) {
@@ -3274,6 +2935,7 @@
       if (!item) return;
       item.archived = false;
       syncSection('challenges', state.challenges);
+      showToast('Возвращено в Активные', '↩️');
     }
 
     function archiveAllCompleted() {
@@ -3281,6 +2943,7 @@
         if (c.user1Answer && c.user2Answer) c.archived = true;
       });
       syncSection('challenges', state.challenges);
+      showToast('Завершённые вопросы перенесены в Архив', '📚');
     }
 
     function openChallengeModal() {
@@ -3311,6 +2974,10 @@
       chViewMode = 'active';
       closeModal('createChallengeModal');
       syncSection('challenges', state.challenges);
+
+      const me = state.users[getMyKey()];
+      sendTelegramNotification(getPartnerKey(), `✏️ <b>${me.name}</b> создал(а) свой вопрос для пары:\n«${prompt}»`);
+      showToast('Ваш вопрос добавлен!', '✨');
     }
 
     function openWishModal(id = '') {
@@ -3342,6 +3009,8 @@
       const id = document.getElementById('itemModalId').value;
       const v1 = document.getElementById('itemModalInput1').value.trim();
       const v2 = document.getElementById('itemModalInput2').value.trim();
+      const me = state.users[getMyKey()];
+      const partnerKey = getPartnerKey();
       if (!v1) return;
 
       if (mode === 'wish') {
@@ -3351,9 +3020,11 @@
           if (w) { w.title = v1; w.sub = v2; }
         } else {
           state.wishes.unshift({ id: 'w' + Date.now(), boardId: state.activeBoardId, title: v1, sub: v2, done: false });
+          sendTelegramNotification(partnerKey, `✨ <b>${me.name}</b> добавил(а) новую общую мечту:\n«${v1}» ${v2 ? `(${v2})` : ''}`);
         }
         closeModal('itemModal');
         syncSection('wishes', state.wishes);
+        showToast('Желание сохранено!', '✨');
       } else if (mode === 'note') {
         if (!state.notes) state.notes = [];
         if (id) {
@@ -3361,24 +3032,36 @@
           if (n) { n.title = v1; n.text = v2; }
         } else {
           state.notes.unshift({ id: 'n' + Date.now(), title: v1, text: v2 });
+          sendTelegramNotification(partnerKey, `📝 <b>${me.name}</b> добавил(а) заметку:\n«${v1}»\n${v2}`);
         }
         closeModal('itemModal');
         syncSection('notes', state.notes);
+        showToast('Заметка сохранена!', '📝');
       }
     }
 
     function toggleWish(id) {
       const w = (state.wishes || []).find(x => x.id === id);
-      if (w) w.done = !w.done;
+      if (w) {
+        w.done = !w.done;
+        if (w.done) {
+          const me = state.users[getMyKey()];
+          sendTelegramNotification(getPartnerKey(), `🎉 <b>${me.name}</b> отметил(а) мечту как исполненную: «${w.title}»!`);
+          launchHeartsBurst();
+          showToast('Мечта исполнена!', '🎉');
+        }
+      }
       syncSection('wishes', state.wishes);
     }
     function deleteWish(id) {
       state.wishes = (state.wishes || []).filter(x => x.id !== id);
       syncSection('wishes', state.wishes);
+      showToast('Мечта удалена', '🗑️');
     }
     function deleteNote(id) {
       state.notes = (state.notes || []).filter(x => x.id !== id);
       syncSection('notes', state.notes);
+      showToast('Заметка удалена', '🗑️');
     }
 
     function escapeQuotes(str) {
@@ -3538,6 +3221,10 @@
           ? `<img src="${user.avatar}" alt="${user.name}" />`
           : `<span>${user.moodEmoji || '🥰'}</span>`;
 
+        const weatherBadge = user.weather
+          ? `<span class="meta-mini-tag weather-tag">${user.weather}</span>`
+          : (user.lat != null ? `<span class="meta-mini-tag weather-tag">🌡️ Погода...</span>` : '');
+
         return `
           <div class="checkin-card" onclick="${isPartner ? 'openHistoryModal()' : 'openCheckinModal()'}" style="cursor:pointer">
             <div class="checkin-top">
@@ -3547,8 +3234,9 @@
                 <div class="checkin-quote">«${user.moodText || 'На связи ❤️'}»</div>
                 <div class="checkin-meta-pills">
                   <span class="meta-mini-tag">⚡ ${user.battery || 90}%</span>
+                  ${weatherBadge}
                   <span class="meta-mini-tag">🕒 ${user.updatedAt || 'сейчас'}</span>
-                  ${isPartner ? `<span class="meta-mini-tag">📍 ${distStr}</span>` : `<span class="meta-mini-tag" style="color:var(--pink)">✏️ Нажмите, чтобы обновить</span>`}
+                  ${isPartner ? `<span class="meta-mini-tag">📍 ${distStr}</span>` : `<span class="meta-mini-tag" style="color:var(--pink)">✏️ Обновить</span>`}
                 </div>
               </div>
             </div>
@@ -3618,8 +3306,9 @@
     // Старт
     renderAll();
     update3HourCountdownUI();
-    pollCloudData();
-    setInterval(pollCloudData, 1800);
+    pollCloudData().then(() => refreshBothUsersWeather());
+    setInterval(pollCloudData, 2200);
+    setInterval(refreshBothUsersWeather, 600000);
     window.addEventListener('focus', pollCloudData);
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) pollCloudData();
