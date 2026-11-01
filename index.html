@@ -68,6 +68,7 @@
       margin: 0 auto;
     }
 
+    /* КАСТОМНЫЕ УВЕДОМЛЕНИЯ-КАПСУЛЫ (ВМЕСТО СИСТЕМНЫХ ALERT) */
     .toast-container {
       position: fixed;
       top: 16px;
@@ -116,6 +117,7 @@
       to { opacity: 0; transform: translateY(-18px) scale(0.92); }
     }
 
+    /* АНИМАЦИЯ САЛЮТА ИЗ СЕРДЕЧЕК */
     .floating-heart {
       position: fixed;
       z-index: 9998;
@@ -130,6 +132,7 @@
       100% { opacity: 0; transform: translate(calc(var(--tx) * 1.4), -280px) scale(0.85) rotate(calc(var(--rot) * 1.6)); }
     }
 
+    /* ВЕРХНЯЯ ПАНЕЛЬ */
     .ref-header {
       display: flex;
       align-items: center;
@@ -240,6 +243,7 @@
       transform: scale(0.94);
     }
 
+    /* БЫСТРЫЙ ПЕРЕКЛЮЧАТЕЛЬ РОЛИ */
     .role-strip {
       display: flex;
       align-items: center;
@@ -276,6 +280,7 @@
       color: #fff;
     }
 
+    /* ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" */
     .interactive-nudge-widget {
       background: linear-gradient(135deg, #1b162a, #13101d);
       border: 1px solid rgba(255, 59, 127, 0.3);
@@ -327,6 +332,7 @@
       transform: scale(0.94);
     }
 
+    /* ПЛАШКИ НАД ТАЙМЕРОМ */
     .cd-pills-row {
       display: flex;
       align-items: center;
@@ -366,6 +372,7 @@
       transform: scale(0.95);
     }
 
+    /* БОЛЬШОЙ ЖИВОЙ ТАЙМЕР */
     .big-timer-wrap {
       display: flex;
       align-items: flex-start;
@@ -410,6 +417,7 @@
       padding: 0 1px;
     }
 
+    /* ГЛАВНАЯ ФОТО-КАРТОЧКА */
     .photo-hero-card {
       position: relative;
       width: 100%;
@@ -590,6 +598,7 @@
       font-weight: 800;
     }
 
+    /* РАЗДЕЛ "ОТМЕТКА" И "ИСТОРИЯ" */
     .checkin-header {
       display: flex;
       align-items: baseline;
@@ -710,6 +719,7 @@
       display: block;
     }
 
+    /* МИНИ-ПРЕВЬЮ ДУДЛА НА ГЛАВНОЙ */
     .mini-doodle-bar {
       background: var(--card);
       border: 1px solid var(--border);
@@ -739,6 +749,7 @@
       object-fit: contain;
     }
 
+    /* ВКЛАДКА "ДУДЛЫ" */
     .doodles-top-header {
       position: relative;
       display: flex;
@@ -869,6 +880,7 @@
       font-weight: 500;
     }
 
+    /* КАЛЕНДАРНАЯ СЕКЦИЯ И СЕТКА ХОЛСТОВ */
     .doodle-month-header {
       display: flex;
       align-items: center;
@@ -978,6 +990,7 @@
       margin-top: 2px;
     }
 
+    /* МОДАЛЬНОЕ ОКНО РИСОВАНИЯ */
     .studio-canvas-box {
       width: 100%;
       aspect-ratio: 1 / 0.92;
@@ -1029,6 +1042,7 @@
       margin-bottom: 12px;
     }
 
+    /* ОБЩИЕ СТИЛИ ВКЛАДОК */
     .tab-page {
       display: none;
       animation: fadeIn 0.2s ease;
@@ -1094,6 +1108,7 @@
       width: 32px; height: 32px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;
     }
 
+    /* КАРТОЧКИ ЧЕЛЛЕНДЖЕЙ */
     .hourly-banner {
       background: var(--card);
       border: 1px solid var(--border);
@@ -1143,6 +1158,7 @@
       background: var(--card-2); font-size: 13px; line-height: 1.45;
     }
 
+    /* НИЖНЯЯ НАВИГАЦИЯ (5 ВКЛАДОК) */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: var(--nav-bg); backdrop-filter: blur(12px);
@@ -1155,6 +1171,7 @@
     .nav-item .nav-icon { font-size: 20px; }
     .nav-item.active { color: var(--pink); }
 
+    /* МОДАЛЬНЫЕ ОКНА */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0, 0, 0, 0.62);
       display: none; align-items: center; justify-content: center; padding: 16px; z-index: 200;
@@ -1202,6 +1219,7 @@
 </head>
 <body>
 
+  <!-- Контейнер для красивых кастомных уведомлений вместо системных окон -->
   <div class="toast-container" id="toastContainer"></div>
 
   <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarSelected(event)" />
@@ -1226,7 +1244,9 @@
   </header>
 
   <main class="container">
+    <!-- ВКЛАДКА 0: ГЛАВНЫЙ ЭКРАН -->
     <section class="tab-page active" id="tab0">
+
       <div class="role-strip">
         <span onclick="forceSyncNow()" style="cursor:pointer">🔄 <span id="topGpsStatus">Онлайн</span> • 📍 <b id="smDistTag">640 км</b></span>
         <div class="role-strip-btns">
@@ -1235,6 +1255,7 @@
         </div>
       </div>
 
+      <!-- ИНТЕРАКТИВНЫЙ МИНИ-ВИДЖЕТ "ПОДТОЛКНУТЬ" -->
       <div class="interactive-nudge-widget">
         <div class="nudge-left">
           <div class="nudge-title">👋 Напомнить о себе</div>
@@ -1342,6 +1363,7 @@
       <div id="countdownsList"></div>
     </section>
 
+    <!-- ВКЛАДКА 1: ДУДЛЫ -->
     <section class="tab-page" id="tab1">
       <div class="doodles-top-header">
         <h2 class="doodles-main-title">Дудлы</h2>
@@ -1380,6 +1402,7 @@
       <div class="doodle-gallery-grid" id="doodleGalleryGrid"></div>
     </section>
 
+    <!-- ВКЛАДКА 2: ЧЕЛЛЕНДЖ -->
     <section class="tab-page" id="tab2">
       <div class="section-head">
         <div class="section-title">Вопросы и Задания пары 🔐</div>
@@ -1414,6 +1437,7 @@
       <div id="challengesListBox"></div>
     </section>
 
+    <!-- ВКЛАДКА 3: МЕЧТЫ -->
     <section class="tab-page" id="tab3">
       <div class="section-head">
         <div class="section-title">Наши мечты и планы ✨</div>
@@ -1423,6 +1447,7 @@
       <div id="wishesList"></div>
     </section>
 
+    <!-- ВКЛАДКА 4: ЗАМЕТКИ -->
     <section class="tab-page" id="tab4">
       <div class="section-head">
         <div class="section-title">Общие заметки 📝</div>
@@ -1450,6 +1475,7 @@
     </button>
   </nav>
 
+  <!-- КАСТОМНОЕ МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ (ВМЕСТО СИСТЕМНОГО CONFIRM) -->
   <div class="modal-overlay" id="customConfirmModal">
     <div class="modal-box" style="max-width:340px; text-align:center">
       <div style="font-size:34px; margin-bottom:8px">🗑️</div>
@@ -1461,6 +1487,7 @@
     </div>
   </div>
 
+  <!-- МОДАЛЬНЫЕ ОКНА -->
   <div class="modal-overlay" id="doodleStudioModal">
     <div class="modal-box">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px">
@@ -1733,12 +1760,16 @@
 
     const DEFAULT_NPOINT_URL = 'https://api.npoint.io/b93a24be9137c8a0c3d9';
 
+    // Telegram Bot константы
     const TELEGRAM_BOT_TOKEN = '9126764838:AAH4XDfDlHS3bJE7IL8juJRFkxXRFLjpR9U';
     const TELEGRAM_IDS = {
-      user1: '749452668',
-      user2: '465329516'
+      user1: '749452668', // Матвей
+      user2: '465329516'  // Полина
     };
 
+    // =========================================================
+    // 1. КРАСИВЫЕ КАСТОМНЫЕ ОКНА (TOAST + CONFIRM + САЛЮТ)
+    // =========================================================
     function showToast(text, icon = '✨') {
       const container = document.getElementById('toastContainer');
       if (!container) return;
@@ -1791,6 +1822,9 @@
       }
     }
 
+    // =========================================================
+    // 2. ОТПРАВКА ТЕКСТА И САМИХ ИЗОБРАЖЕНИЙ В TELEGRAM
+    // =========================================================
     async function sendTelegramNotification(recipientRole, messageText) {
       const targetChatId = TELEGRAM_IDS[recipientRole];
       if (!targetChatId || !TELEGRAM_BOT_TOKEN) return { ok: false, error: 'Нет chat_id или токена' };
@@ -1811,6 +1845,7 @@
       }
     }
 
+    // Конвертация Base64 DataURL в бинарный Blob и отправка самой фотографии/рисунка в Telegram (sendPhoto)
     function dataUrlToBlob(dataUrl) {
       const parts = dataUrl.split(',');
       const mime = parts[0].match(/:(.*?);/)[1] || 'image/jpeg';
@@ -1864,6 +1899,9 @@
       }
     }
 
+    // =========================================================
+    // 3. ЖИВАЯ ПОГОДА У КАЖДОГО ПО GPS-КООРДИНАТАМ (OPEN-METEO)
+    // =========================================================
     function weatherCodeToEmoji(code) {
       if (code === 0) return '☀️';
       if (code === 1 || code === 2) return '🌤️';
@@ -1930,6 +1968,7 @@
       if (btn) btn.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
     }
 
+    // ИНТЕРАКТИВНАЯ КНОПКА "ПОДТОЛКНУТЬ" С САЛЮТОМ И КРАСИВЫМ УВЕДОМЛЕНИЕМ
     function sendNudgeSignal(ev) {
       const myKey = getMyKey();
       const me = state.users[myKey];
@@ -1975,37 +2014,6 @@
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
-    }
-
-    function triggerAvatarUpload() {
-      document.getElementById('avatarFileInput').click();
-    }
-
-    async function handleAvatarSelected(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-
-      showToast('⏳ Сохраняем аватарку...', '📷');
-      try {
-        const compressed = await compressImageFile(file, 150, 0.65);
-        const myKey = getMyKey();
-        const me = state.users[myKey];
-        const partnerKey = getPartnerKey();
-        const nowTs = Date.now();
-
-        me.avatar = compressed;
-        me.avatarUpdatedAt = nowTs;
-
-        localStorage.setItem(`couple_avatar_${myKey}`, compressed);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        renderAll();
-
-        syncSection(myKey, me);
-        sendTelegramPhoto(partnerKey, compressed, `📸 <b>${me.name}</b> обновил(а) аватарку профиля! ❤️`);
-        showToast('Аватарка успешно сохранена!', '✅');
-      } catch (e) {
-        showToast('Не удалось обработать фото', '⚠️');
-      }
     }
 
     function buildStarterDoodles() {
@@ -2356,7 +2364,6 @@
         user1: {
           name: 'Матвей',
           avatar: null,
-          avatarUpdatedAt: 0,
           moodEmoji: '🔥',
           moodHeadline: 'отличное настроение',
           moodText: 'Думаю о тебе и нашей встрече ❤️',
@@ -2370,7 +2377,6 @@
         user2: {
           name: 'Полина',
           avatar: null,
-          avatarUpdatedAt: 0,
           moodEmoji: '🥰',
           moodHeadline: 'хорошее настроение',
           moodText: 'Жду не дождусь нашей встречи!',
@@ -2451,21 +2457,6 @@
       if (!obj.users.user2) obj.users.user2 = JSON.parse(JSON.stringify(defaultState.users.user2));
       if (!obj.users.user1.moodHeadline) obj.users.user1.moodHeadline = 'хорошее настроение';
       if (!obj.users.user2.moodHeadline) obj.users.user2.moodHeadline = 'хорошее настроение';
-      if (obj.users.user1.avatarUpdatedAt === undefined) obj.users.user1.avatarUpdatedAt = 0;
-      if (obj.users.user2.avatarUpdatedAt === undefined) obj.users.user2.avatarUpdatedAt = 0;
-
-      if (!obj.users.user1.avatar) {
-        const backup1 = localStorage.getItem('couple_avatar_user1');
-        if (backup1) obj.users.user1.avatar = backup1;
-      } else {
-        localStorage.setItem('couple_avatar_user1', obj.users.user1.avatar);
-      }
-      if (!obj.users.user2.avatar) {
-        const backup2 = localStorage.getItem('couple_avatar_user2');
-        if (backup2) obj.users.user2.avatar = backup2;
-      } else {
-        localStorage.setItem('couple_avatar_user2', obj.users.user2.avatar);
-      }
 
       if (!Array.isArray(obj.doodles) || obj.doodles.length === 0) {
         obj.doodles = buildStarterDoodles();
@@ -2547,6 +2538,706 @@
     }
     setInterval(updateLiveCountdownClock, 1000);
 
+    function triggerAvatarUpload() {
+      document.getElementById('avatarFileInput').click();
+    }
+
+    async function handleAvatarSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      try {
+        const compressed = await compressImageFile(file, 260, 0.72);
+        const myKey = getMyKey();
+        const me = state.users[myKey];
+        me.avatar = compressed;
+        syncSection(myKey, me);
+        sendTelegramPhoto(getPartnerKey(), compressed, `📸 <b>${me.name}</b> обновил(а) аватарку профиля! ❤️`);
+        showToast('Аватарка профиля обновлена!', '📸');
+      } catch (e) {
+        showToast('Не удалось обработать фото', '⚠️');
+      }
+    }
+
+    function prevPhotoSlide() {
+      const slides = state.photoSlides || [];
+      if (slides.length <= 1) return;
+      activeSlideIndex = (activeSlideIndex - 1 + slides.length) % slides.length;
+      renderHeroCarousel();
+    }
+
+    function nextPhotoSlide() {
+      const slides = state.photoSlides || [];
+      if (slides.length <= 1) return;
+      activeSlideIndex = (activeSlideIndex + 1) % slides.length;
+      renderHeroCarousel();
+    }
+
+    function selectPhotoSlide(idx) {
+      activeSlideIndex = idx;
+      renderHeroCarousel();
+    }
+
+    function openAddMenuModal() {
+      document.getElementById('addMenuModal').classList.add('open');
+    }
+
+    function openPhotoSlideModal() {
+      tempSlideDataUrl = null;
+      document.getElementById('slidePreviewImg').style.display = 'none';
+      document.getElementById('slideUploadHint').style.display = 'block';
+      document.getElementById('inpSlideTitle').value = '';
+      document.getElementById('inpSlideLocation').value = '';
+      document.getElementById('photoSlideModal').classList.add('open');
+    }
+
+    async function handleSlideFileChosen(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      document.getElementById('slideUploadHint').textContent = '⏳ Сжимаем фото...';
+      try {
+        tempSlideDataUrl = await compressImageFile(file, 720, 0.68);
+        const img = document.getElementById('slidePreviewImg');
+        img.src = tempSlideDataUrl;
+        img.style.display = 'block';
+        document.getElementById('slideUploadHint').style.display = 'none';
+      } catch (e) {
+        document.getElementById('slideUploadHint').textContent = '⚠️ Ошибка выбора фото';
+      }
+    }
+
+    function savePhotoSlide() {
+      if (!tempSlideDataUrl) {
+        showToast('Сначала выберите фотографию из галереи!', '📷');
+        return;
+      }
+      const myKey = getMyKey();
+      const me = state.users[myKey];
+      const partnerKey = getPartnerKey();
+      const title = document.getElementById('inpSlideTitle').value.trim() || 'Наш момент ❤️';
+      const location = document.getElementById('inpSlideLocation').value.trim() || `От: ${me.name}`;
+      const photoToSend = tempSlideDataUrl;
+
+      if (!Array.isArray(state.photoSlides)) state.photoSlides = [];
+      state.photoSlides.unshift({
+        id: 'slide_' + Date.now(),
+        imgUrl: photoToSend,
+        title,
+        location,
+        author: `${me.name} • ${formatTimeTag()}`
+      });
+
+      if (state.photoSlides.length > 8) {
+        state.photoSlides = state.photoSlides.slice(0, 8);
+      }
+
+      activeSlideIndex = 0;
+      closeModal('photoSlideModal');
+      syncSection('photoSlides', state.photoSlides);
+
+      // Отправляем САМУ ФОТОГРАФИЮ в Telegram партнёру!
+      sendTelegramPhoto(partnerKey, photoToSend, `📷 <b>${me.name}</b> добавил(а) новое фото в нашу карусель!\n<b>${title}</b> (📍 ${location})`);
+      launchHeartsBurst();
+      showToast('Фото опубликовано и отправлено в Telegram!', '📷');
+    }
+
+    async function deleteCurrentSlide() {
+      const slides = state.photoSlides || [];
+      if (slides.length <= 1) {
+        openPhotoSlideModal();
+        return;
+      }
+      const ok = await showCustomConfirm('Удалить текущее фото из вашей общей карусели?');
+      if (!ok) return;
+      slides.splice(activeSlideIndex, 1);
+      activeSlideIndex = 0;
+      syncSection('photoSlides', state.photoSlides);
+      showToast('Слайд удалён из карусели', '🗑️');
+    }
+
+    function renderHeroCarousel() {
+      const slides = state.photoSlides || defaultState.photoSlides;
+      if (activeSlideIndex >= slides.length) activeSlideIndex = 0;
+      const cur = slides[activeSlideIndex] || slides[0];
+
+      document.getElementById('heroSlideImg').src = cur.imgUrl;
+      document.getElementById('heroSlideTitle').textContent = cur.title || 'Мы Рядом ❤️';
+      document.getElementById('heroSlideSub').textContent = `📍 ${cur.location || 'Наше место'}`;
+      document.getElementById('heroSlideAuthor').textContent = `${cur.author || ''} (${activeSlideIndex + 1}/${slides.length})`;
+
+      document.getElementById('heroCarouselDots').innerHTML = slides.map((s, idx) => `
+        <div class="c-dot ${idx === activeSlideIndex ? 'active' : ''}" onclick="selectPhotoSlide(${idx})"></div>
+      `).join('');
+    }
+
+    function openCheckinModal() {
+      const me = state.users[getMyKey()];
+      tempCheckinDataUrl = me.checkinPhoto || null;
+      const prevImg = document.getElementById('checkinPreviewImg');
+      const hint = document.getElementById('checkinUploadHint');
+      if (tempCheckinDataUrl) {
+        prevImg.src = tempCheckinDataUrl;
+        prevImg.style.display = 'block';
+        hint.style.display = 'none';
+      } else {
+        prevImg.style.display = 'none';
+        hint.style.display = 'block';
+        hint.textContent = '📷 Прикрепить фото момента (необязательно)';
+      }
+      document.getElementById('inpCheckinEmoji').value = me.moodEmoji || '🥰';
+      document.getElementById('inpCheckinHeadline').value = me.moodHeadline || 'хорошее настроение';
+      document.getElementById('inpCheckinText').value = me.moodText || '';
+      document.getElementById('checkinModal').classList.add('open');
+    }
+
+    async function handleCheckinFileChosen(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      document.getElementById('checkinUploadHint').textContent = '⏳ Сжимаем фото...';
+      try {
+        tempCheckinDataUrl = await compressImageFile(file, 640, 0.66);
+        const img = document.getElementById('checkinPreviewImg');
+        img.src = tempCheckinDataUrl;
+        img.style.display = 'block';
+        document.getElementById('checkinUploadHint').style.display = 'none';
+      } catch (e) {
+        document.getElementById('checkinUploadHint').textContent = '⚠️ Ошибка загрузки';
+      }
+    }
+
+    function saveCheckinModal() {
+      const myKey = getMyKey();
+      const me = state.users[myKey];
+      const partnerKey = getPartnerKey();
+      const emoji = document.getElementById('inpCheckinEmoji').value.trim() || '🥰';
+      const headline = document.getElementById('inpCheckinHeadline').value.trim() || 'хорошее настроение';
+      const text = document.getElementById('inpCheckinText').value.trim() || 'Думаю о тебе ❤️';
+      const nowTime = new Date().toTimeString().slice(0, 5);
+      const photoToSend = tempCheckinDataUrl;
+
+      me.moodEmoji = emoji;
+      me.moodHeadline = headline;
+      me.moodText = text;
+      me.checkinPhoto = photoToSend;
+      me.updatedAt = nowTime;
+
+      if (!Array.isArray(state.checkinHistory)) state.checkinHistory = [];
+      state.checkinHistory.unshift({
+        id: 'chk_' + Date.now(),
+        userName: me.name,
+        emoji,
+        headline,
+        text,
+        photo: photoToSend,
+        timeLabel: formatTimeTag()
+      });
+      if (state.checkinHistory.length > 10) {
+        state.checkinHistory = state.checkinHistory.slice(0, 10);
+      }
+
+      closeModal('checkinModal');
+      syncSection(myKey, me);
+      syncSection('checkinHistory', state.checkinHistory);
+
+      // Если к отметке прикреплено фото — отправляем само фото в Telegram!
+      const caption = `${emoji} <b>${me.name}</b> обновил(а) отметку:\nУ ${me.name} ${headline}\n«${text}»`;
+      if (photoToSend) {
+        sendTelegramPhoto(partnerKey, photoToSend, caption);
+      } else {
+        sendTelegramNotification(partnerKey, caption);
+      }
+      launchHeartsBurst();
+      showToast('Ваша отметка обновлена!', emoji);
+    }
+
+    function openHistoryModal() {
+      const hist = state.checkinHistory || [];
+      const box = document.getElementById('checkinHistoryList');
+      if (hist.length === 0) {
+        box.innerHTML = `<div style="text-align:center; color:var(--muted); padding:20px">История отметок пока пуста. Нажмите «📸 + Фото-отметка», чтобы поделиться моментом!</div>`;
+      } else {
+        box.innerHTML = hist.map(item => `
+          <div style="background:var(--card-2); padding:12px; border-radius:16px">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:4px">
+              <b>${item.emoji} ${item.userName}: ${item.headline}</b>
+              <span>${item.timeLabel}</span>
+            </div>
+            <div style="font-size:14px; font-weight:600">${item.text}</div>
+            ${item.photo ? `<img src="${item.photo}" style="width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-top:8px" />` : ''}
+          </div>
+        `).join('');
+      }
+      document.getElementById('historyModal').classList.add('open');
+    }
+
+    // ГАЛЕРЕЯ ДУДЛОВ
+    const studioCanvas = document.getElementById('studioEditorCanvas');
+    const studioCtx = studioCanvas.getContext('2d');
+    const studioPaletteColors = [
+      '#111111', '#ee3e6a', '#ee8578', '#ff9f43', '#facc15', '#16a34a', '#3b82f6', '#9333ea', '#ffffff'
+    ];
+
+    let studioCurrentColor = '#111111';
+    let studioBrushWidth = 7;
+    let studioEditingId = null;
+    let studioPresetArt = null;
+    let studioStrokes = [];
+    let studioActivePoints = [];
+    let studioReaction = '😍';
+    let isStudioDrawing = false;
+
+    function getFeaturedDoodle() {
+      const list = state.doodles || [];
+      if (list.length === 0) return null;
+      if (selectedDoodleId) {
+        const found = list.find(d => d.id === selectedDoodleId);
+        if (found) return found;
+      }
+      selectedDoodleId = list[0].id;
+      return list[0];
+    }
+
+    function selectDoodleFromGallery(doodleId) {
+      selectedDoodleId = doodleId;
+      renderDoodlesTab();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cycleFeaturedDoodleReaction() {
+      const feat = getFeaturedDoodle();
+      if (!feat) return;
+      const myKey = getMyKey();
+      const me = state.users[myKey];
+      const partnerKey = getPartnerKey();
+      const list = ['😍', '❤️', '🥰', '🔥', '😂', '💋'];
+      feat.reaction = list[(list.indexOf(feat.reaction || '😍') + 1) % list.length];
+      feat.updatedAtTs = Date.now();
+      syncSection('doodles', state.doodles);
+
+      sendTelegramNotification(partnerKey, `${feat.reaction} <b>${me.name}</b> поставил(а) реакцию на Дудл "${feat.caption || ''}"!`);
+      showToast(`Реакция ${feat.reaction} поставлена!`, feat.reaction);
+    }
+
+    function openFeaturedDoodleInStudio() {
+      const feat = getFeaturedDoodle();
+      openDoodleStudioModal(feat ? feat.id : null);
+    }
+
+    function openDoodleStudioModal(doodleId = null) {
+      studioEditingId = doodleId;
+      const existing = doodleId ? (state.doodles || []).find(d => d.id === doodleId) : null;
+
+      if (existing) {
+        document.getElementById('studioModalTitle').textContent = '♡ Добавь штрих к дудлу';
+        studioPresetArt = existing.presetArt || null;
+        studioStrokes = JSON.parse(JSON.stringify(existing.strokes || []));
+        studioReaction = existing.reaction || '😍';
+        document.getElementById('inpStudioCaption').value = existing.caption || '';
+        document.getElementById('studioDeleteBtn').style.display = (state.doodles.length > 1) ? 'inline-block' : 'none';
+      } else {
+        document.getElementById('studioModalTitle').textContent = '🎨 Новый отдельный холст';
+        studioPresetArt = null;
+        studioStrokes = [];
+        studioReaction = '😍';
+        document.getElementById('inpStudioCaption').value = '';
+        document.getElementById('studioDeleteBtn').style.display = 'none';
+      }
+
+      document.getElementById('studioReactionBtn').textContent = studioReaction;
+      renderStudioPalette();
+      redrawStudioEditorCanvas();
+      document.getElementById('doodleStudioModal').classList.add('open');
+    }
+
+    function renderStudioPalette() {
+      document.getElementById('studioPaletteRow').innerHTML = studioPaletteColors.map(c => `
+        <div class="studio-color-dot ${c === studioCurrentColor ? 'active' : ''}" style="background:${c}" onclick="selectStudioColor('${c}')"></div>
+      `).join('');
+    }
+
+    function selectStudioColor(c) {
+      studioCurrentColor = c;
+      renderStudioPalette();
+    }
+
+    function setStudioBrushSize(w) {
+      studioBrushWidth = w;
+      document.getElementById('sizeBtn4').classList.toggle('pink', w === 4);
+      document.getElementById('sizeBtn7').classList.toggle('pink', w === 7);
+      document.getElementById('sizeBtn14').classList.toggle('pink', w === 14);
+    }
+
+    function cycleStudioReaction() {
+      const list = ['😍', '❤️', '🥰', '🔥', '😂', '💋'];
+      studioReaction = list[(list.indexOf(studioReaction) + 1) % list.length];
+      document.getElementById('studioReactionBtn').textContent = studioReaction;
+    }
+
+    function redrawStudioEditorCanvas() {
+      studioCtx.clearRect(0, 0, studioCanvas.width, studioCanvas.height);
+      studioCtx.fillStyle = '#ffffff';
+      studioCtx.fillRect(0, 0, studioCanvas.width, studioCanvas.height);
+
+      if (studioPresetArt) {
+        drawPresetArtOnCanvas(studioCtx, studioPresetArt);
+      }
+
+      studioStrokes.forEach(s => {
+        drawSingleStroke(studioCtx, s.color, s.width || 7, s.points);
+      });
+
+      if (studioActivePoints.length > 0) {
+        drawSingleStroke(studioCtx, studioCurrentColor, studioBrushWidth, studioActivePoints);
+      }
+    }
+
+    function getStudioPointerPos(e) {
+      const r = studioCanvas.getBoundingClientRect();
+      const t = e.touches ? e.touches[0] : e;
+      return {
+        x: Math.round((t.clientX - r.left) * (studioCanvas.width / r.width)),
+        y: Math.round((t.clientY - r.top) * (studioCanvas.height / r.height))
+      };
+    }
+
+    studioCanvas.addEventListener('pointerdown', e => {
+      isStudioDrawing = true;
+      studioActivePoints = [getStudioPointerPos(e)];
+      redrawStudioEditorCanvas();
+    });
+
+    studioCanvas.addEventListener('pointermove', e => {
+      if (!isStudioDrawing) return;
+      studioActivePoints.push(getStudioPointerPos(e));
+      redrawStudioEditorCanvas();
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (!isStudioDrawing) return;
+      isStudioDrawing = false;
+      if (studioActivePoints.length > 0) {
+        studioStrokes.push({
+          color: studioCurrentColor,
+          width: studioBrushWidth,
+          points: studioActivePoints
+        });
+      }
+      studioActivePoints = [];
+      redrawStudioEditorCanvas();
+    });
+
+    function studioUndoStroke() {
+      if (studioStrokes.length > 0) {
+        studioStrokes.pop();
+      } else if (studioPresetArt) {
+        studioPresetArt = null;
+      }
+      redrawStudioEditorCanvas();
+    }
+
+    function studioClearCanvas() {
+      studioStrokes = [];
+      studioPresetArt = null;
+      redrawStudioEditorCanvas();
+    }
+
+    async function deleteEditingDoodle() {
+      if (!studioEditingId) return;
+      const ok = await showCustomConfirm('Удалить этот холст из общей галереи?');
+      if (!ok) return;
+      state.doodles = (state.doodles || []).filter(d => d.id !== studioEditingId);
+      selectedDoodleId = state.doodles[0] ? state.doodles[0].id : null;
+      closeModal('doodleStudioModal');
+      syncSection('doodles', state.doodles);
+      showToast('Холст удалён', '🗑️');
+    }
+
+    function saveStudioDoodle() {
+      const myKey = getMyKey();
+      const me = state.users[myKey];
+      const partnerKey = getPartnerKey();
+      const caption = document.getElementById('inpStudioCaption').value.trim() || 'думаю о тебе';
+      const now = Date.now();
+      const isExisting = Boolean(studioEditingId);
+
+      // Сразу снимаем снимок нарисованного холста для отправки в Telegram
+      redrawStudioEditorCanvas();
+      const doodleImageDataUrl = studioCanvas.toDataURL('image/jpeg', 0.85);
+
+      if (!Array.isArray(state.doodles)) state.doodles = [];
+
+      if (studioEditingId) {
+        const item = state.doodles.find(d => d.id === studioEditingId);
+        if (item) {
+          item.presetArt = studioPresetArt;
+          item.strokes = studioStrokes;
+          item.caption = caption;
+          item.reaction = studioReaction;
+          item.authorRole = myKey;
+          item.updatedAtTs = now;
+        }
+        selectedDoodleId = studioEditingId;
+      } else {
+        const newId = 'd_' + now;
+        state.doodles.unshift({
+          id: newId,
+          authorRole: myKey,
+          caption,
+          reaction: studioReaction,
+          createdAtTs: now,
+          updatedAtTs: now,
+          presetArt: studioPresetArt,
+          strokes: studioStrokes
+        });
+        selectedDoodleId = newId;
+      }
+
+      if (state.doodles.length > 15) {
+        state.doodles = state.doodles.slice(0, 15);
+      }
+
+      closeModal('doodleStudioModal');
+      syncSection('doodles', state.doodles);
+
+      // Отправляем САМУ КАРТИНКУ ДУДЛА прямо в Telegram партнёру!
+      const msg = isExisting
+        ? `🎨 <b>${me.name}</b> добавил(а) штрих к вашему рисунку на холсте!\n«${caption}»`
+        : `🎨 <b>${me.name}</b> нарисовал(а) новый Дудл!\n«${caption}»`;
+      sendTelegramPhoto(partnerKey, doodleImageDataUrl, msg);
+      launchHeartsBurst();
+      showToast('Дудл сохранён и отправлен картинкой в Telegram!', '🎨');
+    }
+
+    function renderDoodlesTab() {
+      const doodles = state.doodles || [];
+      const myKey = getMyKey();
+      const feat = getFeaturedDoodle();
+
+      document.getElementById('doodleMonthTitle').textContent = getCurrentRussianMonthYear();
+
+      if (feat) {
+        const isMe = feat.authorRole === myKey;
+        const authorUser = state.users[feat.authorRole] || state.users.user2;
+        const authorLabel = isMe ? 'Ты' : (authorUser.name || 'Партнёр');
+
+        const authEl = document.getElementById('featuredDoodleAuthor');
+        authEl.textContent = authorLabel;
+        authEl.classList.toggle('is-self', isMe);
+
+        document.getElementById('featuredDoodleTime').textContent = formatRelativeAgo(feat.updatedAtTs || feat.createdAtTs);
+        document.getElementById('featuredDoodleCaption').textContent = `"${feat.caption || 'думаю о тебе'}"`;
+        document.getElementById('featuredDoodleReactBtn').textContent = feat.reaction || '😍';
+
+        renderDoodleObjectToCanvas(document.getElementById('featuredDoodleCanvas'), feat);
+      }
+
+      const latestDoodle = doodles[0] || feat;
+      if (latestDoodle) {
+        renderDoodleObjectToCanvas(document.getElementById('widgetDoodleCanvas'), latestDoodle);
+        const subEl = document.getElementById('homeDoodleSubText');
+        if (subEl) {
+          const who = latestDoodle.authorRole === myKey ? 'Ты' : (state.users[latestDoodle.authorRole]?.name || 'Партнёр');
+          subEl.textContent = `${who} (${formatRelativeAgo(latestDoodle.updatedAtTs)}): "${latestDoodle.caption || 'думаю о тебе'}"`;
+        }
+      }
+
+      const grid = document.getElementById('doodleGalleryGrid');
+      grid.innerHTML = doodles.map(d => {
+        const isMe = d.authorRole === myKey;
+        const authorUser = state.users[d.authorRole] || state.users.user2;
+        const authorLabel = isMe ? 'Ты' : (authorUser.name || 'Партнёр');
+        const isSelected = feat && feat.id === d.id;
+
+        return `
+          <div class="doodle-grid-card ${isSelected ? 'selected-card' : ''}" onclick="selectDoodleFromGallery('${d.id}')">
+            <div class="doodle-grid-thumb">
+              <canvas id="thumb_canvas_${d.id}" width="180" height="200"></canvas>
+              <div class="doodle-mini-react-badge">${d.reaction || '😍'}</div>
+            </div>
+            <div>
+              <div class="doodle-grid-author ${isMe ? 'is-self' : ''}">${authorLabel}</div>
+              <div class="doodle-grid-time">${formatRelativeAgo(d.updatedAtTs || d.createdAtTs)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      doodles.forEach(d => {
+        const cEl = document.getElementById(`thumb_canvas_${d.id}`);
+        if (cEl) renderDoodleObjectToCanvas(cEl, d);
+      });
+    }
+
+    function mergeDoodlesLists(cloudList = [], localList = []) {
+      const map = new Map();
+      cloudList.forEach(item => {
+        if (item && item.id) map.set(item.id, JSON.parse(JSON.stringify(item)));
+      });
+      localList.forEach(localItem => {
+        if (!localItem || !localItem.id) return;
+        if (!map.has(localItem.id)) {
+          map.set(localItem.id, JSON.parse(JSON.stringify(localItem)));
+        } else {
+          const existing = map.get(localItem.id);
+          if ((localItem.updatedAtTs || 0) >= (existing.updatedAtTs || 0)) {
+            map.set(localItem.id, JSON.parse(JSON.stringify(localItem)));
+          }
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => (b.updatedAtTs || 0) - (a.updatedAtTs || 0));
+    }
+
+    function mergeChallengesLists(cloudList = [], localList = []) {
+      const map = new Map();
+      cloudList.forEach(item => {
+        if (item && item.id) map.set(item.id, JSON.parse(JSON.stringify(item)));
+      });
+      localList.forEach(localItem => {
+        if (!localItem || !localItem.id) return;
+        if (!map.has(localItem.id)) {
+          map.set(localItem.id, JSON.parse(JSON.stringify(localItem)));
+        } else {
+          const merged = map.get(localItem.id);
+          if (localItem.user1Answer) merged.user1Answer = localItem.user1Answer;
+          if (localItem.user2Answer) merged.user2Answer = localItem.user2Answer;
+          if (localItem.archived) merged.archived = true;
+        }
+      });
+      return deduplicateChallengesByPrompt(Array.from(map.values()));
+    }
+
+    function hashString(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) {
+        h = (h * 31 + str.charCodeAt(i)) >>> 0;
+      }
+      return h;
+    }
+
+    function pickUniqueNextPair(seedStr) {
+      if (!Array.isArray(state.usedChallengeTplIds)) state.usedChallengeTplIds = [];
+      const usedSet = new Set(state.usedChallengeTplIds);
+      const existingPrompts = new Set((state.challenges || []).map(c => (c.prompt || '').trim()));
+
+      (state.challenges || []).forEach(c => {
+        if (c.tplId) usedSet.add(c.tplId);
+      });
+
+      const allQuestions = AI_CHALLENGE_BANK.filter(x => x.type === 'question');
+      const allTasks = AI_CHALLENGE_BANK.filter(x => x.type === 'task');
+
+      let availQ = allQuestions.filter(q => !usedSet.has(q.tplId) && !existingPrompts.has(q.prompt.trim()));
+      let availT = allTasks.filter(t => !usedSet.has(t.tplId) && !existingPrompts.has(t.prompt.trim()));
+
+      if (availQ.length === 0) {
+        availQ = allQuestions.filter(q => !existingPrompts.has(q.prompt.trim()));
+        if (availQ.length === 0) availQ = allQuestions;
+      }
+      if (availT.length === 0) {
+        availT = allTasks.filter(t => !existingPrompts.has(t.prompt.trim()));
+        if (availT.length === 0) availT = allTasks;
+      }
+
+      const h = hashString(seedStr);
+      const qTpl = availQ[h % availQ.length];
+      const tTpl = availT[(h >>> 4) % availT.length];
+
+      if (qTpl && !state.usedChallengeTplIds.includes(qTpl.tplId)) {
+        state.usedChallengeTplIds.push(qTpl.tplId);
+      }
+      if (tTpl && !state.usedChallengeTplIds.includes(tTpl.tplId)) {
+        state.usedChallengeTplIds.push(tTpl.tplId);
+      }
+
+      return { qTpl, tTpl };
+    }
+
+    function check3HourChallengeGeneration() {
+      const currentSlotKey = getCurrent3HourSlotKey();
+      if (state.lastGeneratedSlotKey === currentSlotKey) return;
+
+      (state.challenges || []).forEach(ch => {
+        if (ch.user1Answer && ch.user2Answer) ch.archived = true;
+      });
+
+      const qSlotId = `ch_q_${currentSlotKey}`;
+      const tSlotId = `ch_t_${currentSlotKey}`;
+      const { qTpl, tTpl } = pickUniqueNextPair(currentSlotKey);
+      const timeLabel = formatTimeTag();
+
+      if (!state.challenges.some(c => c.id === tSlotId || c.prompt === tTpl?.prompt) && tTpl) {
+        state.challenges.unshift({
+          id: tSlotId, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
+          prompt: tTpl.prompt, options: tTpl.options,
+          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
+        });
+      }
+      if (!state.challenges.some(c => c.id === qSlotId || c.prompt === qTpl?.prompt) && qTpl) {
+        state.challenges.unshift({
+          id: qSlotId, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
+          prompt: qTpl.prompt, options: qTpl.options,
+          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
+        });
+      }
+
+      state.lastGeneratedSlotKey = currentSlotKey;
+      syncSection('challenges', state.challenges);
+      syncSection('usedChallengeTplIds', state.usedChallengeTplIds);
+      syncSection('lastGeneratedSlotKey', state.lastGeneratedSlotKey);
+    }
+
+    function generateExtraPairNow() {
+      const seed = 'manual_unique_' + Date.now() + '_' + Math.random();
+      const { qTpl, tTpl } = pickUniqueNextPair(seed);
+      const timeLabel = formatTimeTag();
+      const stamp = Date.now();
+
+      if (tTpl && !state.challenges.some(c => c.prompt === tTpl.prompt)) {
+        state.challenges.unshift({
+          id: `ch_t_${stamp}`, tplId: tTpl.tplId, type: 'task', category: tTpl.category,
+          prompt: tTpl.prompt, options: tTpl.options,
+          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
+        });
+      }
+      if (qTpl && !state.challenges.some(c => c.prompt === qTpl.prompt)) {
+        state.challenges.unshift({
+          id: `ch_q_${stamp}`, tplId: qTpl.tplId, type: 'question', category: qTpl.category,
+          prompt: qTpl.prompt, options: qTpl.options,
+          user1Answer: null, user2Answer: null, createdAtLabel: timeLabel, archived: false
+        });
+      }
+      chViewMode = 'active';
+      syncSection('challenges', state.challenges);
+      syncSection('usedChallengeTplIds', state.usedChallengeTplIds);
+      showToast('Новые вопрос и задание добавлены!', '⚡');
+    }
+
+    function update3HourCountdownUI() {
+      const now = new Date();
+      const nextSlotHour = (Math.floor(now.getHours() / 3) + 1) * 3;
+      const nextTarget = new Date(now.getFullYear(), now.getMonth(), now.getDate(), nextSlotHour, 0, 0, 0);
+      const diffSec = Math.max(0, Math.floor((nextTarget.getTime() - now.getTime()) / 1000));
+
+      const hh = Math.floor(diffSec / 3600);
+      const mm = Math.floor((diffSec % 3600) / 60);
+      const ss = diffSec % 60;
+
+      const el = document.getElementById('nextHourCountdown');
+      if (el) {
+        el.textContent = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+      }
+
+      const poolBadge = document.getElementById('uniquePoolBadge');
+      if (poolBadge) {
+        const usedCount = (state.usedChallengeTplIds || []).length;
+        const leftCount = Math.max(0, AI_CHALLENGE_BANK.length - usedCount);
+        poolBadge.textContent = `Новых в базе: ${leftCount}/${AI_CHALLENGE_BANK.length}`;
+      }
+
+      check3HourChallengeGeneration();
+    }
+    setInterval(update3HourCountdownUI, 1000);
+
+    // ДВИЖОК СИНХРОНИЗАЦИИ NPOINT.IO
     let isSaving = false;
     let isPolling = false;
     let pendingPatches = {};
@@ -2603,17 +3294,6 @@
           }
         }
 
-        ['user1', 'user2'].forEach(uKey => {
-          const localAv = state.users[uKey]?.avatar;
-          const localTs = state.users[uKey]?.avatarUpdatedAt || 0;
-          const cloudAv = baseData.users[uKey]?.avatar;
-          const cloudTs = baseData.users[uKey]?.avatarUpdatedAt || 0;
-          if (localAv && (!cloudAv || localTs >= cloudTs)) {
-            baseData.users[uKey].avatar = localAv;
-            baseData.users[uKey].avatarUpdatedAt = localTs;
-          }
-        });
-
         const postRes = await fetch(npointUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2625,8 +3305,6 @@
           state = baseData;
           state.activeBoardId = activeBoard;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          if (state.users.user1.avatar) localStorage.setItem('couple_avatar_user1', state.users.user1.avatar);
-          if (state.users.user2.avatar) localStorage.setItem('couple_avatar_user2', state.users.user2.avatar);
           renderAll();
           const nowTime = new Date().toTimeString().slice(0, 8);
           setSyncIndicator('online', `🟢 <b>Синхронизировано с Npoint.io!</b><br>Отправлено: ${nowTime}`);
@@ -2652,21 +3330,6 @@
           const cloudData = await res.json();
           if (cloudData && typeof cloudData === 'object') {
             ensureStateShape(cloudData);
-
-            ['user1', 'user2'].forEach(uKey => {
-              const localAv = state.users[uKey]?.avatar;
-              const localTs = state.users[uKey]?.avatarUpdatedAt || 0;
-              const cloudAv = cloudData.users[uKey]?.avatar;
-              const cloudTs = cloudData.users[uKey]?.avatarUpdatedAt || 0;
-
-              if (localAv && (!cloudAv || localTs > cloudTs)) {
-                cloudData.users[uKey].avatar = localAv;
-                cloudData.users[uKey].avatarUpdatedAt = localTs;
-              } else if (cloudAv) {
-                localStorage.setItem(`couple_avatar_${uKey}`, cloudAv);
-              }
-            });
-
             const activeBoard = state.activeBoardId;
             cloudData.activeBoardId = activeBoard;
 
@@ -3319,11 +3982,12 @@
       `).join('');
     }
 
+    // Старт
     renderAll();
     update3HourCountdownUI();
     pollCloudData().then(() => refreshBothUsersWeather());
     setInterval(pollCloudData, 2200);
-    setInterval(refreshBothUsersWeather, 600000);
+    setInterval(refreshBothUsersWeather, 600000); // Обновление погоды раз в 10 минут
     window.addEventListener('focus', pollCloudData);
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) pollCloudData();
@@ -3331,4 +3995,4 @@
     startAutoGpsTracking();
   </script>
 </body>
-</html>
+          </html>
